@@ -1,0 +1,22 @@
+print "Starting maya loading and fbx conversion \n";
+	
+if (`file -q -exists "C:/Users/Sean/DOCUME~1/huver/ROLLIN~1/ROLLIN~1/ROLLIN~1/Assets/Fbx/BUILDI~2.MB"`)
+{		
+	file -o "C:/Users/Sean/DOCUME~1/huver/ROLLIN~1/ROLLIN~1/ROLLIN~1/Assets/Fbx/BUILDI~2.MB";
+	FBXExportEmbeddedTextures -v false;
+	// FBXExportHardEdges -v true;
+	FBXExportApplyConstantKeyReducer -v false;
+	FBXExportShowUI -v false;
+
+	print "Before fbx export\n";
+	FBXExport -f "C:/Users/Sean/DOCUME~1/huver/ROLLIN~1/ROLLIN~1/ROLLIN~1/Temp/ExportedFBXFile.fbx";
+	print "after fbx export\n";
+}
+else
+	print "Could not open Maya file.";
+
+sysFile -delete "C:/Users/Sean/DOCUME~1/huver/ROLLIN~1/ROLLIN~1/ROLLIN~1/Temp/CommandPipe";
+
+$donepipeKill = `fopen "C:/Users/Sean/DOCUME~1/huver/ROLLIN~1/ROLLIN~1/ROLLIN~1/Temp/SyncPipeKill" "w"`;
+fwrite $donepipeKill "Done";
+fclose $donepipeKill;
