@@ -9,6 +9,9 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/[Ee]nemy/
+/Library/*.*
+
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
@@ -46,6 +49,8 @@ ExportedObj/
 *.resS
 
 *.dll
+
+
 
 # Unity3D generated meta files
 *.pidb.meta
