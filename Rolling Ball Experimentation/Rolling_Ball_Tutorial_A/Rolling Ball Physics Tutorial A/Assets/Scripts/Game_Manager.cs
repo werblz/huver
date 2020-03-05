@@ -927,6 +927,12 @@ public class Game_Manager : MonoBehaviour {
         // Rotation is 0. If the ship is odd, it is 90 (down below)
         float myYRotation = 0.0f;
 
+
+
+        // HERE:
+        // Add a method that sphere casts from the front of the airship, with the diameter of the airship
+        // and if it hits anything, it rises up one spot.
+
         for (int i = 0; i < numShips; i++)
         {
             airShip[i] = Instantiate(airShipObject);
