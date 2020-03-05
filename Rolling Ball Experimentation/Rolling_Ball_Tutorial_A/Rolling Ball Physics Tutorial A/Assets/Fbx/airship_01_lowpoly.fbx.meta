@@ -10,17 +10,12 @@ ModelImporter:
     400002: Airship_One_Lowpoly
     400004: Airship_One_Lowpoly_Phys
     2100000: lambert1
-    2300000: //RootNode
-    2300002: Airship_One_Lowpoly
-    2300004: Airship_One_Lowpoly_Phys
-    3300000: //RootNode
-    3300002: Airship_One_Lowpoly
-    3300004: Airship_One_Lowpoly_Phys
-    4300000: polySurface1
-    4300002: Airship_One_Lowpoly_All
-    4300004: Airship_One_Lowpoly_Phys
-    4300006: Airship_One_Lowpoly
-    2186277476908879412: ImportLogs
+    2300000: Airship_One_Lowpoly
+    2300002: Airship_One_Lowpoly_Phys
+    3300000: Airship_One_Lowpoly
+    3300002: Airship_One_Lowpoly_Phys
+    4300000: Airship_One_Lowpoly_Phys
+    4300002: Airship_One_Lowpoly
   externalObjects: {}
   materials:
     importMaterials: 1
