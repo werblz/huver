@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Airship_Mover : MonoBehaviour {
 
+
+    // All this is handled by Game_Manager now.
+    // This now JUST turns ship on and sets the animator playing at a random timeline point
     [SerializeField]
     private Vector3 airshipStartPosition = Vector3.zero;
 

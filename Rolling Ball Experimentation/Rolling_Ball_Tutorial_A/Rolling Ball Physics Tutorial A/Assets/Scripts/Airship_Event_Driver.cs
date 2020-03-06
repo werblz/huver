@@ -22,9 +22,14 @@ public class Airship_Event_Driver : MonoBehaviour {
 
     private Animator anim = null;
 
+    private MeshRenderer mesh = null;
+
 	// Use this for initialization
 	void Start () {
         anim = GetComponent<Animator>();
+        mesh = GetComponent<MeshRenderer>();
+
+
 
         // Random starts with a given speed, then ADDS a multipler on the same times the random num 0-3
         anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
@@ -32,13 +37,16 @@ public class Airship_Event_Driver : MonoBehaviour {
     }
 
 
+    public void TurnOffMesh()
+    {
+        mesh.enabled = false;
+    }
 
     public void RestartAnim()
     {
         anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
         mover.PlaceShip();
         anim.SetTrigger("Start");
-        
-
+        mesh.enabled = true;
     }
 }
