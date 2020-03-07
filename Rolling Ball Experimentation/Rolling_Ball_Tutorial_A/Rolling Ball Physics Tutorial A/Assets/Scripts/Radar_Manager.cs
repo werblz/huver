@@ -274,6 +274,10 @@ public class Radar_Manager : MonoBehaviour {
 
         for (int i = 0; i < crackSpriteRenderers.Length; i++)
         {
+            if (damageStepped > crackSpriteRenderers.Length)
+            {
+                damageStepped = crackSpriteRenderers.Length;
+            }
             crackSpriteRenderers[i].sprite = crackSprites[(int)damageStepped];
             //Debug.Log("<color=blue> Sprite is " + crackSprites[(int)damageStepped].name + "</color>");
         }

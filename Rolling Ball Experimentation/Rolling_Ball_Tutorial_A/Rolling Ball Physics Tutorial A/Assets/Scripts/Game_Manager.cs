@@ -911,11 +911,11 @@ public class Game_Manager : MonoBehaviour {
         // I will now instead create two lanes, one low, one high, and populate them
         // in a cross-grid pattern.
 
-        Array.Resize(ref airShip, numShips+1);
+        Array.Resize(ref airShip, numShips);
         Debug.Log("ARRAY SIZE IS " + airShip.Length);
 
         // Start lane at the tallest buliding plus one airship height
-        float laneY = tallestBuilding + airShipObject.airshipHeight;
+        float laneY = shortestBuilding + airShipObject.airshipHeight;
 
         // Get the width between ships
         float myXDistance = maxPadDistance / numShips;
@@ -937,24 +937,55 @@ public class Game_Manager : MonoBehaviour {
         {
             airShip[i] = Instantiate(airShipObject);
 
+            // Now we attempt to place the ship.
+            // Before we were just moving the ship here.
+            // Now, however, I will simply call PlaceShip on the Airship Mover. 
+            // That mover will check for collision with city buildings and raise the ship up
+            // if it detects one, so when we're done, we will have ships lower in the city,
+            // but with no collision
+
+            // TryToPlaceShip(float laneY)
+            // That tells the Airship_Mover where to start for each ship.
+            // Then the ship will move it up 2 heights
+            // Keep in mind every odd and even ship is offset vertically by one height so they
+            // mesh together without colliding
+
+            // We need a vector to place our attempted position in to placeship
+            Vector3 tryPosition = Vector3.zero;
+
             myYRotation = (float)i * 90.0f;
             if ( i % 2 == 0 ) // Even
             {
                 //myYRotation = 0.0f;
-                laneY = tallestBuilding + airShipObject.airshipHeight;
+                laneY = shortestBuilding + airShipObject.airshipHeight;
+
+
+                /*
                 airShip[i].transform.position = new Vector3(
                     myX,
                     laneY,
                     airShip[i].transform.position.z);
+                    */
+
+                // myX is the X offset as we crawl along the city.
+                // laneY is the start postion we try
+                // And Z is just where the ship is now
+                tryPosition = new Vector3(myX, laneY, airShip[i].transform.position.z);
+                airShip[i].PlaceShip(tryPosition);
             }
             else
             {
                 //myYRotation = 90.0f;
-                laneY = tallestBuilding + ( airShipObject.airshipHeight * 2.0f );
+                laneY = shortestBuilding + ( airShipObject.airshipHeight * 2.0f );
+
+                /*
                 airShip[i].transform.position = new Vector3(
                     airShip[i].transform.position.x,
                     laneY,
                     myX);
+                */
+                tryPosition = new Vector3(airShip[i].transform.position.x, laneY, myX);
+                airShip[i].PlaceShip(tryPosition);
             }
             
             // Rotate ship
@@ -963,43 +994,18 @@ public class Game_Manager : MonoBehaviour {
             // Now increment myX the width of the city / numships for even grid distribution 
             myX += myXDistance;
             
+            if (airShip[i].collided == true )
+            {
+                Debug.Log("<color=red> ***************** SHIP IS TELLING US IT COLLIDED WITH BUILDING! </color>");
+            }
+
 
              
         }
 
-        /*
-        // Make the array the right size
-        Array.Resize(ref airShip, numShips+1);
-        Debug.Log("ARRAY SIZE IS " + airShip.Length);
+        
 
-        // Start laneY at the airshipObject's yOffset, then let the loop increment
-        // No. Now, start laneY with the tallest building he ight, which I now check for,
-        // and add one height.
-        float laneY = tallestBuilding + airShipObject.airshipHeight; 
-
-        for (int i = 0; i< numShips; i++)
-        {
-            // Start with the airship's yOffset. Place the first ship there..
-            // Here I use the yOffset from the MAIN prefab, rather than the instantiated ones
-            // Because, well... I haven't instantiated any yet
-
-            
-            
-            // Make this ship. Instantiating it will run its Start, which will place and rotate it
-            // After that, its animation event will restart it at a new rotation and position each time
-            airShip[i] = Instantiate(airShipObject);
-
-            // The x offset is the maxPadDistance (city radius)
-            float myX = (UnityEngine.Random.value * airshipRadius) - (airshipRadius / 2.0f);
-            // Start it at its height, but where it was placed by the airship's start
-            airShip[i].transform.position = new Vector3(
-                myX, 
-                laneY,
-                airShip[i].transform.position.z);
-
-            // Next, add the airshipHeight each time, so the next ship is one lane higher.
-            laneY += airShip[i].airshipHeight;
-            */
+        
     }
 
 
