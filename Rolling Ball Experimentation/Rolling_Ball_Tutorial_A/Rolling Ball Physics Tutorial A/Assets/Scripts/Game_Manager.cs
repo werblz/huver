@@ -168,6 +168,7 @@ public class Game_Manager : MonoBehaviour {
     [HideInInspector]
     public GameObject[] pads = null;
     private GameObject[] buildings = null;
+    private bool[] buildingOccupied = null; // Is Building[] Occupied?
     [HideInInspector]
     public GameObject[] stations = null;
     [HideInInspector]
@@ -318,12 +319,12 @@ public class Game_Manager : MonoBehaviour {
         gasCostHome = 0.0f;
         repairsCostHome = 0.0f;
 
-
+        
         PopulateBuildingGrid(maxPadDistance);
-        PopulatePads(numPads);
-        PopulateGasStations(numStations);
-        PopulateHomeBase();
-        PopulateAirships(numAirships);
+        PopulateHomeBase(); // First put home base in center. This marks building occupied so it won't attempt to put other pads here
+        PopulatePads(numPads); // Next, populate pickup pads
+        PopulateGasStations(numStations); // Then populate service stations
+        PopulateAirships(numAirships); // Airships
 
 
         RefreshScore();
@@ -381,7 +382,13 @@ public class Game_Manager : MonoBehaviour {
         Array.Resize(ref buildings, (int)((gridSize+1) * (gridSize+1))); // Resize Array to be grid x grid, which should be the max number of buildings BEFORE circle-culling
         //Debug.Log("<color=yellow> ****************** </color> GridSize = " + gridSize);
         //Debug.Log("<color=yellow> ****************** </color> GridCellSize = " + gridCellSize);
+        Array.Resize(ref buildingOccupied, (int)((gridSize + 1) * (gridSize + 1)));
 
+        // Set all buildings as unoccupied
+        for (int i = 0; i < gridSize; i++)
+        {
+            buildingOccupied[i] = false;
+        }
 
         for (int x = 0; x < gridSize; x++)  // Typical X, Y loop for placing things in a grid
         {
@@ -707,7 +714,7 @@ public class Game_Manager : MonoBehaviour {
             int randBuild = (int)(UnityEngine.Random.value * numBuildingsInGrid); // Grab a random building in the building array
 
             // Tom Thompson taught me a bitchin' way to never get the same random twice. Find it and put it here.
-            while (randBuild == lastRand)
+            while (randBuild == lastRand || buildingOccupied[randBuild] == true)
             {
                 Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
@@ -726,6 +733,9 @@ public class Game_Manager : MonoBehaviour {
             Vector3 padLoc = new Vector3(buildings[randBuild].transform.position.x,
                 buildings[randBuild].transform.localScale.y + 2.0f,
                 buildings[randBuild].transform.position.z);
+
+            // Set this building as occupied
+            buildingOccupied[randBuild] = true;
 
 
 
@@ -782,7 +792,7 @@ public class Game_Manager : MonoBehaviour {
             int randBuild = (int)(UnityEngine.Random.value * numBuildingsInGrid); // Grab a random building in the building array
 
             // Tom Thompson taught me a bitchin' way to never get the same random twice. Find it and put it here.
-            if (randBuild == lastRand)
+            if (randBuild == lastRand || buildingOccupied[randBuild] == true)  // Checks to see if building is already occupied too.
             {
                 Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
@@ -803,7 +813,7 @@ public class Game_Manager : MonoBehaviour {
             // Passed all the tests, and now store the last rand so we don't repeat ourselves.
 
 
-
+            /* NO NEED
             // But first, if this is the first pass through the loop, this is station 0, and that should always be in the center of the building array, or home
             // This may go away later if I establish a home base you have to leave from and return to at end of shift
             // ONCE I GET HOME BASE WORKING, REMOVE THIS BIT!!!
@@ -813,6 +823,7 @@ public class Game_Manager : MonoBehaviour {
                 //Debug.Log("<color=cyan>*******</color> OVERRIDING INDEX 0, so building is " + randBuild);
                 //Debug.Log("<color=blue>*******</color> BUILDING COORDS ARE " + buildings[randBuild].transform.position.x + ", " + buildings[randBuild].transform.position.x);
             }
+            */
 
 
             // First, scale the pad to the Shift's scale value
@@ -834,6 +845,8 @@ public class Game_Manager : MonoBehaviour {
             // NOW INSTEAD, SET THE BUILDING SCALE TO THE CURRENT SHIFT'S GAS PAD SCALE
             buildings[randBuild].transform.localScale = stationScale;
 
+            // Set this building as occupied
+            buildingOccupied[randBuild] = true;
 
             // Apply properties
             stations[i].transform.position = stationLoc;
@@ -880,6 +893,9 @@ public class Game_Manager : MonoBehaviour {
         Debug.Log("<color=red> HOME PAD SCALE IS " + homeScale + "</color>");
         // Now scale the building to fit the home pad, same as we do with the other pads
         buildings[centerBuilding].transform.localScale = homeScale;
+
+        // Mark it occupied
+        buildingOccupied[centerBuilding] = true;
 
         homeBldg.SetActive(true);
 
