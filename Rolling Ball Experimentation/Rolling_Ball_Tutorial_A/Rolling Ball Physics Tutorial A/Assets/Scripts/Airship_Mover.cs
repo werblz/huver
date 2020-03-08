@@ -74,6 +74,26 @@ public class Airship_Mover : MonoBehaviour {
 
         bool clearedBuildings = false;
 
+
+
+
+        // This code does two things:
+        // It fixes castRotation so the SphereCast goes outward in the right direction
+        // And it puts every odd ship one airshipHeight higher, so the cross grid can never collide.
+        if (i % 2 == 1) // Check which ship in the array, mod it by 2 to see if odd or even,
+                        // so we can set the cast rotation 
+        {
+            castRotation = Vector3.right;
+
+        }
+        else
+        {
+            castRotation = Vector3.forward;
+            pos.y = pos.y + airshipHeight;
+        }
+
+
+
         // Place ship at first position. This will update in the while loop if it collides.
         transform.position = pos;
 
@@ -102,6 +122,10 @@ public class Airship_Mover : MonoBehaviour {
 
         while (clearedBuildings == false)
         {
+
+
+
+
             // Try placing the ship. We do it above, but that is just redundant.
             // We place it at pos, and we rotate it so each subsequent one is 90 degrees more
             // for a nice bidirectional grid
@@ -111,16 +135,7 @@ public class Airship_Mover : MonoBehaviour {
             Vector3 shipRotation = new Vector3(0.0f, rot, 0.0f);
             rotator.transform.eulerAngles = shipRotation;
 
-    
-            if (i % 2 == 1) // Check which ship in the array, mod it by 2 to see if odd or even,
-                // so we can set the cast rotation 
-            {
-                castRotation = Vector3.right;
-            }
-            else
-            {
-                castRotation = Vector3.forward;
-            }
+
 
 
             // WHAT IS LEFT TO DO?????
@@ -146,7 +161,7 @@ public class Airship_Mover : MonoBehaviour {
                     "!</color>");
 
                 // airshipHeight not 1.0f
-                pos = new Vector3(transform.position.x, transform.position.y + airshipHeight, transform.position.z);
+                pos = new Vector3(transform.position.x, transform.position.y + (airshipHeight * 2.0f), transform.position.z);
                 tries++;
             }
             else
