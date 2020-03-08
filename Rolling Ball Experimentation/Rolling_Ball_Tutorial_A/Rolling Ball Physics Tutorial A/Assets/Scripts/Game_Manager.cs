@@ -953,51 +953,38 @@ public class Game_Manager : MonoBehaviour {
             // We need a vector to place our attempted position in to placeship
             Vector3 tryPosition = Vector3.zero;
 
+            // Rotate the ship 90 degrees more every time
             myYRotation = (float)i * 90.0f;
-            if ( i % 2 == 0 ) // Even
+
+
+            // I THINK THIS IF CAN GO Because we no longer need to do the roation here
+            // Instead we do it in the Mover by passing the rotation from here into there.
+            // That way we can just do this once, not twice based on the odd/evenness
+
+            //laneY = shortestBuilding;
+
+            if ( i % 2 == 0 ) // Even. x and z are normal.
             {
-                //myYRotation = 0.0f;
-                laneY = shortestBuilding + airShipObject.airshipHeight;
-
-
-                /*
-                airShip[i].transform.position = new Vector3(
-                    myX,
-                    laneY,
-                    airShip[i].transform.position.z);
-                    */
-
-                // myX is the X offset as we crawl along the city.
-                // laneY is the start postion we try
-                // And Z is just where the ship is now
-                tryPosition = new Vector3(myX, laneY, airShip[i].transform.position.z);
-                airShip[i].PlaceShip(tryPosition);
+                tryPosition = new Vector3(myX, shortestBuilding, airShip[i].transform.position.z);
             }
-            else
+            else // Odd. x and z are flipped
             {
-                //myYRotation = 90.0f;
-                laneY = shortestBuilding + ( airShipObject.airshipHeight * 2.0f );
-
-                /*
-                airShip[i].transform.position = new Vector3(
-                    airShip[i].transform.position.x,
-                    laneY,
-                    myX);
-                */
-                tryPosition = new Vector3(airShip[i].transform.position.x, laneY, myX);
-                airShip[i].PlaceShip(tryPosition);
+                tryPosition = new Vector3(airShip[i].transform.position.x, shortestBuilding, myX);
             }
-            
+            airShip[i].PlaceShip(tryPosition, i);
+
+
             // Rotate ship
-            airShip[i].rotator.transform.eulerAngles = new Vector3(0.0f, myYRotation, 0.0f);
+            // HOWEVER THIS IS NOW BAD!
+            // Because if we rotate the ship AFTER the Mover safely places it on a clear
+            // path through the city, it will no longer have a clear path.
+            // I will have to rotate it in Mover now.
+            // Let's see what mayhem happens first.
+            //airShip[i].rotator.transform.eulerAngles = new Vector3(0.0f, myYRotation, 0.0f);
 
             // Now increment myX the width of the city / numships for even grid distribution 
             myX += myXDistance;
-            
-            if (airShip[i].collided == true )
-            {
-                Debug.Log("<color=red> ***************** SHIP IS TELLING US IT COLLIDED WITH BUILDING! </color>");
-            }
+          
 
 
              
