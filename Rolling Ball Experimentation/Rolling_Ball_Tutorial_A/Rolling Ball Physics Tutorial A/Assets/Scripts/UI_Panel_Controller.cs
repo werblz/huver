@@ -177,6 +177,8 @@ public class UI_Panel_Controller : MonoBehaviour {
 
 
 
+
+
     // Instantiate a dialog prefab, parent it, and move it, and turn it on
     public void PutDialog(int dialogNum)
     {
@@ -216,7 +218,7 @@ public class UI_Panel_Controller : MonoBehaviour {
     // The PutDialog passes a number in the array of dialogs
     public void RemoveDialog(GameObject myOldDialog)
     {
-
+        
 
         //Deparent it and put it at origin
         myOldDialog.transform.parent = null;
@@ -224,6 +226,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         myOldDialog.transform.localPosition = Vector3.zero;
         myOldDialog.SetActive(false);
     }
+
 
 
 

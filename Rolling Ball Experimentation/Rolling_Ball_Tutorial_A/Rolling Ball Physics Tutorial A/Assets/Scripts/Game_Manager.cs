@@ -90,11 +90,6 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     private float airshipRadius = 250.0f;
 
-    
-    // NEXT^^^ Control how many airships are instantiated
-    // and when, and set them flying, each with a different anim speed. I may have to also
-    // build into each animator a start delay so they don't all come in at once
-
 
 
     [Header("Scoring")]
@@ -295,12 +290,9 @@ public class Game_Manager : MonoBehaviour {
         radarPanel.SetActive(false);
 
         Screen.SetResolution(1200, 800, false);
-
-        
+                
         upgradesAvailable = false;
-
-
-        
+                       
         // TEST ONLY - FOR QUICK LEVELING! A debug only feature
         if (debugOn)
         {
@@ -319,14 +311,12 @@ public class Game_Manager : MonoBehaviour {
         gasCostHome = 0.0f;
         repairsCostHome = 0.0f;
 
-        
         PopulateBuildingGrid(maxPadDistance);
         PopulateHomeBase(); // First put home base in center. This marks building occupied so it won't attempt to put other pads here
         PopulatePads(numPads); // Next, populate pickup pads
         PopulateGasStations(numStations); // Then populate service stations
         PopulateAirships(numAirships); // Airships
-
-
+        
         RefreshScore();
 
         ///////////////////////////////////////////// HERE put code like this: pads[nextPad].Pad_Manager.isLit = true;
@@ -347,7 +337,6 @@ public class Game_Manager : MonoBehaviour {
     private void LateUpdate()
     {
         hasControl = taxi.hasControl; // This is stupid. I have to tell Game Manager the taxi is in control or not just so the radar can know it.
-        
     }
 
     private void FixedUpdate()
@@ -380,8 +369,7 @@ public class Game_Manager : MonoBehaviour {
         Vector3 bLoc = new Vector3(0.0f, 0.0f, 0.0f);
 
         Array.Resize(ref buildings, (int)((gridSize+1) * (gridSize+1))); // Resize Array to be grid x grid, which should be the max number of buildings BEFORE circle-culling
-        //Debug.Log("<color=yellow> ****************** </color> GridSize = " + gridSize);
-        //Debug.Log("<color=yellow> ****************** </color> GridCellSize = " + gridCellSize);
+        
         Array.Resize(ref buildingOccupied, (int)((gridSize + 1) * (gridSize + 1)));
 
         // Set all buildings as unoccupied
@@ -408,7 +396,7 @@ public class Game_Manager : MonoBehaviour {
 
 
                 // HERE - Check to see if bLoc is in the circle.
-                if (HypotenuseDistance(bLoc) < (maxPadDistance / 2.0f))
+                if (HypotenuseDistance(bLoc) < (maxPadDistance / 2.0f)) // uh... Is this not just Vector3.distance??? (I didn't learn that until later)
                 {
                     // Now that we have bLoc, place the building
                     int buildingChoice = (int)(UnityEngine.Random.value * 3.0f);
@@ -465,10 +453,14 @@ public class Game_Manager : MonoBehaviour {
                 }
             }
         }
-        Debug.Log("<color=blue>*******************</color> Tallest Building is " + tallestBuilding);
-        Debug.Log("<color=blue>*******************</color> Shortest Building is " + shortestBuilding);
-        Debug.Log("<color=yellow>********************</color>  NUMBER OF BUILDINGS MADE: " + numBuildingsInGrid);
-        //Debug.Log("<color=red>******************* Coordinates of the middle-most building:</color>" + buildings[(int)numBuildingsInGrid / 2].transform.position);
+        if (debugOn)
+        {
+            Debug.Log("<color=blue>*******************</color> Tallest Building is " + tallestBuilding);
+            Debug.Log("<color=blue>*******************</color> Shortest Building is " + shortestBuilding);
+            Debug.Log("<color=yellow>********************</color>  NUMBER OF BUILDINGS MADE: " + numBuildingsInGrid);
+            Debug.Log("<color=red>******************* Coordinates of the middle-most building:</color>" + buildings[(int)numBuildingsInGrid / 2].transform.position);
+        }
+
     }
 
     // This is slightly non-standard. I pass a Vector3 for the location of the building, and this method finds the pixel at the corresponding
@@ -556,7 +548,7 @@ public class Game_Manager : MonoBehaviour {
             Debug.Log("\n\n");
             Debug.Log("\n\n");
             Debug.Log("                               CRASHED! BUT YOU ARE MOVING ON! BYGONES! ");
-            // Remove deducitble
+           
 
         }
 
@@ -761,7 +753,7 @@ public class Game_Manager : MonoBehaviour {
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
             pm.padNumber = i;
             pm.lightNumber = i;
-            Debug.Log("<color=black>         LIGHT COLOR = " + pm.lightNumber + "</color>");
+           
             // Turn off the beam on this pad
             Beam(i, false); ;
 
@@ -890,7 +882,10 @@ public class Game_Manager : MonoBehaviour {
 
         Vector3 homeScale = new Vector3(gasPadScale * 2.0f, buildings[centerBuilding].transform.localScale.y, gasPadScale * 2.0f);
 
-        Debug.Log("<color=red> HOME PAD SCALE IS " + homeScale + "</color>");
+        if (debugOn)
+        {
+            Debug.Log("<color=red> HOME PAD SCALE IS " + homeScale + "</color>");
+        }
         // Now scale the building to fit the home pad, same as we do with the other pads
         buildings[centerBuilding].transform.localScale = homeScale;
 
@@ -928,7 +923,10 @@ public class Game_Manager : MonoBehaviour {
         // in a cross-grid pattern.
 
         Array.Resize(ref airShip, numShips);
-        Debug.Log("ARRAY SIZE IS " + airShip.Length);
+        if (debugOn)
+        {
+            Debug.Log("ARRAY SIZE IS " + airShip.Length);
+        }
 
         // Start lane at the tallest buliding plus one airship height
         float laneY = shortestBuilding + airShipObject.airshipHeight;
@@ -1088,7 +1086,15 @@ public class Game_Manager : MonoBehaviour {
 
     public void PutUiUp(int shift, bool crashed)
     {
-        Debug.Log("<color=yellow>***********</color> <color=white> UI UP!</color>");
+        if (debugOn)
+        {
+
+        }
+
+        // BUG - PLEASE FIX!
+        // First remove any dialog already in the UI parent place. (If you fall off city two dialogs appear, probably because of this)
+        //panelController.ClearDialogs();
+        
         taxi.hasControl = false;
         taxi.isCrashing = false;
         uiIsUp = true;
@@ -1160,6 +1166,9 @@ public class Game_Manager : MonoBehaviour {
             panelController.RemoveDialog(panelController.myDialog);
             // Call PugDialog, which is on UI_Panel_Controller
             panelController.PutDialog(-1);
+            // Remove deducitble
+            cash -= crashDeductible;
+            Debug.Log("<color=red> ********************** CRASH! Deductible Removed! **************************** </color>");
         }
 
 
@@ -1183,7 +1192,7 @@ public class Game_Manager : MonoBehaviour {
         taxi.rb.angularDrag = taxi.defaultAngularDrag;
         taxi.rb.drag = taxi.defaultDrag;
 
-        cash -= 500.0f;
+        
         Debug.Log("<color=yellow> ********************* RESTART SHIFT ****************</color>");
         // GoToNextShift but pass crashed == true, so it can put up a special crash dialog and take deductible
         GoToNextShift(true);

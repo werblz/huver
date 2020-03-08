@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Building_Camera_Collision_Manager : MonoBehaviour {
 
-    // New plan. Each building will have another mesh with the proper materials already on it.
+    // Each building's main MeshRenderer has this script.
+    // It holds the MeshRenderer of its opaque version (itself) and a replacement translucent version so it can swap.
 
     [SerializeField]
     private MeshRenderer opaqueBuilding = null;
@@ -13,59 +14,24 @@ public class Building_Camera_Collision_Manager : MonoBehaviour {
     private MeshRenderer transBuilding = null;
 
     
-
-
-   
-
-    // Use this for initialization
+    // When the buildings are first instantiated, set them to opaque.
     void Start ()
     {
         SetOpaque();
 	}
 
+    // Swap Opaque with Transparent
     public void SetTransparent()
     {
         transBuilding.enabled = true;
         opaqueBuilding.enabled = false;
     }
 
+    // Swap Transparent with Opaque
     public void SetOpaque()
     {
         transBuilding.enabled = false;
         opaqueBuilding.enabled = true;
     }
-
-
-    /* 
-     * 
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.tag == "CameraCollider")
-        {
-            SetTransparent();
-            Debug.Log("YIKES! YOU HIT A BUILDING BACK THERE!");
-
-            // Test code: Make building tiny on collision, normalsize on not.
-            // originalBuildingScale = other.gameObject.transform.localScale;
-            // other.gameObject.transform.localScale = new Vector3 ( 1.0f, 1.0f, 1.0f);
-            
-        }
-
-    }
-
-    private void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.tag == "CameraCollider")
-        {
-
-            SetOpaque();
-
-            Debug.Log("You left that building!");
-            //other.gameObject.SetActive(true);
-            //other.gameObject.transform.localScale = originalBuildingScale;
-        }
-
-    }
-
-    */
+    
 }
