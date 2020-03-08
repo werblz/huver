@@ -548,7 +548,7 @@ public class Game_Manager : MonoBehaviour {
             Debug.Log("\n\n");
             Debug.Log("\n\n");
             Debug.Log("                               CRASHED! BUT YOU ARE MOVING ON! BYGONES! ");
-           
+            cash -= crashDeductible;
 
         }
 
@@ -1167,7 +1167,7 @@ public class Game_Manager : MonoBehaviour {
             // Call PugDialog, which is on UI_Panel_Controller
             panelController.PutDialog(-1);
             // Remove deducitble
-            cash -= crashDeductible;
+            // cash -= crashDeductible; // Don't do this here. It may cause the double-deductible bug
             Debug.Log("<color=red> ********************** CRASH! Deductible Removed! **************************** </color>");
         }
 
@@ -1195,7 +1195,7 @@ public class Game_Manager : MonoBehaviour {
         
         Debug.Log("<color=yellow> ********************* RESTART SHIFT ****************</color>");
         // GoToNextShift but pass crashed == true, so it can put up a special crash dialog and take deductible
-        GoToNextShift(true);
+        GoToNextShift(true); // I think this is the culprit in the too-low-double-deductible issue. Set it to false and see if that changes it
 
         
         // To restart game instead, use this: (But don't)

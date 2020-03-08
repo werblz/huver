@@ -370,11 +370,23 @@ public class Taxi_Controller : MonoBehaviour
         }
         */
         
+
         // Have I crashed and stopped somewhere above ground?
-        if ( (isCrashing && rb.velocity == Vector3.zero) || (transform.position.y < 0.0f) )
+        // IS THIS MY PROBLEM? That I'm doing this for normal crashing, that is, crashing and stopping above-ground
+        // but also if you just happen to drop below city ground level (abandonment)
+        // Perhaps it was that the ground was wet to 0. Perhaps I need to lower that ground level for simple abandomnent
+        if ( (isCrashing && rb.velocity == Vector3.zero) )
         {
+            
             gm.RestartShift();
         }
+
+        if (transform.position.y < 10.0f)
+        {
+            gm.cash += gm.crashDeductible / 2.0f;
+            gm.RestartShift();
+        }
+        
 
 
         // 
