@@ -98,6 +98,10 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     public float cash = 100.0f; // SAVE
 
+    [Tooltip("Your starting cash.")]
+    [SerializeField]
+    public float startingCash = 100.0f; // SAVE
+
     [Tooltip("Current fare.")]
     [SerializeField]
     public float fare = 20.0f;
@@ -301,7 +305,7 @@ public class Game_Manager : MonoBehaviour {
         }
 
         //Start out clean
-        cash = 100.0f;
+        cash = startingCash;
         fare = 0.0f;
 
         faresThisShift = 0.0f;

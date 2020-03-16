@@ -940,7 +940,10 @@ public class Taxi_Controller : MonoBehaviour
             isGrounded = false;
         }
 
+        
     }
+
+
 
     void OnCollisionEnter(Collision other)
     {
@@ -972,6 +975,8 @@ public class Taxi_Controller : MonoBehaviour
                 // Also, no VFX if we collid e with an airship. They are bouncy
 
             }
+           
+            
             return;
         }
 

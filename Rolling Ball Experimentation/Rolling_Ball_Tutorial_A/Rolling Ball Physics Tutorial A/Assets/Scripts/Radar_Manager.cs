@@ -58,6 +58,9 @@ public class Radar_Manager : MonoBehaviour {
     [SerializeField]
     private TextMeshPro gasTankText = null;
 
+    [SerializeField]
+    private float gasFlashPercentage = .2f;
+
     [Header("Upgrade Icons")]
     [SerializeField]
     private SpriteRenderer[] upgradeIcon = null;
@@ -103,6 +106,10 @@ public class Radar_Manager : MonoBehaviour {
         {true, true, true, true, true, true, false },
         {true, false, false, true, false, false, true }
     };
+
+    private bool flashGasFlag = false;
+    private float flashTime = 0.0f;
+    private float alphaColor = 1.0f;
 
 
 
@@ -233,17 +240,49 @@ public class Radar_Manager : MonoBehaviour {
         float fillPercentage = Mathf.Abs(tc.gas / tc.maxGas);
         gasGaugeImage.fillAmount = fillPercentage * 0.75f;
 
-        
+        // If gas gets into the red, flash
+        if ( fillPercentage < gasFlashPercentage)
+        {
+            flashGasFlag = true;
+        }
+        else
+        {
+            flashGasFlag = false;
+            gasGaugeImage.color = Color.white;
+        }
+        FlashGas(0.5f);
 
-   
-
-        
-
-        
 
 
 
+        // Display the appropriate upgrade icons
         IconsUp();
+    }
+
+
+
+    private void FlashGas (float speed)
+    {
+        if (flashGasFlag == false)
+        {
+            return;
+        }
+
+
+        flashTime += Time.deltaTime;
+        
+        if (flashTime > speed )
+        {
+            alphaColor = 1.0f;
+            flashTime = 0;
+        }
+        else
+        {
+            alphaColor -= 0.05f;
+        }
+
+        gasGaugeImage.color = new Color(1.0f, 1.0f, 1.0f, alphaColor);
+
     }
 
 
