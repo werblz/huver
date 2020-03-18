@@ -42,6 +42,11 @@ public class Airship_Event_Driver : MonoBehaviour {
         mesh.enabled = false;
     }
 
+    public void TurnOnMesh()
+    {
+        mesh.enabled = true;
+    }
+
     public void RestartAnim()
     {
         anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
