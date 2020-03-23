@@ -20,6 +20,9 @@ public class Airship_Event_Driver : MonoBehaviour {
     [SerializeField]
     private Airship_Mover mover = null;
 
+    [SerializeField]
+    private GameObject running_lights = null;
+
     private Animator anim = null;
 
     private MeshRenderer mesh = null;
@@ -40,14 +43,18 @@ public class Airship_Event_Driver : MonoBehaviour {
     public void TurnOffMesh()
     {
         mesh.enabled = false;
+        running_lights.SetActive(false);
     }
 
     public void TurnOnMesh()
     {
         mesh.enabled = true;
-    }
+        running_lights.SetActive(true);
 
-    public void RestartAnim()
+
+}
+
+public void RestartAnim()
     {
         anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
         mover.RestartAnimation();

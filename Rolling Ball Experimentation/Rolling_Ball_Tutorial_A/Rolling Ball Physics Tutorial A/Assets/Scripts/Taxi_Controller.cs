@@ -198,6 +198,9 @@ public class Taxi_Controller : MonoBehaviour
     public float minCollisionThreshold = 10.0f; // SAVE
 
     [SerializeField]
+    public float shieldPercent = 1.0f; // This is the percentage shield added
+
+    [SerializeField]
     public float maxDamage = 50.0f; // SAVE
 
     [SerializeField]
@@ -263,7 +266,7 @@ public class Taxi_Controller : MonoBehaviour
 
         }
 
-
+       
 
 
     }
@@ -309,7 +312,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-        Vector3 taxiStartPos = new Vector3(gm.homeBldg.transform.position.x + .1f,
+        Vector3 taxiStartPos = new Vector3(gm.homeBldg.transform.position.x - .1f,
                 gm.homeBldg.transform.position.y + 2.0f,
                 gm.homeBldg.transform.position.z); // the .1f offset in the X is to ensure the gas radar doesn't jiggle, because it's at exactly zero position relative
         rb.position = taxiStartPos;
@@ -963,7 +966,7 @@ public class Taxi_Controller : MonoBehaviour
         // For now, hitting the airships does no damage, but DOES affect tip
         if ( other.gameObject.tag == "Airship")
         {
-            if (collisionEffect > minCollisionThreshold)
+            if (collisionEffect > minCollisionThreshold * shieldPercent )
             {
                 // Decrease tip for ANY collision at all. Later, multiply that by the amount of collision
                 gm.tip -= gm.tipDrain * collisionEffect;
@@ -983,7 +986,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-        if (collisionEffect > minCollisionThreshold)
+        if (collisionEffect > minCollisionThreshold * shieldPercent )
         {
             // If collisionEffect (amount of collision) is greater than the minCollisionThreshold, add it to damage, MINUS the minimum threshold
             // ie: if minCollisionThreashold is 10 and you take a hit of 12, add 2 to damage, not 12
