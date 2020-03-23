@@ -991,7 +991,7 @@ public class Taxi_Controller : MonoBehaviour
             // If collisionEffect (amount of collision) is greater than the minCollisionThreshold, add it to damage, MINUS the minimum threshold
             // ie: if minCollisionThreashold is 10 and you take a hit of 12, add 2 to damage, not 12
             // minCollisionThreashold can then be upped later, as you get better armor for your car as upgrades
-            damage += ( collisionEffect - minCollisionThreshold);
+            damage += ( collisionEffect - ( minCollisionThreshold * shieldPercent) );
 
 
             //Debug.Log("<color=red>COLLISION! " + ( collisionEffect - minCollisionThreshold ) + " for accumulated damage of " + damage + ".</color>");
