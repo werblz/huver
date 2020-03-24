@@ -428,7 +428,7 @@ public class UI_Panel_Controller : MonoBehaviour {
                 
                 break;
             case 1:
-                taxi.minCollisionThreshold *= 1.05f; // increase minCollisionThreshold 5%
+                taxi.shieldPercent *= 1.05f; // increase minCollisionThreshold 5%
                 // No need to set a gm. bool for the icon to appear. It is coded to appear at above 1
                 Debug.Log("<color=blue>SHIELD UPGRADE 5%!</color>");
                 break;
@@ -436,7 +436,7 @@ public class UI_Panel_Controller : MonoBehaviour {
                 gm.crashDeductible = gm.crashDeductible * .95f; // increase minCollisionThreshold 5%
                 // No need to set a gm. bool for the icon to appear. Itis coded to appear at above 1
                 // No need to set a gm. bool for the icon to appear. Itis coded to appear at above 1
-                Debug.Log("<color=blue>SHIELD UPGRADE 5%!</color>");
+                Debug.Log("<color=blue>DEDUCTIBLE REDUCTION 5%!</color>");
                 break;
 
             // NOW FOR THE REGULAR UPGRADES
@@ -467,8 +467,8 @@ public class UI_Panel_Controller : MonoBehaviour {
                 Debug.Log("<color=blue>BIGGER TANK UPGRADE!</color>");
                 break;
             case 8:
-                taxi.minCollisionThreshold *= 1.2f; // Upgrade the minCollisionThreshold to new value
-                Debug.Log("<color=blue>SHIELD UPGRADE!</color>");
+                taxi.shieldPercent *= 1.2f; // Upgrade the minCollisionThreshold to new value
+                Debug.Log("<color=blue>SHIELD UPGRADE 20%!</color>");
                 break;
             case 99:
                 taxi.hasHomeIndicator = true;

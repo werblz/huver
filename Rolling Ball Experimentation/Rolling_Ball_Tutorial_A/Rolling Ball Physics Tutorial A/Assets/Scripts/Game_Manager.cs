@@ -301,7 +301,7 @@ public class Game_Manager : MonoBehaviour {
         if (debugOn)
         {
             numPads = numDebugPads;
-            Debug.Log("<color=red>DEBUG IS ON! THERE ARE ONLY TWO PADS THIS SHIFT!!!</color>");
+            Debug.Log("<color=red>DEBUG IS ON! THERE ARE ONLY " + numDebugPads + " PADS THIS SHIFT!!!</color>");
         }
 
         //Start out clean
@@ -754,6 +754,11 @@ public class Game_Manager : MonoBehaviour {
             // Put the beam exactly where the pad is, but make it scale .98 xz and what it already is y.
             pads[i].SetActive(true);
 
+            // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
+            // to ensure we don't get those awkward occlusions of the landing pads
+            // This is done for every building we try to put a pad on, IN the loop itself
+            RescaleBuilding(buildings, i);
+
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
             pm.padNumber = i;
             pm.lightNumber = i;
@@ -855,6 +860,11 @@ public class Game_Manager : MonoBehaviour {
             // Put the beam exactly where the pad is, but make it scale .98 xz and what it already is y.
             stations[i].SetActive(true);
 
+            // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
+            // to ensure we don't get those awkward occlusions of the landing pads
+            // This is done for every building we try to put a pad on, IN the loop itself
+            RescaleBuilding(buildings, i);
+
             lastRand = randBuild;
         }
     }
@@ -897,6 +907,107 @@ public class Game_Manager : MonoBehaviour {
         buildingOccupied[centerBuilding] = true;
 
         homeBldg.SetActive(true);
+
+        // Now pass the home building to RescaleBuilding and have it rescale all surrounding buildings in the array
+        RescaleBuilding(buildings, centerBuilding);
+
+        
+
+    }
+
+
+    // This should rescale the buildings around the building specified when this method is called.
+    // It should be called after populating Pads, Stations and Home Base.
+    // The populate method should put the whole building array in here, and tell it by index which building it is.
+    // This is done in a loop for pads and stations.
+    // Each building then will check the 8 around it, and scale each of those to 1, y, 1, so we don't get awkward building scale collisions
+    // on pads. I don't mind buildings colliding in the city, but they should not occlude any landing pad type
+    private void RescaleBuilding(GameObject[] building, int index)
+    {
+        // PUT IN ERROR CHECKINT FOR OUTSIDE BOUNDS OF ARRAY!!! NOT EVERY BUILDING EXISTS IN THE ARRAY!
+        // Every building in the city is in a linear array, BUT check to make sure the adding and subtracting does not go outside that linear bounds
+        // Just do an if inside. Return if outside. In rare cases where we choose a building near the bounds of the array, we don't need to do anything 
+        // outside those bounds
+
+        // index is the building passed in. We never use this except to move the index around to the others in the grid
+
+        // Get the next one on either side. This is the easy part
+        // This first one doesn't 
+        int tmpIndex = index;
+
+        float bldXZScale = gasPadScale;
+
+        // . . .
+        // x i x
+        // . . . 
+
+        // No need to change building at Index at all. It's already scaled to fit the pad in its specific populate method. So move all around it
+        tmpIndex = index - 1;
+        if (tmpIndex > 0)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+        tmpIndex = index + 1;
+        if (tmpIndex < numBuildingsInGrid)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+
+        // Now get the next one one up and down in the array. NOT so easy. Have to subtract by the size of one array's dimension.
+        // So index - array-length. Then index - array-length - 1 and index - array-length +1
+        // Then + array_length. Same
+        // Then + array_length. Same
+
+
+        // . . .
+        // . i .
+        // x x x 
+
+        // Down to the next row
+        tmpIndex = index - (int)gridSize;
+        if (tmpIndex > 0)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+        tmpIndex = index - (int)gridSize - 1;
+        if (tmpIndex > 0)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+        tmpIndex = index - (int)gridSize + 1;
+        if (tmpIndex > 0)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+        // x x x 
+        // . i .
+        // . . .
+
+        // Up to the next row
+        tmpIndex = index + (int)gridSize - 1;
+        if (tmpIndex < numBuildingsInGrid)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+
+        tmpIndex = index + (int)gridSize;
+        if (tmpIndex < numBuildingsInGrid)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+        
+        tmpIndex = index + (int)gridSize + 1;
+        if (tmpIndex < numBuildingsInGrid)
+        {
+            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
+        }
+
+        
 
     }
 

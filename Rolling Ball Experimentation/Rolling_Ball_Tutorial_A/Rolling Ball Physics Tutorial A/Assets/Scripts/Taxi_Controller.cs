@@ -76,6 +76,9 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     private float bank = 0.5f;
 
+    [SerializeField]
+    public float taxiRotationSmoothSpeed = 1.0f;
+
     private bool invertControl = true;
 
     private string invertControlString = "Inverted Control";
@@ -145,8 +148,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-    [SerializeField]
-    private float taxiRotationSmoothSpeed = 1.0f;
+
 
     public bool hasGas = true;
     public bool hasControl = true;
@@ -1147,7 +1149,7 @@ public class Taxi_Controller : MonoBehaviour
         {
             return;
         }
-        taxiRotationSmoothSpeed = 1.0f; // Taxi Upright Speed
+        //taxiRotationSmoothSpeed = 1.0f; // Taxi Upright Speed
 
         // Now to set up the target rotation as current Y and X=0, Y=0, which should force it to "constrain" back in X and Z
         // First, we want to get the current Y, because that should not change.
