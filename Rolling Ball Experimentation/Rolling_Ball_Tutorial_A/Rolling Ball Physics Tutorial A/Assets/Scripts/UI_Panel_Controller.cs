@@ -391,7 +391,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         }
 
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
-        if (gm.cash < upgradeDataItems[picks[choice]].upgradeCost
+        if (!gm.debugOn && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
         {
             return;
@@ -470,6 +470,10 @@ public class UI_Panel_Controller : MonoBehaviour {
                 taxi.shieldPercent *= 1.2f; // Upgrade the minCollisionThreshold to new value
                 Debug.Log("<color=blue>SHIELD UPGRADE 20%!</color>");
                 break;
+            case 9:
+                taxi.sideThrustMult *= 2f; // Upgrade the minCollisionThreshold to new value
+                Debug.Log("<color=blue>STRAFE UPGRADE *2!</color>");
+                break;
             case 99:
                 taxi.hasHomeIndicator = true;
                 gm.hasHomePad = true;
@@ -483,7 +487,11 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // Deduct cost
         Debug.Log("CASH BEFORE UPGRADE - " + gm.cash);
-        gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
+        if (!gm.debugOn) // Only spend the cash if NOT in debug mode
+        {
+            gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
+        }
+        
         Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
         upgradeDataItems[picks[choice]].isNew = false;
         // Don't forget to turn off the upgrade prefab or it will remain visible next time

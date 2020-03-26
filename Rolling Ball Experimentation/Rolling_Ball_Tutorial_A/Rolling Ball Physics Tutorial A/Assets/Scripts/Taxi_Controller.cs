@@ -57,7 +57,7 @@ public class Taxi_Controller : MonoBehaviour
     private float forwardThrustMult = 1.0f; // SAVE
 
     [SerializeField]
-    private float sideThrustMult = 1.0f; // SAVE
+    public float sideThrustMult = 1.0f; // SAVE
 
     [SerializeField]
     private float thrustMultiplier = 20.0f; // SAVE
@@ -565,9 +565,9 @@ public class Taxi_Controller : MonoBehaviour
                 }
 
                 movement = Quaternion.AngleAxis(angle + 180.0f,
-                    Vector3.up * Mathf.Abs(moveSideways)* sideThrustMult)
-                    * Vector3.right * moveSideways * sideThrustMult;
-                rb.AddForce(movement * thrustMultiplier);
+                    Vector3.up * Mathf.Abs(moveSideways))
+                    * Vector3.right * moveSideways;
+                rb.AddForce(movement * thrustMultiplier * sideThrustMult);
 
                 UseGas(gasUseRateSideThrust * Math.Abs(moveSideways));
                 if (moveSideways >= joyToleranceMax )

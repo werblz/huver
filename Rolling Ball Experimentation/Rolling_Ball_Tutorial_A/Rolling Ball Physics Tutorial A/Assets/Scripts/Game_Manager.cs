@@ -721,6 +721,7 @@ public class Game_Manager : MonoBehaviour {
                 }
             }
             // Now keep track of that randBuild in lastRand so we can check
+            // I THINK THIS IS BROKEN. We always end up with a pad at building 0 for some reason!!!
             lastRand = randBuild;
 
 
@@ -757,7 +758,8 @@ public class Game_Manager : MonoBehaviour {
             // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
             // to ensure we don't get those awkward occlusions of the landing pads
             // This is done for every building we try to put a pad on, IN the loop itself
-            RescaleBuilding(buildings, i);
+            Debug.Log("\n**************************** Rescaling a Pad at Building " + randBuild);
+            RescaleBuilding(buildings, randBuild);
 
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
             pm.padNumber = i;
@@ -863,7 +865,8 @@ public class Game_Manager : MonoBehaviour {
             // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
             // to ensure we don't get those awkward occlusions of the landing pads
             // This is done for every building we try to put a pad on, IN the loop itself
-            RescaleBuilding(buildings, i);
+            Debug.Log("\n**************************** Rescaling a Station at Building " + randBuild);
+            RescaleBuilding(buildings, randBuild);
 
             lastRand = randBuild;
         }
@@ -909,6 +912,7 @@ public class Game_Manager : MonoBehaviour {
         homeBldg.SetActive(true);
 
         // Now pass the home building to RescaleBuilding and have it rescale all surrounding buildings in the array
+        Debug.Log("\n**************************** Rescaling HOME at Building " + centerBuilding);
         RescaleBuilding(buildings, centerBuilding);
 
         
@@ -934,6 +938,7 @@ public class Game_Manager : MonoBehaviour {
         // Get the next one on either side. This is the easy part
         // This first one doesn't 
         int tmpIndex = index;
+        Debug.Log("\n************************** BUILDING INDEX = " + tmpIndex);
 
         float bldXZScale = gasPadScale;
 
@@ -947,13 +952,14 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
         
         tmpIndex = index + 1;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         // Now get the next one one up and down in the array. NOT so easy. Have to subtract by the size of one array's dimension.
         // So index - array-length. Then index - array-length - 1 and index - array-length +1
@@ -971,19 +977,22 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+
         tmpIndex = index - (int)gridSize - 1;
         if (tmpIndex > 0)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+
         tmpIndex = index - (int)gridSize + 1;
         if (tmpIndex > 0)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+
         // x x x 
         // . i .
         // . . .
@@ -994,20 +1003,23 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         tmpIndex = index + (int)gridSize;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+
         tmpIndex = index + (int)gridSize + 1;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
+        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
-        
+
 
     }
 
