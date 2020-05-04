@@ -95,6 +95,11 @@ public class Taxi_Controller : MonoBehaviour
   [SerializeField]
   private float joyToleranceMin = -0.5f;
 
+  [SerializeField]
+  private float joyToleranceSideMax = 0.6f;
+  [SerializeField]
+  private float joyToleranceSideMin = -0.6f;
+
 
   [Header("Text")]
 
@@ -559,7 +564,7 @@ public class Taxi_Controller : MonoBehaviour
             if (hasControl && hasStrafe)
             {
                 moveSideways = Input.GetAxis(sideJoy);
-                if ( moveSideways > joyToleranceMin && moveSideways < joyToleranceMax )
+                if ( moveSideways > joyToleranceSideMin && moveSideways < joyToleranceSideMax )
                 {
                   moveSideways = 0.0f;
                 }

@@ -940,7 +940,7 @@ public class Game_Manager : MonoBehaviour {
         int tmpIndex = index;
         Debug.Log("\n************************** BUILDING INDEX = " + tmpIndex);
 
-        float bldXZScale = gasPadScale;
+        float bldXZScale = gasPadScale * 2.0f;
 
         // . . .
         // x i x
