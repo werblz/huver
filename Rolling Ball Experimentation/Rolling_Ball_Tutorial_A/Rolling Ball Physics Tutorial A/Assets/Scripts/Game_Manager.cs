@@ -1288,6 +1288,7 @@ public class Game_Manager : MonoBehaviour {
         else
         {
             Debug.Log("PUT UP A SPECIAL CRASH DIALOG INSTEAD!");
+            upgradesAvailable = false; // If you crashed, NO UP GRADE FOR YOU! TWO MONTHS! Well, one shift.
             // Turn off the shift summary text, as we have no summary yet. This is the start
             summaryTextParent.SetActive(false);
             panelController.RemoveDialog(panelController.myDialog);

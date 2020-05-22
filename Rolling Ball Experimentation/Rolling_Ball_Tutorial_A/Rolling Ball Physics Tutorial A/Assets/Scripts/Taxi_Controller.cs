@@ -387,7 +387,7 @@ public class Taxi_Controller : MonoBehaviour
         // Perhaps it was that the ground was wet to 0. Perhaps I need to lower that ground level for simple abandomnent
         if ( (isCrashing && rb.velocity == Vector3.zero) )
         {
-            
+            gm.upgradesAvailable = false;
             gm.RestartShift();
         }
 

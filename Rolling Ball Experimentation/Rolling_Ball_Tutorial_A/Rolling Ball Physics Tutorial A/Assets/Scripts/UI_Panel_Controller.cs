@@ -185,7 +185,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         // UI_Panel_Controller calls PutDialog(-1) if we crash. Otherwise, business as usual
         if (dialogNum == -1)
         {
-            myDialog = Instantiate(gm.crashDialog);
+            myDialog = Instantiate(gm.crashDialog); // This instantiates the crashDialog, a special one in Game Manager.
         }
         else
         {
@@ -374,6 +374,13 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     private void ShowUpgrades(int numUpgrades)
     {
+        // If upgradesAvailable, which means you crashed, you don't see the upgrade UI
+        if ( !gm.upgradesAvailable )
+        {
+            return;
+        }
+        
+
         upgradePanel.SetActive(true);
 
         // Make the holding locations visible.
