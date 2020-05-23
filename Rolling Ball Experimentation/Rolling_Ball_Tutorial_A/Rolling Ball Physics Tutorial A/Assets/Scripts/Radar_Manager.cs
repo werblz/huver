@@ -30,6 +30,16 @@ public class Radar_Manager : MonoBehaviour {
     [SerializeField]
     private Image damageImage = null;
 
+    
+    
+    private AudioSource audio = null;
+
+    [SerializeField]
+    private AudioClip clipFuelPing = null;
+    [SerializeField]
+    private AudioClip clipFuelPingA = null;
+    private bool alternateSound = false;
+
     // The following are for the cracked radar. THIS SYSTEM IS ABOUT TO BE DEPRECATED!
     /*
     [SerializeField]
@@ -60,6 +70,9 @@ public class Radar_Manager : MonoBehaviour {
 
     [SerializeField]
     private float gasFlashPercentage = .2f;
+
+    [SerializeField]
+    private float gasFlashSpeed = 0.5f;
 
     [Header("Upgrade Icons")]
     [SerializeField]
@@ -128,6 +141,7 @@ public class Radar_Manager : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        audio = GetComponent<AudioSource>();
         //Debug.Log("<color=white>*************************** Array element 3, 6 = " + seg[3, 5].ToString());
 
         tc = (Taxi_Controller)taxi.GetComponent(typeof(Taxi_Controller));
@@ -254,7 +268,14 @@ public class Radar_Manager : MonoBehaviour {
             flashGasFlag = false;
             gasGaugeImage.color = Color.white;
         }
-        FlashGas(0.5f);
+
+        // Make the bing go faster the lower the gauge gets into the red.
+        // Divide fillPercentage by gasFlashPercentage. That will be 1 when it starts, as the two equal
+        // Then, though, I want it faster to start. So multiply it by .5. That's a half-second.
+        // Then add an offset of .2, because I don't want it faster than that
+        gasFlashSpeed = ( fillPercentage / gasFlashPercentage ) * 0.5f + 0.2f;
+
+        FlashGas(gasFlashSpeed);
 
 
 
@@ -267,6 +288,9 @@ public class Radar_Manager : MonoBehaviour {
 
     private void FlashGas (float speed)
     {
+
+
+
         if (flashGasFlag == false)
         {
             return;
@@ -274,11 +298,17 @@ public class Radar_Manager : MonoBehaviour {
 
 
         flashTime += Time.deltaTime;
-        
-        if (flashTime > speed )
+
+        if (flashTime > speed)
         {
             alphaColor = 1.0f;
             flashTime = 0;
+            // If the taxi is crashing, we don't want the gas gauge to continue alerting
+            if ( !taxi.isCrashing )
+            {
+                audio.PlayOneShot(clipFuelPing, 0.7f);
+            }
+            
         }
         else
         {
