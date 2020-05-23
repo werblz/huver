@@ -242,7 +242,17 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     public bool hasTurbo = false;
 
+    [Header("Audio")]
+    private AudioSource taxiAudio = null;
+    
+    [SerializeField]
+    private AudioClip clipBump = null;
 
+    [SerializeField]
+    private AudioClip clipBumpAirship = null;
+
+    [SerializeField]
+    private AudioClip clipBumpDamage = null;
 
 
 
@@ -251,6 +261,7 @@ public class Taxi_Controller : MonoBehaviour
 
     private void Start()
 	{
+        taxiAudio = GetComponent<AudioSource>();
 
         taxiMovedToInitialLocation = false;
 
@@ -962,11 +973,19 @@ public class Taxi_Controller : MonoBehaviour
         float collisionEffect = other.relativeVelocity.magnitude;
         //Debug.Log("<color=white>COLLISION! " + collisionEffect + "</color>");
 
-        // If enough, log it in the text object (which we aren't using anymore)
-        if (collisionEffect > 0.01f)
-        {
-            velocityText.text = collisionEffect.ToString();
-        }
+
+
+
+
+        // SOUND PLANS
+        /*
+         
+         1. Hit anything, and you hear a bump or crunch, depending on threshold
+         2. If it's above threshold, and you fire a VFX, play an explosion sound, volume dependent on severity of the hit, using the same mult as the vfx scale
+         3. If AIrship, use a rubber bump sound, which can also be louder for harder hits.
+         
+         
+         */
 
 
 
@@ -981,12 +1000,16 @@ public class Taxi_Controller : MonoBehaviour
                 {
                     gm.tip = 0.0f;
                 }
+                Debug.LogWarning("<color=red> *********************** COLLISION EFFECT " + collisionEffect + "</color>");
 
                 // Also, no VFX if we collid e with an airship. They are bouncy
 
             }
-           
-            
+
+            // But let's play a sound whose volume is based on the speed of the hit
+            taxiAudio.PlayOneShot(clipBumpAirship, collisionEffect * .02f);
+
+
             return;
         }
 
@@ -1031,6 +1054,10 @@ public class Taxi_Controller : MonoBehaviour
             Vector3 splodeScale = new Vector3(collisionEffect * 0.05f, collisionEffect * 0.05f, collisionEffect * 0.05f);
             tmpExploder.transform.localScale = splodeScale;
             tmpExploder.SetActive(true);
+
+        
+
+
 
             // This is test code to see if it's finding out where the taxi has been hit. 
             // This creates a new sphere object, turns off its collider (otherwise hoooo boy!), and places it on the contact point

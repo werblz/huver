@@ -31,8 +31,8 @@ public class Radar_Manager : MonoBehaviour {
     private Image damageImage = null;
 
     
-    
-    private AudioSource audio = null;
+    [Header ( "Audio")]
+    private AudioSource gaugeAudio = null;
 
     [SerializeField]
     private AudioClip clipFuelPing = null;
@@ -141,7 +141,7 @@ public class Radar_Manager : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        audio = GetComponent<AudioSource>();
+        gaugeAudio = GetComponent<AudioSource>();
         //Debug.Log("<color=white>*************************** Array element 3, 6 = " + seg[3, 5].ToString());
 
         tc = (Taxi_Controller)taxi.GetComponent(typeof(Taxi_Controller));
@@ -267,13 +267,14 @@ public class Radar_Manager : MonoBehaviour {
         {
             flashGasFlag = false;
             gasGaugeImage.color = Color.white;
+           
         }
 
         // Make the bing go faster the lower the gauge gets into the red.
         // Divide fillPercentage by gasFlashPercentage. That will be 1 when it starts, as the two equal
         // Then, though, I want it faster to start. So multiply it by .5. That's a half-second.
         // Then add an offset of .2, because I don't want it faster than that
-        gasFlashSpeed = ( fillPercentage / gasFlashPercentage ) * 0.5f + 0.2f;
+        gasFlashSpeed = ( fillPercentage / gasFlashPercentage ) + 0.3f;
 
         FlashGas(gasFlashSpeed);
 
@@ -288,6 +289,7 @@ public class Radar_Manager : MonoBehaviour {
 
     private void FlashGas (float speed)
     {
+        
 
 
 
@@ -301,13 +303,15 @@ public class Radar_Manager : MonoBehaviour {
 
         if (flashTime > speed)
         {
+            if (!taxi.isCrashing)
+            {
+                gaugeAudio.PlayOneShot(clipFuelPing, 0.7f);
+            }
+
             alphaColor = 1.0f;
             flashTime = 0;
             // If the taxi is crashing, we don't want the gas gauge to continue alerting
-            if ( !taxi.isCrashing )
-            {
-                audio.PlayOneShot(clipFuelPing, 0.7f);
-            }
+
             
         }
         else
