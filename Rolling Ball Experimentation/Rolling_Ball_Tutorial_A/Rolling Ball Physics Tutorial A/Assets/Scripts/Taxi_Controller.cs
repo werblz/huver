@@ -57,7 +57,7 @@ public class Taxi_Controller : MonoBehaviour
     private float forwardThrustMult = 1.0f; // SAVE
 
     [SerializeField]
-    private float sideThrustMult = 1.0f; // SAVE
+    public float sideThrustMult = 1.0f; // SAVE
 
     [SerializeField]
     private float thrustMultiplier = 20.0f; // SAVE
@@ -76,6 +76,9 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     private float bank = 0.5f;
 
+    [SerializeField]
+    public float taxiRotationSmoothSpeed = 1.0f;
+
     private bool invertControl = true;
 
     private string invertControlString = "Inverted Control";
@@ -91,6 +94,11 @@ public class Taxi_Controller : MonoBehaviour
   private float joyToleranceMax = 0.5f;
   [SerializeField]
   private float joyToleranceMin = -0.5f;
+
+  [SerializeField]
+  private float joyToleranceSideMax = 0.6f;
+  [SerializeField]
+  private float joyToleranceSideMin = -0.6f;
 
 
   [Header("Text")]
@@ -145,8 +153,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-    [SerializeField]
-    private float taxiRotationSmoothSpeed = 1.0f;
+
 
     public bool hasGas = true;
     public bool hasControl = true;
@@ -196,6 +203,9 @@ public class Taxi_Controller : MonoBehaviour
 
     [SerializeField]
     public float minCollisionThreshold = 10.0f; // SAVE
+
+    [SerializeField]
+    public float shieldPercent = 1.0f; // This is the percentage shield added
 
     [SerializeField]
     public float maxDamage = 50.0f; // SAVE
@@ -263,7 +273,7 @@ public class Taxi_Controller : MonoBehaviour
 
         }
 
-
+       
 
 
     }
@@ -309,7 +319,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-        Vector3 taxiStartPos = new Vector3(gm.homeBldg.transform.position.x + .1f,
+        Vector3 taxiStartPos = new Vector3(gm.homeBldg.transform.position.x - .1f,
                 gm.homeBldg.transform.position.y + 2.0f,
                 gm.homeBldg.transform.position.z); // the .1f offset in the X is to ensure the gas radar doesn't jiggle, because it's at exactly zero position relative
         rb.position = taxiStartPos;
@@ -377,7 +387,7 @@ public class Taxi_Controller : MonoBehaviour
         // Perhaps it was that the ground was wet to 0. Perhaps I need to lower that ground level for simple abandomnent
         if ( (isCrashing && rb.velocity == Vector3.zero) )
         {
-            
+            gm.upgradesAvailable = false;
             gm.RestartShift();
         }
 
@@ -554,15 +564,15 @@ public class Taxi_Controller : MonoBehaviour
             if (hasControl && hasStrafe)
             {
                 moveSideways = Input.GetAxis(sideJoy);
-                if ( moveSideways > joyToleranceMin && moveSideways < joyToleranceMax )
+                if ( moveSideways > joyToleranceSideMin && moveSideways < joyToleranceSideMax )
                 {
                   moveSideways = 0.0f;
                 }
 
                 movement = Quaternion.AngleAxis(angle + 180.0f,
-                    Vector3.up * Mathf.Abs(moveSideways)* sideThrustMult)
-                    * Vector3.right * moveSideways * sideThrustMult;
-                rb.AddForce(movement * thrustMultiplier);
+                    Vector3.up * Mathf.Abs(moveSideways))
+                    * Vector3.right * moveSideways;
+                rb.AddForce(movement * thrustMultiplier * sideThrustMult);
 
                 UseGas(gasUseRateSideThrust * Math.Abs(moveSideways));
                 if (moveSideways >= joyToleranceMax )
@@ -963,7 +973,7 @@ public class Taxi_Controller : MonoBehaviour
         // For now, hitting the airships does no damage, but DOES affect tip
         if ( other.gameObject.tag == "Airship")
         {
-            if (collisionEffect > minCollisionThreshold)
+            if (collisionEffect > minCollisionThreshold * shieldPercent )
             {
                 // Decrease tip for ANY collision at all. Later, multiply that by the amount of collision
                 gm.tip -= gm.tipDrain * collisionEffect;
@@ -983,12 +993,12 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-        if (collisionEffect > minCollisionThreshold)
+        if (collisionEffect > minCollisionThreshold * shieldPercent )
         {
             // If collisionEffect (amount of collision) is greater than the minCollisionThreshold, add it to damage, MINUS the minimum threshold
             // ie: if minCollisionThreashold is 10 and you take a hit of 12, add 2 to damage, not 12
             // minCollisionThreashold can then be upped later, as you get better armor for your car as upgrades
-            damage += ( collisionEffect - minCollisionThreshold);
+            damage += ( collisionEffect - ( minCollisionThreshold * shieldPercent) );
 
 
             //Debug.Log("<color=red>COLLISION! " + ( collisionEffect - minCollisionThreshold ) + " for accumulated damage of " + damage + ".</color>");
@@ -1144,7 +1154,7 @@ public class Taxi_Controller : MonoBehaviour
         {
             return;
         }
-        taxiRotationSmoothSpeed = 1.0f; // Taxi Upright Speed
+        //taxiRotationSmoothSpeed = 1.0f; // Taxi Upright Speed
 
         // Now to set up the target rotation as current Y and X=0, Y=0, which should force it to "constrain" back in X and Z
         // First, we want to get the current Y, because that should not change.

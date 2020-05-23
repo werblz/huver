@@ -20,36 +20,85 @@ public class Airship_Event_Driver : MonoBehaviour {
     [SerializeField]
     private Airship_Mover mover = null;
 
+    [SerializeField]
+    private GameObject running_lights = null;
+
     private Animator anim = null;
 
     private MeshRenderer mesh = null;
+
+    [SerializeField]
+    private ParticleSystem[] lights = null;
+
+    [SerializeField]
+    private float speedVariance = 10.0f;
+
+    // Stuff to delay the running lights on a per-ship basis so they don't all blink in sync
+    private bool lightsOn = false; // Bool to stop the Update loop
+    private float lightDelay = 0.0f; // How much to delay firing VFX of running lights
+    private float lightTimer = 0.0f; // Counter in Update that counts up to fire it
 
 	// Use this for initialization
 	void Start () {
         anim = GetComponent<Animator>();
         mesh = GetComponent<MeshRenderer>();
+        //    lights = GetComponent<ParticleSystem[]>();
+
 
 
 
         // Random starts with a given speed, then ADDS a multipler on the same times the random num 0-3
-        anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
+        anim.speed = 2.0f + (Random.value * speedVariance); // .01 is a good base. Now alter it by random
+
+        lightDelay = Random.value * 30.0f;
+        //running_lights.SetActive(false);
+        lightsOn = false;
+
 
     }
 
 
+    private void FixedUpdate()
+    {
+        if (lightsOn)
+        {
+            return;
+        }
+        else
+        {
+            lightTimer++;
+            if (lightTimer > lightDelay)
+            {
+                foreach (ParticleSystem light in lights)
+                {
+                    light.Play();
+                }
+                //running_lights.SetActive(true);
+                lightsOn = true;
+            }
+
+        }
+
+    }
+
     public void TurnOffMesh()
     {
         mesh.enabled = false;
+        //running_lights.SetActive(false);
+        lightsOn = false;
     }
 
     public void TurnOnMesh()
     {
         mesh.enabled = true;
+        //running_lights.SetActive(true);
+        lightsOn = true;
+
     }
 
-    public void RestartAnim()
+public void RestartAnim()
     {
-        anim.speed = 2f + (Random.value * 3.0f * 2f); // .01 is a good base. Now alter it by random
+        anim.speed = 2.0f + (Random.value * speedVariance); // .01 is a good base. Now alter it by random
         mover.RestartAnimation();
         anim.SetTrigger("Start");
         mesh.enabled = true;

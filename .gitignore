@@ -51,6 +51,8 @@ ExportedObj/
 
 *.dll
 
+*.log
+
 
 
 # Unity3D generated meta files

@@ -5,6 +5,9 @@ TIPS
 https://cpetry.github.io/NormalMap-Online/ - Normalmap creator
 http://wiki.unity3d.com/index.php/ProgressBar - Loading Bar from alpha gradient
 
+SOUND
+https://gamedevbeginner.com/how-to-play-audio-in-unity-with-examples/
+
 NEXT (Details below)
 
 

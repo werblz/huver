@@ -185,7 +185,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         // UI_Panel_Controller calls PutDialog(-1) if we crash. Otherwise, business as usual
         if (dialogNum == -1)
         {
-            myDialog = Instantiate(gm.crashDialog);
+            myDialog = Instantiate(gm.crashDialog); // This instantiates the crashDialog, a special one in Game Manager.
         }
         else
         {
@@ -374,6 +374,13 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     private void ShowUpgrades(int numUpgrades)
     {
+        // If upgradesAvailable, which means you crashed, you don't see the upgrade UI
+        if ( !gm.upgradesAvailable )
+        {
+            return;
+        }
+        
+
         upgradePanel.SetActive(true);
 
         // Make the holding locations visible.
@@ -391,7 +398,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         }
 
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
-        if (gm.cash < upgradeDataItems[picks[choice]].upgradeCost
+        if (!gm.debugOn && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
         {
             return;
@@ -428,7 +435,7 @@ public class UI_Panel_Controller : MonoBehaviour {
                 
                 break;
             case 1:
-                taxi.minCollisionThreshold *= 1.05f; // increase minCollisionThreshold 5%
+                taxi.shieldPercent *= 1.05f; // increase minCollisionThreshold 5%
                 // No need to set a gm. bool for the icon to appear. It is coded to appear at above 1
                 Debug.Log("<color=blue>SHIELD UPGRADE 5%!</color>");
                 break;
@@ -436,7 +443,7 @@ public class UI_Panel_Controller : MonoBehaviour {
                 gm.crashDeductible = gm.crashDeductible * .95f; // increase minCollisionThreshold 5%
                 // No need to set a gm. bool for the icon to appear. Itis coded to appear at above 1
                 // No need to set a gm. bool for the icon to appear. Itis coded to appear at above 1
-                Debug.Log("<color=blue>SHIELD UPGRADE 5%!</color>");
+                Debug.Log("<color=blue>DEDUCTIBLE REDUCTION 5%!</color>");
                 break;
 
             // NOW FOR THE REGULAR UPGRADES
@@ -467,8 +474,12 @@ public class UI_Panel_Controller : MonoBehaviour {
                 Debug.Log("<color=blue>BIGGER TANK UPGRADE!</color>");
                 break;
             case 8:
-                taxi.minCollisionThreshold *= 1.2f; // Upgrade the minCollisionThreshold to new value
-                Debug.Log("<color=blue>SHIELD UPGRADE!</color>");
+                taxi.shieldPercent *= 1.2f; // Upgrade the minCollisionThreshold to new value
+                Debug.Log("<color=blue>SHIELD UPGRADE 20%!</color>");
+                break;
+            case 9:
+                taxi.sideThrustMult *= 2f; // Upgrade the minCollisionThreshold to new value
+                Debug.Log("<color=blue>STRAFE UPGRADE *2!</color>");
                 break;
             case 99:
                 taxi.hasHomeIndicator = true;
@@ -483,7 +494,11 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // Deduct cost
         Debug.Log("CASH BEFORE UPGRADE - " + gm.cash);
-        gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
+        if (!gm.debugOn) // Only spend the cash if NOT in debug mode
+        {
+            gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
+        }
+        
         Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
         upgradeDataItems[picks[choice]].isNew = false;
         // Don't forget to turn off the upgrade prefab or it will remain visible next time

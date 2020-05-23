@@ -65,6 +65,10 @@ public class Radar_Manager : MonoBehaviour {
     [SerializeField]
     private SpriteRenderer[] upgradeIcon = null;
 
+    [Header("Shield Text")]
+    [SerializeField]
+    private TextMeshPro shieldText = null;
+
 
 
     private float angle = 0.0f;
@@ -402,7 +406,10 @@ public class Radar_Manager : MonoBehaviour {
         upgradeIcon[2].enabled = gm.hasStrafe;
         upgradeIcon[3].enabled = gm.hasTurbo;
         upgradeIcon[4].enabled = gm.hasTank;
-        upgradeIcon[5].enabled = (taxi.minCollisionThreshold > 10.0f);
+        upgradeIcon[5].enabled = taxi.shieldPercent > 1.0f;
+        shieldText.enabled = taxi.shieldPercent > 1.0f; // Enable the text ONLY if shieldPercent > 1.0. Otherwise disble
+        shieldText.text = "+" + (taxi.shieldPercent - 1.0f).ToString("P0");
+        
         upgradeIcon[6].enabled = gm.hasHomePad;
 
         if (!gm.uiIsUp)
