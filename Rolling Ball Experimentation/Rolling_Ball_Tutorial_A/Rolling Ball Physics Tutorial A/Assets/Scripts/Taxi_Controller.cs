@@ -243,18 +243,18 @@ public class Taxi_Controller : MonoBehaviour
     public bool hasTurbo = false;
 
     [Header("Audio")]
-    private AudioSource taxiAudio = null;
+
     
     [SerializeField]
     private AudioClip clipBump = null;
 
     [SerializeField]
     private AudioClip clipBumpAirship = null;
-
+    
     [SerializeField]
-    private AudioClip clipBumpDamage = null;
+    private AudioClip[] clipCollision = null;
 
-
+    private AudioSource taxiAudio = null;
 
     //Don't need this.
     //private Vector3[] originalScale = null;
@@ -972,10 +972,22 @@ public class Taxi_Controller : MonoBehaviour
         // How much collision?
         float collisionEffect = other.relativeVelocity.magnitude;
         //Debug.Log("<color=white>COLLISION! " + collisionEffect + "</color>");
+        Debug.LogWarning("<color=red> *********************** COLLISION EFFECT " + collisionEffect + "</color>");
 
+        int collisionArrayIndex = (int)Mathf.Clamp((collisionEffect * .2f), 0.0f, 9.0f);
+        Debug.LogWarning("<color=red> *********************** COLLISION INDEX " + collisionArrayIndex + "</color>");
 
+        float collisionVolume = collisionEffect * 0.03f;
+        if (collisionVolume < 0.3f)
+        {
+            collisionVolume = 0.3f;
+        }
 
-
+        // Here, we want to play the sound regardless of collision threshold.
+        if (other.gameObject.tag != "Airship")
+        {
+            taxiAudio.PlayOneShot(clipCollision[collisionArrayIndex], collisionVolume);
+        }
 
         // SOUND PLANS
         /*
@@ -1000,14 +1012,17 @@ public class Taxi_Controller : MonoBehaviour
                 {
                     gm.tip = 0.0f;
                 }
-                Debug.LogWarning("<color=red> *********************** COLLISION EFFECT " + collisionEffect + "</color>");
+                
 
                 // Also, no VFX if we collid e with an airship. They are bouncy
 
             }
 
             // But let's play a sound whose volume is based on the speed of the hit
-            taxiAudio.PlayOneShot(clipBumpAirship, collisionEffect * .02f);
+            
+            taxiAudio.PlayOneShot(clipBumpAirship, collisionVolume);
+            Debug.LogWarning("<color=white> *********************** Volume = " + collisionVolume + "</color>");
+
 
 
             return;
@@ -1055,7 +1070,7 @@ public class Taxi_Controller : MonoBehaviour
             tmpExploder.transform.localScale = splodeScale;
             tmpExploder.SetActive(true);
 
-        
+            
 
 
 

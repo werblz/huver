@@ -38,7 +38,7 @@ public class Radar_Manager : MonoBehaviour {
     private AudioClip clipFuelPing = null;
     [SerializeField]
     private AudioClip clipFuelPingA = null;
-    private bool alternateSound = false;
+    
 
     // The following are for the cracked radar. THIS SYSTEM IS ABOUT TO BE DEPRECATED!
     /*
