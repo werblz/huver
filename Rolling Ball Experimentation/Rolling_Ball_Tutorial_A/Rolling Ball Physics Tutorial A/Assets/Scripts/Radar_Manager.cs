@@ -37,7 +37,7 @@ public class Radar_Manager : MonoBehaviour {
     [SerializeField]
     private AudioClip clipFuelPing = null;
     [SerializeField]
-    private AudioClip clipFuelPingA = null;
+    private AudioClip clipFuelPingCrossLine = null;
     
 
     // The following are for the cracked radar. THIS SYSTEM IS ABOUT TO BE DEPRECATED!
@@ -127,6 +127,8 @@ public class Radar_Manager : MonoBehaviour {
     private bool flashGasFlag = false;
     private float flashTime = 0.0f;
     private float alphaColor = 1.0f;
+    private bool soundPingedAlreadyYellow = false;
+    private bool soundPingedAlreadyOrange = false;
 
 
 
@@ -258,6 +260,42 @@ public class Radar_Manager : MonoBehaviour {
         float fillPercentage = Mathf.Abs(tc.gas / tc.maxGas);
         gasGaugeImage.fillAmount = fillPercentage * 0.75f;
 
+
+        // This next section is for when the gas gauge crosses a color line.
+        // Right now, it pings inside a range. That's bad, since a slow leak will ping for a long time. I want a true one-shot ping inside the range.
+        // Which means setting up a bool that I set to true when it pings the first time, and then false again after it's outside the range.
+
+        // If gas crosses the green line, make a ping noise - Magic numbers represent the graphic of the gas gauge where it changes color
+        if ( fillPercentage >= .530 && fillPercentage <= .533)
+        {
+            if (!soundPingedAlreadyYellow)
+            {
+                gaugeAudio.PlayOneShot(clipFuelPingCrossLine, 0.4f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
+                soundPingedAlreadyYellow = true;
+            }
+            
+        }
+        else
+        {
+            soundPingedAlreadyYellow = false; // Reset the flag that triggers the in-range gas sound,.
+        }
+
+        
+
+        if (fillPercentage >= .355 && fillPercentage <= .358)
+        {
+            if (!soundPingedAlreadyOrange)
+            {
+                gaugeAudio.PlayOneShot(clipFuelPingCrossLine, 0.4f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
+                soundPingedAlreadyOrange = true;
+            }
+
+        }
+        else
+        {
+            soundPingedAlreadyOrange = false; // Reset the flag that triggers the in-range gas sound,.
+        }
+
         // If gas gets into the red, flash
         if ( fillPercentage < gasFlashPercentage)
         {
@@ -283,6 +321,8 @@ public class Radar_Manager : MonoBehaviour {
 
         // Display the appropriate upgrade icons
         IconsUp();
+
+
     }
 
 

@@ -52,10 +52,12 @@ public class Pad_Manager : MonoBehaviour {
     private Renderer rend = null;
 
     private MaterialPropertyBlock mpb = null;
+    
+
 
     // Use this for initialization
     void Start () {
-
+        
         
         isTouched = false; // Successfully completed?
         isTouching = false; // Is currently in contact with taxi?
@@ -70,7 +72,9 @@ public class Pad_Manager : MonoBehaviour {
 
     private void OnEnable()
     {
-        
+
+
+
         //Debug.Log("<color=black>         LIGHT COLOR = " + lightNumber + "</color>");
         // Here I need to get the MaterialPropertyBlo ck.
         mpb = new MaterialPropertyBlock();
@@ -101,6 +105,7 @@ public class Pad_Manager : MonoBehaviour {
                 Debug.LogWarning(" **** TOUCHED PAD " + padNumber);
                 gm.Advance();
                 Debug.LogWarning(" **** MOVING ON to pad " + gm.nextPad);
+                
             }
         }
     }
@@ -117,10 +122,18 @@ public class Pad_Manager : MonoBehaviour {
         mpb = new MaterialPropertyBlock();
         // Stupidly, since we're counting UP pads, but counting DOWN numbers, I have
         // to do a little math there to get the right index number
-        mpb.SetTexture("_Additive", lightNumTexture[gm.numPads - lightNumber -1]);
+        mpb.SetTexture("_Additive", lightNumTexture[gm.numPads - lightNumber - 1]);
         rend.SetPropertyBlock(mpb);
 
         lightBeam.SetActive(flag);
+
+
+
+    }
+
+    public void PadSuccess()
+    {
+
     }
 
 

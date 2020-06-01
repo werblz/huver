@@ -250,9 +250,26 @@ public class Taxi_Controller : MonoBehaviour
 
     [SerializeField]
     private AudioClip clipBumpAirship = null;
-    
+
+    [SerializeField]
+    private AudioClip clipPadSuccess = null;
+
+    [SerializeField]
+    private AudioClip clipNextShift = null;
+
+    [SerializeField]
+    private AudioClip clipUISelectChange = null;
+
+    [SerializeField]
+    private AudioClip clipUISelectSuccess = null;
+
+    [SerializeField]
+    private AudioClip clipUISelectFail = null;
+
+
     [SerializeField]
     private AudioClip[] clipCollision = null;
+
 
     private AudioSource taxiAudio = null;
 
@@ -288,6 +305,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
     }
+
 
 
 
@@ -410,15 +428,19 @@ public class Taxi_Controller : MonoBehaviour
         
 
 
-        // 
+        // This is the B button that begins the next shift when you're at the pad at the start of a new shift.
+        // The code checks to see if the UI is up in order to allow the SoundNextShift sound to fire. Otherwise it will not
+
         if (Input.GetAxis("Fire2") >= 0.1f)
         {
+            if (gm.uiIsUp)
+            {
+                SoundNextShift();
+            }
 
             Debug.Log("<color=green>****</color> Pulling UI down with B button.");
             gm.PullUiDown();
             
-
-
         }
 
 
@@ -1235,6 +1257,46 @@ public class Taxi_Controller : MonoBehaviour
         rb.AddTorque(StartMovement); // 400 is the intensity multiplier on the random direction in the previous line
 
         
+    }
+
+    // Sounds
+
+    // When I began adding audio sources to the panel prefabs, I began to get FPS perf issues. I mean big-time.
+    // ANd it got worse as the game progressed. Soon I was doing 1fps which is awful.
+    // Once I removed those audio sources, things went back to normal.
+    // SO I decided to do all of the UI fuctions on the taxi itself, and use that AudioSource, rather than adding ones to other components unless
+    // it made sense to, and did NOT tank perf
+    // SO here are the UI sound methods, which I can call from other scripts if necessary, including the panel scripts
+
+
+    public void SoundNextShift()
+    {
+        taxiAudio.PlayOneShot(clipNextShift, 1f);
+
+    }
+
+    // Pad SUccess
+    public void SoundPadSuccess()
+    {
+        taxiAudio.PlayOneShot(clipPadSuccess, .3f);
+    }
+
+    // UI Upgrade Selection Change
+    public void SoundUISelectionChange()
+    {
+        taxiAudio.PlayOneShot(clipUISelectChange, .7f);
+    }
+
+    // UI Upgrade Selection Success
+    public void SoundUISelectionSuccess()
+    {
+        taxiAudio.PlayOneShot( clipUISelectSuccess , 1f);
+    }
+
+    // UI Upgrade Selection Fail (ie: item not affordable)
+    public void SoundUISelectionFail()
+    {
+        taxiAudio.PlayOneShot( clipUISelectFail, .3f);
     }
 
 }

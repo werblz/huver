@@ -282,6 +282,9 @@ public class Game_Manager : MonoBehaviour {
     [Tooltip("How many pickups during Debug")]
     [SerializeField]
     private int numDebugPads = 2;
+    [Tooltip("Do Upgrades Cost Sheklys?")]
+    [SerializeField]
+    public bool upgradesCostShekyls = false;
 
     // Game stats
     [Tooltip("What shift are we on?")]
@@ -515,6 +518,8 @@ public class Game_Manager : MonoBehaviour {
     public void Advance()
     {
         AddFare(fare, tip);
+
+        taxi.SoundPadSuccess();
 
         Beam(nextPad, false);
         //pads[nextPad].SetActive(false); // Now turn the WHOLE pad off. Because I don't want to make pads visible until they are the target

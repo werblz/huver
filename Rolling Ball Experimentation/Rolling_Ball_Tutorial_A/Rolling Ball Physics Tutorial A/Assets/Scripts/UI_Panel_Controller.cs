@@ -31,12 +31,14 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     // The default choice in the upgrade array
     private int currentChoice = 1;
+    private int lastChoice = 1;
 
     // This could be the bool I test with the Y joystick button to ensure
     // I don't repeatedly perform an upgrade
     private bool hasChosenOnce = false;
 
     private int[] picks = null;
+
 
     // THIS SCRIPT WAS NOT DOING ANYTHING!
     // The GameObject reference above was not even filled out
@@ -343,6 +345,7 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     private void HighlightChosenUpgrade(int choice)
     {
+
         // First, reset scales
         for (int i = 0; i < upgradeHoldingLocations.Length; i++)
         {
@@ -351,6 +354,12 @@ public class UI_Panel_Controller : MonoBehaviour {
             upgradeDataItems[picks[i]].glowSpriteRed.enabled = false;
             upgradeDataItems[picks[i]].noPurchase.enabled = false;
         }
+
+
+        // I think this is where the non-repeating code should go. Earlier I had it above, with a Return, so it was never checking the prices to see if they
+        // were selectable, and the red cross appeared in every selection until you changed it. But I think this works now.
+        // If not, I will have to put this if in each selection portion before it does any scale changing
+
 
         // Now enlarge the one I am currently choosing with the stick
         upgradeHoldingLocations[choice].transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
@@ -369,6 +378,15 @@ public class UI_Panel_Controller : MonoBehaviour {
             upgradeDataItems[picks[choice]].glowSprite.enabled = true;
             upgradeDataItems[picks[choice]].noPurchase.enabled = false;
         }
+
+        if ( choice != lastChoice && hasChosenOnce == false )
+        {
+            taxi.SoundUISelectionChange();
+        }
+        
+
+        // AN attempt to make sure this does not reselect on each frame.
+        lastChoice = choice;
         
     }
 
@@ -398,9 +416,12 @@ public class UI_Panel_Controller : MonoBehaviour {
         }
 
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
-        if (!gm.debugOn && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
+        if (!gm.upgradesCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
         {
+            // Here, you have failed, as the item you try to buy is not affordable.
+            taxi.SoundUISelectionFail();
+
             return;
         }
 
@@ -494,9 +515,10 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // Deduct cost
         Debug.Log("CASH BEFORE UPGRADE - " + gm.cash);
-        if (!gm.debugOn) // Only spend the cash if NOT in debug mode
+        if (gm.upgradesCostShekyls) // Only spend the cash if NOT in debug mode
         {
             gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
+            
         }
         
         Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
@@ -521,6 +543,9 @@ public class UI_Panel_Controller : MonoBehaviour {
         // We set this bool true when you select. We set it to false when panel comes up
         // THIS SHOULD WORK
         upgradeDataItems[picks[choice]].isPurchased = true;
+
+        // Play UI Selection Success sound
+        taxi.SoundUISelectionSuccess();
     }
 
     public void UIOff()
