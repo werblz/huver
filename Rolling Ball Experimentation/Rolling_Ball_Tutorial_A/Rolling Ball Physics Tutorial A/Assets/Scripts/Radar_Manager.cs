@@ -36,9 +36,19 @@ public class Radar_Manager : MonoBehaviour {
 
     [SerializeField]
     private AudioClip clipFuelPing = null;
+
     [SerializeField]
     private AudioClip clipFuelPingCrossLine = null;
-    
+
+    [SerializeField]
+    private AudioClip clipFuelYellow = null;
+
+    [SerializeField]
+    private AudioClip clipFuelOrange = null;
+
+    [SerializeField]
+    private AudioClip clipFuelRed = null;
+
 
     // The following are for the cracked radar. THIS SYSTEM IS ABOUT TO BE DEPRECATED!
     /*
@@ -129,6 +139,7 @@ public class Radar_Manager : MonoBehaviour {
     private float alphaColor = 1.0f;
     private bool soundPingedAlreadyYellow = false;
     private bool soundPingedAlreadyOrange = false;
+    private bool soundPingedAlreadyRed = false;
 
 
 
@@ -270,7 +281,7 @@ public class Radar_Manager : MonoBehaviour {
         {
             if (!soundPingedAlreadyYellow)
             {
-                gaugeAudio.PlayOneShot(clipFuelPingCrossLine, 0.4f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
+                gaugeAudio.PlayOneShot(clipFuelYellow, 1.0f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
                 soundPingedAlreadyYellow = true;
             }
             
@@ -286,7 +297,7 @@ public class Radar_Manager : MonoBehaviour {
         {
             if (!soundPingedAlreadyOrange)
             {
-                gaugeAudio.PlayOneShot(clipFuelPingCrossLine, 0.4f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
+                gaugeAudio.PlayOneShot(clipFuelOrange, 1.0f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
                 soundPingedAlreadyOrange = true;
             }
 
@@ -294,6 +305,20 @@ public class Radar_Manager : MonoBehaviour {
         else
         {
             soundPingedAlreadyOrange = false; // Reset the flag that triggers the in-range gas sound,.
+        }
+
+        if ( fillPercentage >= gasFlashPercentage && fillPercentage <= gasFlashPercentage + 0.003 )
+        {
+            if (!soundPingedAlreadyRed)
+            {
+                gaugeAudio.PlayOneShot(clipFuelRed, 1.0f); // clipFuelPingCrossLine differs by having some silence at the beginning, so PlayOneSHot repeating will play silence until it stop playing constantly
+                soundPingedAlreadyRed = true;
+            }
+
+        }
+        else
+        {
+            soundPingedAlreadyRed = false; // Reset the flag that triggers the in-range gas sound,.
         }
 
         // If gas gets into the red, flash

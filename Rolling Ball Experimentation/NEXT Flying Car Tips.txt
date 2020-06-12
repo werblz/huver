@@ -12,10 +12,10 @@ NEXT (Details below)
 
 
 
-- Pad countdown timer to clear. If (isAtPad), timer--. Else timer=XSeconds. If timer<=0 Advance
-- License Plate - QR code to huxter.org, and POB366 or C64 128 or something meaningful
-- Try a more rounded car
-- Combine Meshes of the buildings after placement
+DONE - Pad countdown timer to clear. If (isAtPad), timer--. Else timer=XSeconds. If timer<=0 Advance
+DONE - License Plate - QR code to huxter.org, and POB366 or C64 128 or something meaningful
+DONE - Try a more rounded car
+NO NEED as buildings are Static. However, worth experimenting? - Combine Meshes of the buildings after placement
 - Put up a start screen while the city builds, with a delay
 
 
@@ -23,14 +23,14 @@ NEXT (Details below)
 
 
 DONE - 1) Make the light shaft. Use the same cylinder, with new material. Additive god rays upward texture
-2) Rotate the rays. (Double them so they rotate in two directions?
-3) White HOME base. Start and finish levels there
+DONE IN SHADER - 2) Rotate the rays. (Double them so they rotate in two directions?
+DONE - 3) White HOME base. Start and finish levels there
 DONE - 4) Make purple versions for "Gas"
 DONE - 5) Code to check "Visited" and move on to next, with end condition if the last one in the array is visited. Level Over. Click to reload.
-6) Crash Reset button
+NO NEED - I handle crashes properly now - 6) Crash Reset button
 
-: Move radar closer to camera so it does not disappear when you get close to buildings
-: Put a collider cylinder or cone on the camera so if it collides with buildings those buildings stop rendering???
+DONE - Move radar closer to camera so it does not disappear when you get close to buildings
+DONE - Put a collider cylinder or cone on the camera so if it collides with buildings those buildings stop rendering??? I created a second building partly faded out and swap them when the camera collider collides with them
 
 DONE -: Make a class Building
   : It needs:
@@ -42,6 +42,7 @@ DONE -: Make a class Building
 
 
 
+DONE - With a very robust texture-map that controls various parameters, then combined with randomness.
 : Random Building Placement
   : Instead of choosing just random on the grid (before circular culling) use a two-dimensional loop and place the buildings min_XZ plus some buffer, so it places the buildings on a strict grid. THEN use random scaling and a bit of random nudging to make it all the more random. This way I hope to ensure no building ends up inside another, breaking the game (if it's taller than the pad building, you can't touch the pad.)
   : Use a formula to add height near the center, so we get a city, with taller buildings in the middle, and flatter ones on the edges, but of course with random variance.
@@ -61,26 +62,26 @@ DONE - Do a circular filter for buildings? If a building is randomly placed outs
 
 
 UPGRADES:
-- Strafe Control - Make people use only rotation for a few levels
+DONE - Strafe Control - Make people use only rotation for a few levels
 - Auto Level - Make people use up-thrust for a lot of levels. Then up and down are pushing relative
 - Camera Auto Tilt - The camera automatically pulls down flat when target is far away, and up more when the target is closer
-- Radar Indicator - The cool radar pip... make players look for their targets for a while
+DONE - Radar Indicator - The cool radar pip... make players look for their targets for a while
 - Auto Lander - This might be tough. But make the car auto land when you're above a target. Hit a button and have it just stop all lateral motion, and drop you gently to the pad.
-- Gas Tank Efficiency - Make you use less gas later
+DONE - Gas Tank Efficiency - Make you use less gas later. But in fact, I just increase gas tank size
 - Speed Increase - Better forward/backward thrust/braking.
 
   
-: Drop floor?
+DONE - I removed it entirely : Drop floor?
 
 DONE - Move camera in default scene, since I moved it all up after scaling HOME Pad up.
 
 : Game_Manager
   DONE - First, get it to randomly place and scale X pads
   DONE - Randomly place HOME and GAS pads
-  : Number the pads and display the number on a TextMesh object on top
+  DONE -  : Number the pads and display the number on a TextMesh object on top
   
 
-: Set up Light-up rays above the pad and number. The pad can have light-up brackets with flare, with rays pointing up
+DONE - : Set up Light-up rays above the pad and number. The pad can have light-up brackets with flare, with rays pointing up
   : Set up a non-physics cylinder, with "god ray" material
   : Rotate it in a simple animation
   : Tag it NoRadar
@@ -92,12 +93,12 @@ DONE - Move camera in default scene, since I moved it all up after scaling HOME 
     DONE - Put the render texture on a circle (Same damn cylinder? Why not?)
     : Overlay it with another that plays a static movie. Instead of a movie, though, make a material which randomly picks UVs and display a static image on it, tiled, so it just jumps around, which will simulate a static screen movie perfectly
     : Make that overlay opaque depending on damage!!! So the more damage you have, the more obscured your radar
-    : Add a cracked glass overlay as well for shits and giggles
+DONE -    : Add a cracked glass overlay as well for shits and giggles
 
   
 PLACEHOLDER DONE - VFX for sparks/explosions, scaled to the impact velocity, remove the spheres
 
-: If !hasControl && relativeVelocity < 0.001 - Bring up RESTART button
+DONE - Crashes are now handled well. : If !hasControl && relativeVelocity < 0.001 - Bring up RESTART button
 
 DONE - Direction indicator on top-down radar map, to next pad
 

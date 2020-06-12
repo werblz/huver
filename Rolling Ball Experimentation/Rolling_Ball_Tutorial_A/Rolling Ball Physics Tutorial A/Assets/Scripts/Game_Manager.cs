@@ -256,6 +256,12 @@ public class Game_Manager : MonoBehaviour {
     public bool hasTank = false;
     public bool hasControl = false;
 
+
+    [Header("Powerup")]
+    [SerializeField]
+    public GameObject powerupPrefab = null; // Eventually this will not be a GameObject but maybe its own class, once it gets function
+
+
     [Header("Upgrades")]
     [Tooltip("Are there any upgrades available to purchase?")]
     [SerializeField]
@@ -264,6 +270,9 @@ public class Game_Manager : MonoBehaviour {
     [Tooltip("Array of Upgrade prefabs")]
     [SerializeField]
     public GameObject[] upgrades = null;
+
+
+    [Header("Dialogs")]
 
     [Tooltip("Array of Dialog prefabs to show at end of shift.")]
     [SerializeField]
@@ -468,7 +477,49 @@ public class Game_Manager : MonoBehaviour {
             Debug.Log("<color=red>******************* Coordinates of the middle-most building:</color>" + buildings[(int)numBuildingsInGrid / 2].transform.position);
         }
 
+        PopulatePowerups(numBuildingsInGrid);
+
     }
+
+
+    private void PopulatePowerups( int numBuildings )
+    {
+        Debug.LogWarning("<color=cyan>$$$$$$$$$$$$$$$$$$$$$$$$</color><color=yellow>NUMBER OF POWERUPS = " + numBuildings + "</color>)");
+
+        GameObject myPowerup = null;
+        Vector3 powerupLoc = new Vector3(0.0f, 0.0f, 0.0f);
+
+        int rndBldg = (int)(UnityEngine.Random.value * numBuildings);
+
+        Debug.LogWarning("<color=cyan>************************</color><color=blue> Building With Powerup is # " + rndBldg + "</color>)");
+
+        powerupLoc = new Vector3(buildings[rndBldg].transform.position.x,
+            buildings[rndBldg].transform.localScale.y + 150.0f,
+            buildings[rndBldg].transform.position.z);
+
+        myPowerup = Instantiate(powerupPrefab);
+        myPowerup.SetActive(true);
+        myPowerup.transform.position = powerupLoc;
+        myPowerup.transform.localScale = new Vector3(10.0f, 10.0f, 10.0f);
+
+
+        return;
+
+        for ( int i = 0; i < numBuildings; i++ )
+        {
+            Debug.LogWarning("<color=yellow>DDDDDDDDDDDDDDDDDDDDDDDDDD </color><color=purple> INSTANTIATING POWERUP ON BUILDING " + i + "</color>");
+
+            powerupLoc = new Vector3(buildings[i].transform.position.x,
+                buildings[i].transform.localScale.y + 10.0f,
+                buildings[i].transform.position.z);
+
+            myPowerup = Instantiate(powerupPrefab);
+            myPowerup.SetActive(true);
+            myPowerup.transform.position = powerupLoc;
+        }
+        
+    }
+
 
     // This is slightly non-standard. I pass a Vector3 for the location of the building, and this method finds the pixel at the corresponding
     // coordinate of a four channel Texture2D. Then it returns the Vector3 PLUS one value for Y rotation, maiking it return a Vector 4
@@ -1100,7 +1151,7 @@ public class Game_Manager : MonoBehaviour {
             Vector3 tryPosition = Vector3.zero;
 
             // Rotate the ship 90 degrees more every time
-            myYRotation = (float)i * 90.0f;
+            //myYRotation = (float)i * 90.0f;
 
 
             // I THINK THIS IF CAN GO Because we no longer need to do the roation here
@@ -1182,7 +1233,7 @@ public class Game_Manager : MonoBehaviour {
 
     private void CalculateShiftCosts()
     {
-        summaryText.text = "Shift Summary:\nFares:\nTips:\nGas Cost:\nRepairs Cost:\nHome Gas Cost:\nHome Repairs Cost:\n<color=white>CASH:</color>";
+        summaryText.text = "Shift Summary:\nFares:\nTips:\nGas Cost:\nRepairs Cost:\nHome Gas Cost:\nHome Repairs Cost:\n<color=purple>CASH:</color>";
         summaryWinsNumbersText.text = (shift - 1).ToString() + "\n" +
             numPadsThisShift.ToString() + "\n" +
             "\u00A7 " + faresThisShift.ToString("F2") + "\n" +

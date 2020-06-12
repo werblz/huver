@@ -5,14 +5,14 @@ using UnityEngine.SceneManagement;
 using System;
 
 
-public class Taxi_Controller : MonoBehaviour 
+public class Taxi_Controller : MonoBehaviour
 {
 
     // Character controller
     CharacterController controller;
 
     // Rigidbody for control
-	public Rigidbody rb;
+    public Rigidbody rb;
 
     [Header("Game Manager")]
 
@@ -39,13 +39,13 @@ public class Taxi_Controller : MonoBehaviour
     private bool isHome = false;
 
     // Angle to rotate car based on stick
-	private float angle = 0.0f;
+    private float angle = 0.0f;
 
-	private float moveSideways = 0.0f;
-	private float moveForward = 0.0f;
+    private float moveSideways = 0.0f;
+    private float moveForward = 0.0f;
     private float turn = 0.0f;
-	//private float jump = 0.0f;
-	private float upwardThrust = 0.0f; // SAVE
+    //private float jump = 0.0f;
+    private float upwardThrust = 0.0f; // SAVE
 
     [SerializeField]
     private float upThrustMult = 2.0f; // SAVE
@@ -90,18 +90,18 @@ public class Taxi_Controller : MonoBehaviour
     private string verticalJoy = "Mouse X"; // Default "Mouse X"
     private string turboButton = "Left Trigger"; // was Left Bumper
 
-  [SerializeField]
-  private float joyToleranceMax = 0.5f;
-  [SerializeField]
-  private float joyToleranceMin = -0.5f;
+    [SerializeField]
+    private float joyToleranceMax = 0.5f;
+    [SerializeField]
+    private float joyToleranceMin = -0.5f;
 
-  [SerializeField]
-  private float joyToleranceSideMax = 0.6f;
-  [SerializeField]
-  private float joyToleranceSideMin = -0.6f;
+    [SerializeField]
+    private float joyToleranceSideMax = 0.6f;
+    [SerializeField]
+    private float joyToleranceSideMin = -0.6f;
 
 
-  [Header("Text")]
+    [Header("Text")]
 
 
     [SerializeField]
@@ -110,10 +110,10 @@ public class Taxi_Controller : MonoBehaviour
     public bool isCrashing = false;
 
     public bool isDead = false;
-          
+
 
     [SerializeField]
-  private TextMesh velocityText = null;
+    private TextMesh velocityText = null;
 
     [SerializeField]
     private TextMesh collisionText = null;
@@ -123,7 +123,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-	private Vector3 movement = new Vector3 (0.0f, 0.0f, 0.0f);
+    private Vector3 movement = new Vector3(0.0f, 0.0f, 0.0f);
 
 
 
@@ -133,20 +133,20 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     public float maxGas = 50.0f; // SAVE
 
-  
-  public float gas = 0.0f; // SAVE
 
-  [SerializeField]
-  private float gasUseRateUpThrust = 0.1f; // SAVE
+    public float gas = 0.0f; // SAVE
 
-  [SerializeField]
-  private float gasUseRateDownThrust = 0.05f; // SAVE
+    [SerializeField]
+    private float gasUseRateUpThrust = 0.1f; // SAVE
 
-  [SerializeField]
-  private float gasUseRateForwardThrust = 0.1f; // SAVE
+    [SerializeField]
+    private float gasUseRateDownThrust = 0.05f; // SAVE
 
-  [SerializeField]
-  private float gasUseRateRotateThrust = 0.05f; // SAVE
+    [SerializeField]
+    private float gasUseRateForwardThrust = 0.1f; // SAVE
+
+    [SerializeField]
+    private float gasUseRateRotateThrust = 0.05f; // SAVE
 
     [SerializeField]
     private float gasUseRateSideThrust = 0.05f; // SAVE
@@ -159,7 +159,7 @@ public class Taxi_Controller : MonoBehaviour
     public bool hasControl = true;
 
     [Header("Engines")]
-    
+
     [SerializeField]
     private GameObject[] enginesForward;
     [SerializeField]
@@ -182,7 +182,7 @@ public class Taxi_Controller : MonoBehaviour
     private GameObject[] enginesTurboFront;
 
 
-[SerializeField]
+    [SerializeField]
     private float forwardJetScale = 0.6f;
     [SerializeField]
     private float backJetScale = 0.7f;
@@ -235,7 +235,7 @@ public class Taxi_Controller : MonoBehaviour
 
     [SerializeField]
     public bool hasStationIndicator = false;
-    
+
     [SerializeField]
     public bool hasStrafe = false;
 
@@ -244,7 +244,7 @@ public class Taxi_Controller : MonoBehaviour
 
     [Header("Audio")]
 
-    
+
     [SerializeField]
     private AudioClip clipBump = null;
 
@@ -266,25 +266,33 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     private AudioClip clipUISelectFail = null;
 
+    [SerializeField]
+    private AudioClip clipFuelFull = null;
 
     [SerializeField]
     private AudioClip[] clipCollision = null;
 
+    //private int soundPingTimer = 0; // Countdown to Ping, once triggerd, so it doesn't spam
+
+
+
 
     private AudioSource taxiAudio = null;
+
+    private bool soundGasOkToPing = true;
 
     //Don't need this.
     //private Vector3[] originalScale = null;
 
     private void Start()
-	{
+    {
         taxiAudio = GetComponent<AudioSource>();
 
         taxiMovedToInitialLocation = false;
 
         gas = maxGas;
-		rb = GetComponent<Rigidbody>();
-		Physics.sleepThreshold = 8.5F;
+        rb = GetComponent<Rigidbody>();
+        Physics.sleepThreshold = 8.5F;
 
         defaultAngularDrag = rb.angularDrag;
         defaultDrag = rb.drag;
@@ -301,7 +309,7 @@ public class Taxi_Controller : MonoBehaviour
 
         }
 
-       
+
 
 
     }
@@ -326,7 +334,7 @@ public class Taxi_Controller : MonoBehaviour
         //taxiMovedToInitialLocation = true;
     }
 
-    
+
     public void MoveTaxiToStartPad()
     {
         cameraFollow = false;
@@ -368,7 +376,7 @@ public class Taxi_Controller : MonoBehaviour
         //Debug.Log("<color=red>*****************</color> I HAVE MOVED THE TAXI TO " + taxiStartPos.ToString());
 
         taxiMovedToInitialLocation = true;
-        
+
 
 
     }
@@ -408,13 +416,13 @@ public class Taxi_Controller : MonoBehaviour
             gm.RestartShift();
         }
         */
-        
+
 
         // Have I crashed and stopped somewhere above ground?
         // IS THIS MY PROBLEM? That I'm doing this for normal crashing, that is, crashing and stopping above-ground
         // but also if you just happen to drop below city ground level (abandonment)
         // Perhaps it was that the ground was wet to 0. Perhaps I need to lower that ground level for simple abandomnent
-        if ( (isCrashing && rb.velocity == Vector3.zero) )
+        if ((isCrashing && rb.velocity == Vector3.zero))
         {
             gm.upgradesAvailable = false;
             gm.RestartShift();
@@ -425,7 +433,7 @@ public class Taxi_Controller : MonoBehaviour
             gm.cash += gm.crashDeductible / 2.0f;
             gm.RestartShift();
         }
-        
+
 
 
         // This is the B button that begins the next shift when you're at the pad at the start of a new shift.
@@ -440,7 +448,7 @@ public class Taxi_Controller : MonoBehaviour
 
             Debug.Log("<color=green>****</color> Pulling UI down with B button.");
             gm.PullUiDown();
-            
+
         }
 
 
@@ -452,7 +460,7 @@ public class Taxi_Controller : MonoBehaviour
         if (gm.uiIsUp)
         {
             isCrashing = false;
-            
+
             // If the UI is up, don't do anything in the update loop. This should only happen when you're parked at home at the beginning of a shift
             return;
         }
@@ -486,6 +494,7 @@ public class Taxi_Controller : MonoBehaviour
             // For this scheme we only want forward/backward thrust in the direction of the vehicle
             // Direction of the vehicle is controlled below with torque.
 
+           
 
 
             if (hasControl)
@@ -496,7 +505,7 @@ public class Taxi_Controller : MonoBehaviour
                     moveForward = 0.0f;
                 }
 
-                
+
 
                 movement = Quaternion.AngleAxis(angle + 90.0f,
                     Vector3.up * moveForward * moveForward * thrustMultiplier * forwardThrustMult * turboAmount)
@@ -504,7 +513,7 @@ public class Taxi_Controller : MonoBehaviour
                 rb.AddForce(movement);
 
                 UseGas(gasUseRateForwardThrust * Math.Abs(moveForward) * turboAmount);
-                if (moveForward >= joyToleranceMax )
+                if (moveForward >= joyToleranceMax)
                 {
                     FireEngines(enginesForward, Math.Abs(moveForward * forwardJetScale));
                     if (turboTrigger > 0.01f && hasTurbo) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
@@ -516,7 +525,7 @@ public class Taxi_Controller : MonoBehaviour
                         StopEngines(enginesTurboFront);
                     }
                 }
-                if (moveForward <= joyToleranceMin )
+                if (moveForward <= joyToleranceMin)
                 {
                     FireEngines(enginesBackward, Math.Abs(moveForward * backJetScale));
                     if (turboTrigger > 0.01f && hasTurbo) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
@@ -528,10 +537,10 @@ public class Taxi_Controller : MonoBehaviour
                         StopEngines(enginesTurboRear);
                     }
                 }
-                if (moveForward > joyToleranceMin && moveForward < joyToleranceMax )
+                if (moveForward > joyToleranceMin && moveForward < joyToleranceMax)
                 {
-                    StopEngines( enginesForward );
-                    StopEngines( enginesBackward );
+                    StopEngines(enginesForward);
+                    StopEngines(enginesBackward);
                     StopEngines(enginesTurboFront);
                     StopEngines(enginesTurboRear);
                 }
@@ -548,7 +557,7 @@ public class Taxi_Controller : MonoBehaviour
                 if (turboTrigger > 0.01f && hasTurbo)
                 {
                     turboAmount = turboMultiplier;
-                    
+
                 }
                 else
                 {
@@ -559,35 +568,35 @@ public class Taxi_Controller : MonoBehaviour
 
 
             if (hasControl)
+            {
+                // Now get rotation
+                turn = Input.GetAxis(turnJoy);
+
+                if (turn > joyToleranceMin && turn < joyToleranceMax)
                 {
-                  // Now get rotation
-                  turn = Input.GetAxis(turnJoy);
+                    turn = 0.0f;
+                }
 
-        if ( turn > joyToleranceMin && turn < joyToleranceMax )
-        {
-          turn = 0.0f;
-        }
-
-        rb.AddTorque(transform.up * torque * turn);
-                 rb.AddTorque(transform.right * turn * bank * -1.0f);
+                rb.AddTorque(transform.up * torque * turn);
+                rb.AddTorque(transform.right * turn * bank * -1.0f);
 
                 UseGas(gasUseRateRotateThrust * Math.Abs(turn));
-                  if (turn >= joyToleranceMax )
-                  {
-                      FireEngines(enginesRight, Math.Abs(turn * turnJetScale));
-                  }
-                  if (turn <= joyToleranceMin )
-                  {
-                      FireEngines(enginesLeft, Math.Abs(turn * turnJetScale));
-                  }
-                  if (turn < joyToleranceMax && turn > joyToleranceMin )
-                  {
-                      StopEngines(enginesRight);
-                      StopEngines(enginesLeft);
-                  }
-
+                if (turn >= joyToleranceMax)
+                {
+                    FireEngines(enginesRight, Math.Abs(turn * turnJetScale));
                 }
-                
+                if (turn <= joyToleranceMin)
+                {
+                    FireEngines(enginesLeft, Math.Abs(turn * turnJetScale));
+                }
+                if (turn < joyToleranceMax && turn > joyToleranceMin)
+                {
+                    StopEngines(enginesRight);
+                    StopEngines(enginesLeft);
+                }
+
+            }
+
 
 
 
@@ -597,9 +606,9 @@ public class Taxi_Controller : MonoBehaviour
             if (hasControl && hasStrafe)
             {
                 moveSideways = Input.GetAxis(sideJoy);
-                if ( moveSideways > joyToleranceSideMin && moveSideways < joyToleranceSideMax )
+                if (moveSideways > joyToleranceSideMin && moveSideways < joyToleranceSideMax)
                 {
-                  moveSideways = 0.0f;
+                    moveSideways = 0.0f;
                 }
 
                 movement = Quaternion.AngleAxis(angle + 180.0f,
@@ -608,15 +617,15 @@ public class Taxi_Controller : MonoBehaviour
                 rb.AddForce(movement * thrustMultiplier * sideThrustMult);
 
                 UseGas(gasUseRateSideThrust * Math.Abs(moveSideways));
-                if (moveSideways >= joyToleranceMax )
+                if (moveSideways >= joyToleranceMax)
                 {
                     FireEngines(enginesSideLeft, Math.Abs(moveSideways * sideJetScale));
                 }
-                if (moveSideways <= joyToleranceMin )
+                if (moveSideways <= joyToleranceMin)
                 {
                     FireEngines(enginesSideRight, Math.Abs(moveSideways * sideJetScale));
                 }
-                if (moveSideways > joyToleranceMin && moveSideways < joyToleranceMax )
+                if (moveSideways > joyToleranceMin && moveSideways < joyToleranceMax)
                 {
                     StopEngines(enginesSideLeft);
                     StopEngines(enginesSideRight);
@@ -642,7 +651,7 @@ public class Taxi_Controller : MonoBehaviour
         //angleText.text = displayAngle.ToString("0.00");
         gasText.text = gas.ToString("0.00");
         // velocityText.text = rb.velocity.y.ToString("0.00"); // FOR NOW DON'T DO THIS, as I am using this text field to test collisionEffect
-        
+
         /*
         // Invert Control toggle
         if (Input.GetAxis("Fire1") >= 0.1f)
@@ -694,22 +703,22 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-  // !!!!!!!!!!!!!!!!! NEXT
-  //    GET THE JETS WORKING AS INTENDED! INVERSION FAILS THEM
-  // 
-  // CLUE: Right now, the stick itself determines which engines fire, not the actual thrust direction as determined by "invertedControl".
-  // RIGHT NOW, after putting in some debug text, it seems DOWN in Flight control think
-  // 
+        // !!!!!!!!!!!!!!!!! NEXT
+        //    GET THE JETS WORKING AS INTENDED! INVERSION FAILS THEM
+        // 
+        // CLUE: Right now, the stick itself determines which engines fire, not the actual thrust direction as determined by "invertedControl".
+        // RIGHT NOW, after putting in some debug text, it seems DOWN in Flight control think
+        // 
 
         upwardThrust = Input.GetAxis(verticalJoy);
 
-    if ( upwardThrust > joyToleranceMin && upwardThrust < joyToleranceMax )
-    {
-      upwardThrust = 0.0f;
-    }
+        if (upwardThrust > joyToleranceMin && upwardThrust < joyToleranceMax)
+        {
+            upwardThrust = 0.0f;
+        }
 
-    // Thrust Upward. Unless Inverted Control. Then Thrust Downward
-    if ( upwardThrust >= joyToleranceMax && hasControl )
+        // Thrust Upward. Unless Inverted Control. Then Thrust Downward
+        if (upwardThrust >= joyToleranceMax && hasControl)
         {
             if (invertControl)
             {
@@ -744,7 +753,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
         // NO JOY. STOP ALL ENGINES
-        if (upwardThrust <= joyToleranceMax && upwardThrust > joyToleranceMin )
+        if (upwardThrust <= joyToleranceMax && upwardThrust > joyToleranceMin)
         {
             StopEngines(enginesDown);
             StopEngines(enginesUp);
@@ -756,7 +765,7 @@ public class Taxi_Controller : MonoBehaviour
         // Display damage
         collisionText.text = damage.ToString();
 
-        
+
 
 
 
@@ -780,8 +789,8 @@ public class Taxi_Controller : MonoBehaviour
     }
 
 
-    
-    
+
+
 
 
 
@@ -882,11 +891,15 @@ public class Taxi_Controller : MonoBehaviour
         // Gas up at a GasStation
         if (hasControl && isAtPad && Math.Abs(rb.velocity.y) < 0.001)
         {
-            if ( gas < maxGas )
+            if (gas < maxGas)
             {
                 gas += gm.gasFillRate;
                 gm.cash -= gm.gasCost;
                 gm.gasCostThisShift += gm.gasCost; // This is on an update basis. Each fixed frame.
+            }
+            else
+            {
+                PingGasFull();
             }
 
             if (damage > 0.0f)
@@ -896,8 +909,8 @@ public class Taxi_Controller : MonoBehaviour
                 gm.repairsCostThisShift += gm.damageRepairCost; // This is on an update basis. Each fixed frame.
                 ShowRadarCrack(); // Refresh radar, which should now be seen miraculously repairing itself
             }
-            
-            
+
+
             //hasControl = true; //This may be needed. But for now it's interfering with the UI, as I want no control during UI screens.
             // Eventually, I think I will have you go back to a home pad, so this won't be a problem, and can go back in.
         }
@@ -906,11 +919,17 @@ public class Taxi_Controller : MonoBehaviour
         // Gas up at Home Base. Faster, cheaper
         if (hasControl && isHome && Math.Abs(rb.velocity.y) < 0.001)
         {
+
+
             if (gas < maxGas)
             {
                 gas += gm.homePadGasFillRate;
                 gm.cash -= (gm.homePadGasCost);
                 gm.gasCostHome += gm.homePadGasCost; // This is on an update basis. Each fixed frame.                
+            }
+            else
+            {
+                PingGasFull();
             }
 
             if (damage > 0.0f)
@@ -938,7 +957,34 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
+    private void PingGasFull()
+    {
+        if (gas > maxGas)
+        {
+            gas = maxGas;
 
+            soundGasOkToPing = true;
+        }
+        else
+        {
+            soundGasOkToPing = false;
+
+        }
+
+        float totalThrust = moveForward + turn + moveSideways + upwardThrust; // Add the four thrust vectors together. Every time the joystick
+        // tests within the zero tolerance, these varialbes are force-set to 0. If adding the four == 0, then not moving. 
+
+        if (soundGasOkToPing && totalThrust == 0.0f)  // Start with if (moveForward > joyToleranceMin && moveForward < joyToleranceMax) and then add the others
+        {
+            taxiAudio.PlayOneShot(clipFuelFull, 1.0f);
+            soundGasOkToPing = false;
+        }
+            
+
+
+
+            
+    }
 
 
 
