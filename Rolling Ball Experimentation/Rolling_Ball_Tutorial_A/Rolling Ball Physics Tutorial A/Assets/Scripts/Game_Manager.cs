@@ -168,6 +168,7 @@ public class Game_Manager : MonoBehaviour {
     public GameObject[] pads = null;
     private GameObject[] buildings = null;
     private bool[] buildingOccupied = null; // Is Building[] Occupied?
+
     [HideInInspector]
     public GameObject[] stations = null;
     [HideInInspector]
@@ -260,6 +261,13 @@ public class Game_Manager : MonoBehaviour {
     [Header("Powerup")]
     [SerializeField]
     public GameObject powerupPrefab = null; // Eventually this will not be a GameObject but maybe its own class, once it gets function
+
+    [HideInInspector]
+    public bool[] buildingHasPowerup = null; // DOes Building[] have a powerup over it?
+
+    [SerializeField]
+    public int randomChanceOfPowerup = 100;
+
 
 
     [Header("Upgrades")]
@@ -357,7 +365,7 @@ public class Game_Manager : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if ( !uiIsUp )
+        if (!uiIsUp)
         {
             fare = fare - fareDrain;
             if (fare < 0.0f)
@@ -365,8 +373,21 @@ public class Game_Manager : MonoBehaviour {
                 fare = 0.0f;
             }
         }
-        
+
         RefreshScore();
+
+
+        // For now, let's randomly populate powerups on a simply random basis.
+        // This is a test to see if powerups will work as intended, as in they will not occupy the same building already occupied by one
+        // and will go away on schedule.
+
+        int chanceOfPowerup = (int)(UnityEngine.Random.value * randomChanceOfPowerup );
+        if (chanceOfPowerup == 1)
+        {
+            PopulatePowerups(numBuildingsInGrid);
+        }
+
+        
 
     }
 
@@ -387,6 +408,8 @@ public class Game_Manager : MonoBehaviour {
         Array.Resize(ref buildings, (int)((gridSize+1) * (gridSize+1))); // Resize Array to be grid x grid, which should be the max number of buildings BEFORE circle-culling
         
         Array.Resize(ref buildingOccupied, (int)((gridSize + 1) * (gridSize + 1)));
+
+        Array.Resize(ref buildingHasPowerup, (int)((gridSize + 1) * (gridSize + 1)));
 
         // Set all buildings as unoccupied
         for (int i = 0; i < gridSize; i++)
@@ -477,7 +500,7 @@ public class Game_Manager : MonoBehaviour {
             Debug.Log("<color=red>******************* Coordinates of the middle-most building:</color>" + buildings[(int)numBuildingsInGrid / 2].transform.position);
         }
 
-        PopulatePowerups(numBuildingsInGrid);
+        //PopulatePowerups(numBuildingsInGrid);
 
     }
 
@@ -491,32 +514,30 @@ public class Game_Manager : MonoBehaviour {
 
         int rndBldg = (int)(UnityEngine.Random.value * numBuildings);
 
+        if ( buildingHasPowerup[rndBldg] )
+        {
+            return; // IF a powerup builidng number already has a powerup, return. Nothing to do here.
+        }
+
         Debug.LogWarning("<color=cyan>************************</color><color=blue> Building With Powerup is # " + rndBldg + "</color>)");
 
         powerupLoc = new Vector3(buildings[rndBldg].transform.position.x,
-            buildings[rndBldg].transform.localScale.y + 150.0f,
+            buildings[rndBldg].transform.localScale.y + 100.0f,
             buildings[rndBldg].transform.position.z);
 
         myPowerup = Instantiate(powerupPrefab);
         myPowerup.SetActive(true);
         myPowerup.transform.position = powerupLoc;
-        myPowerup.transform.localScale = new Vector3(10.0f, 10.0f, 10.0f);
+        myPowerup.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
+
+        Powerup_Manager powerM = myPowerup.GetComponent<Powerup_Manager>();
+        powerM.buildingOwner = rndBldg; // Tell the powerup which building owns it.
+
+        buildingHasPowerup[rndBldg] = true;
+        
+        
 
 
-        return;
-
-        for ( int i = 0; i < numBuildings; i++ )
-        {
-            Debug.LogWarning("<color=yellow>DDDDDDDDDDDDDDDDDDDDDDDDDD </color><color=purple> INSTANTIATING POWERUP ON BUILDING " + i + "</color>");
-
-            powerupLoc = new Vector3(buildings[i].transform.position.x,
-                buildings[i].transform.localScale.y + 10.0f,
-                buildings[i].transform.position.z);
-
-            myPowerup = Instantiate(powerupPrefab);
-            myPowerup.SetActive(true);
-            myPowerup.transform.position = powerupLoc;
-        }
         
     }
 
