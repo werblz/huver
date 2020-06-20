@@ -274,7 +274,8 @@ public class Taxi_Controller : MonoBehaviour
 
     //private int soundPingTimer = 0; // Countdown to Ping, once triggerd, so it doesn't spam
 
-
+    [SerializeField]
+    private AudioClip clipPowerup = null;
 
 
     private AudioSource taxiAudio = null;
@@ -987,6 +988,11 @@ public class Taxi_Controller : MonoBehaviour
     }
 
 
+    public void PowerupSound()
+    {
+        taxiAudio.PlayOneShot(clipPowerup, 0.5f);
+    }
+
 
     /*
   void ResetTaxi()
@@ -1015,11 +1021,16 @@ public class Taxi_Controller : MonoBehaviour
     }
   }
 
-
-    // Whenever the player enters another object, it checks to see if the player IsColorer (ie: is the character
-    // doing the painting? It might not be. It might be pushing other painters.
-    // And if IsColorer, then set the tag to Painter, as each tile has a script on it that colors itself
-    // if it meets a Painter
+    private void OnTriggerEnter(Collider other)
+    {
+        if ( other.gameObject.tag == "Powerup")
+        {
+            taxiAudio.PlayOneShot(clipPowerup, 0.5f);
+            Powerup_Manager pm = other.GetComponent<Powerup_Manager>();
+            pm.DoPowerup();
+            
+        }
+    }
 
 
     void OnCollisionExit(Collision other)

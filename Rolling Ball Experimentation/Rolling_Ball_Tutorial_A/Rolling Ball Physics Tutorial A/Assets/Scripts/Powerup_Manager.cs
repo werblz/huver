@@ -7,6 +7,9 @@ public class Powerup_Manager : MonoBehaviour {
     [SerializeField]
     private Game_Manager gm = null;
 
+    [SerializeField]
+    private Taxi_Controller taxi = null;
+
     [Tooltip("Time in FixedUpdates.")]
     [SerializeField]
     private int countDownTime = 6000; // Fixed Updates until this object removes itself
@@ -16,13 +19,15 @@ public class Powerup_Manager : MonoBehaviour {
     //[HideInInspector]
     public int buildingOwner = 0;
 
+    private AudioClip clipDestruct = null;
+
 	// Use this for initialization
-	void Start () {
+	private void Start () {
         counter = countDownTime;
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	private void FixedUpdate () {
 
         counter--;
         
@@ -34,9 +39,17 @@ public class Powerup_Manager : MonoBehaviour {
 		
 	}
 
-    void DestroyPowerup()
+    private void DestroyPowerup()
     {
-        DestroyImmediate(gameObject);
+        Destroy(gameObject);
         gm.buildingHasPowerup[buildingOwner] = false; // Tell the Game Manager that the building no longer has a powerup
     }
+
+    public void DoPowerup()
+    {
+        taxi.gas += 100.0f;
+        DestroyPowerup();
+    }
+
+
 }
