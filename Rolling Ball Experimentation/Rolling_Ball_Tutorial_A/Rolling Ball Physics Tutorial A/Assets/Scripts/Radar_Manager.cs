@@ -110,7 +110,10 @@ public class Radar_Manager : MonoBehaviour {
 
     private int padNum = 0;
 
-    
+    private float damagePercentage = 0.0f;
+
+
+
 
     private Vector3 padLoc = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -389,10 +392,15 @@ public class Radar_Manager : MonoBehaviour {
     }
 
 
-    public void CrackRadar()
+
+
+    public void UpdateDamageRadar()
     {
+        // I used to do this here, but now I need it to be a method so I can call it from the taxi on demand.
+        // Because when I use a powerup that fixes damage, it does not update the radar. So Powerup Manager now must tell the taxi to call this
+        // because the Powerup Manager is not going to have a reference to the radar manager. The taxi does
         // Update damage gauge
-        float damagePercentage = Mathf.Abs(tc.damage / tc.maxDamage);
+        damagePercentage = Mathf.Abs(tc.damage / tc.maxDamage);
         damageImage.fillAmount = damagePercentage * 0.165f;
 
         // Update the glass crack overlay

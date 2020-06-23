@@ -738,7 +738,7 @@ public class Game_Manager : MonoBehaviour {
         // Repari all damage
         taxi.damage = 0.0f;
         // Call on the taxi to call on the radar manager to update its crack damage
-        taxi.ShowRadarCrack();
+        taxi.ForceRadarDamageUpdate();
 
         // Add up costs for this shift.
         // This should be accumulated in Advance() as it adds up after every fare - faresThisShift = 0.0f;

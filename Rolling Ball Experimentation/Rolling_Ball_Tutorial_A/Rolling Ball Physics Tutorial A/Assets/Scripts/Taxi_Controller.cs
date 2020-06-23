@@ -881,8 +881,13 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-
-
+    // Because the Powerup has no reference to the Radar Manager, when I use a powerup to reduce damage,
+    // currently it does not update. So I have to get the Powerup Manager to the the Taxi Manager to
+    // tell the Radar Manager to update. Damn this is stupid.
+    public void ForceDamageGaugeUpdate()
+    {
+        rm.UpdateDamageRadar();
+    }
 
 
 
@@ -908,7 +913,7 @@ public class Taxi_Controller : MonoBehaviour
                 damage -= gm.damageRepairRate;
                 gm.cash -= gm.damageRepairCost;
                 gm.repairsCostThisShift += gm.damageRepairCost; // This is on an update basis. Each fixed frame.
-                ShowRadarCrack(); // Refresh radar, which should now be seen miraculously repairing itself
+                ForceRadarDamageUpdate(); // Refresh radar, which should now be seen miraculously repairing itself
             }
 
 
@@ -938,7 +943,7 @@ public class Taxi_Controller : MonoBehaviour
                 damage -= gm.homePadDamageRepairRate;
                 gm.cash -= gm.homePadDamageRepairCost;
                 gm.repairsCostHome += gm.homePadDamageRepairCost; // This is on an update basis. Each fixed frame.
-                ShowRadarCrack(); // Refresh radar, which should now be seen miraculously repairing itself
+                ForceRadarDamageUpdate(); // Refresh radar, which should now be seen miraculously repairing itself
             }
 
 
@@ -1175,7 +1180,7 @@ public class Taxi_Controller : MonoBehaviour
         // I had this higher up in code, but it was causing problems, probably because
         // it was trying to show sprites in an array PAST maximum damage, because I had not
         // yet capped max damage right above here.
-        ShowRadarCrack();
+        ForceRadarDamageUpdate();
         //rm.CrackRadar();
 
         if (other.gameObject.tag == "GasStation")
@@ -1241,9 +1246,9 @@ public class Taxi_Controller : MonoBehaviour
     // Because it eliminates the need for Game Manager to hold its own reference to 
     // Radar Manager, and since it already references in the Taxi, just call it on the Taxi Controller
     // which in turn calls it on the Radar Manager
-    public void ShowRadarCrack()
+    public void ForceRadarDamageUpdate()
     {
-        rm.CrackRadar();
+        rm.UpdateDamageRadar();
 
     }
 
