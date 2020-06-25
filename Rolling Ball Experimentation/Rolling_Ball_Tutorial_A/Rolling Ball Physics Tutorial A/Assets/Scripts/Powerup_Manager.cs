@@ -36,10 +36,24 @@ public class Powerup_Manager : MonoBehaviour {
     [SerializeField]
     private Color[] powerupColor = null;
 
+    [SerializeField]
+    private float[] powerupAnimSpeed = null;
+
     private int powerupNumber = 0;
 
     private SpriteRenderer[] spriteRend = null;
 
+    [SerializeField]
+    private float[] powerupCash = null;
+    [SerializeField]
+    private float[] powerupGas = null;
+    [SerializeField]
+    private float[] powerupRepair = null;
+    private int powerupStrength = 0; // Index for the array of powerup strentghs
+
+    private Animator anim = null;
+
+    private bool triggered = false;
 
 
     // Use this for initialization
@@ -58,8 +72,11 @@ public class Powerup_Manager : MonoBehaviour {
 
         }
 
+        anim = GetComponentInChildren<Animator>();
+
         // For now, get a random sprite representation based on the ones I specify in Inspector
         powerupNumber = (int)(UnityEngine.Random.value * powerupSprite.Length);
+        powerupStrength = (int)(UnityEngine.Random.value * powerupCash.Length);
 
         // Get sprites attached. This takes the array by name (no index) and fills it out with the number of sprites it finds
         spriteRend = GetComponentsInChildren<SpriteRenderer>();
@@ -83,6 +100,11 @@ public class Powerup_Manager : MonoBehaviour {
         }
         */
 
+        // Adjust anim speed based on the strength of the powerup. Low strength = slow
+        if (anim && powerupAnimSpeed.Length == powerupCash.Length)
+        {
+            anim.speed = powerupAnimSpeed[powerupStrength];
+        }
 
         counter = countDownTime;
 	}
@@ -137,26 +159,66 @@ public class Powerup_Manager : MonoBehaviour {
 
     public void DoPowerup()
     {
+        // Since the trigger code is in the taxi, it seems to be calling the DoPowerUp multiple times. Perhaps because each collider on taxi
+        // is triggering? Not sure. But we need a way to stop it. So:
+        if (triggered)
+        {
+            return;
+        }
+        triggered = true;
 
         switch (powerupNumber)
         {
             case 0:
-                gm.cash += 50.0f;
+                // If I didn't fill out the array with exactly 4 strengths, always be weakest
+                if ( powerupCash.Length != 4 )
+                {
+                    powerupStrength = 0;
+                }
+
+                gm.cash += powerupCash[powerupStrength];
+                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                    + "; CASH: " + powerupCash[powerupStrength]
+                    + "; SPEED: " + anim.speed
+                    );
+
                 break;
             case 1:
-                taxi.gas += 50.0f;
+                // If I didn't fill out the array with exactly 4 strengths, always be weakest
+                if (powerupGas.Length != 4)
+                {
+                    powerupStrength = 0;
+                }
+
+                taxi.gas += powerupGas[powerupStrength];
                 if (taxi.gas > taxi.maxGas)
                 {
                     taxi.gas = taxi.maxGas;
                 }
+                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                    + "; GAS: " + powerupCash[powerupStrength]
+                    + "; SPEED: " + anim.speed
+                    );
+
                 break;
             case 2:
-                taxi.damage -= 10.0f;
+                // If I didn't fill out the array with exactly 4 strengths, always be weakest
+                if (powerupRepair.Length != 4)
+                {
+                    powerupStrength = 0;
+                }
+
+                taxi.damage -= powerupRepair[powerupStrength];
                 if (taxi.damage < 0.0f)
                 {
                     taxi.damage = 0.0f;
                 }
                 taxi.ForceDamageGaugeUpdate();
+                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                    + "; REPAIR: " + powerupCash[powerupStrength]
+                    + "; SPEED: " + anim.speed
+                    );
+
                 break;
         }
 

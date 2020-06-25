@@ -262,6 +262,9 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     public GameObject powerupPrefab = null; // Eventually this will not be a GameObject but maybe its own class, once it gets function
 
+    [SerializeField]
+    private float powerupScale = 3.0f;
+
     [HideInInspector]
     public bool[] buildingHasPowerup = null; // DOes Building[] have a powerup over it?
 
@@ -528,7 +531,7 @@ public class Game_Manager : MonoBehaviour {
         myPowerup = Instantiate(powerupPrefab);
         myPowerup.SetActive(true);
         myPowerup.transform.position = powerupLoc;
-        myPowerup.transform.localScale = new Vector3(3.0f, 3.0f, 3.0f);
+        myPowerup.transform.localScale = new Vector3(powerupScale, powerupScale, powerupScale);
 
         Powerup_Manager powerM = myPowerup.GetComponent<Powerup_Manager>();
         powerM.buildingOwner = rndBldg; // Tell the powerup which building owns it.
