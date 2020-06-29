@@ -17,7 +17,10 @@ public class Powerup_Manager : MonoBehaviour {
 
     private int counter = 0;
 
-    //[HideInInspector]
+    [SerializeField]
+    private Renderer timerGaugeRend = null;
+
+    [HideInInspector]
     public int buildingOwner = 0;
 
     private AudioClip clipDestruct = null;
@@ -25,6 +28,8 @@ public class Powerup_Manager : MonoBehaviour {
     private Renderer rend = null;
 
     private MaterialPropertyBlock mpb = null;
+
+    private MaterialPropertyBlock gaugeMpb = null;
 
     private MaterialPropertyBlock[] spriteBlock = null;
 
@@ -55,12 +60,17 @@ public class Powerup_Manager : MonoBehaviour {
 
     private bool triggered = false;
 
+    private Color updatedMeshColor = Color.white;
+    private Color gaugeMeshColor = Color.white;
 
     // Use this for initialization
     private void Start () {
 
+        // For now, get a random sprite representation based on the ones I specify in Inspector
+        powerupNumber = (int)(UnityEngine.Random.value * powerupSprite.Length);
+        powerupStrength = (int)(UnityEngine.Random.value * powerupCash.Length);
+
         rend = GetComponentInChildren<Renderer>();
-        
         
         if (rend)
         {
@@ -69,14 +79,28 @@ public class Powerup_Manager : MonoBehaviour {
             // to do a little math there to get the right index number
             mpb.SetColor("_Color", new Color(1.0f, 0.0f, 1.0f, 1.0f));
             rend.SetPropertyBlock(mpb);
+        }
 
+
+        gaugeMeshColor = new Color(
+            powerupColor[powerupNumber].r,
+            powerupColor[powerupNumber].g,
+            powerupColor[powerupNumber].b,
+            powerupColor[powerupNumber].a
+            );
+
+        if (timerGaugeRend)
+        {
+            gaugeMpb = new MaterialPropertyBlock();
+            // Stupidly, since we're counting UP pads, but counting DOWN numbers, I have
+            // to do a little math there to get the right index number
+            gaugeMpb.SetColor("_Color", gaugeMeshColor);
+            timerGaugeRend.SetPropertyBlock(gaugeMpb);
         }
 
         anim = GetComponentInChildren<Animator>();
 
-        // For now, get a random sprite representation based on the ones I specify in Inspector
-        powerupNumber = (int)(UnityEngine.Random.value * powerupSprite.Length);
-        powerupStrength = (int)(UnityEngine.Random.value * powerupCash.Length);
+
 
         // Get sprites attached. This takes the array by name (no index) and fills it out with the number of sprites it finds
         spriteRend = GetComponentsInChildren<SpriteRenderer>();
@@ -117,18 +141,27 @@ public class Powerup_Manager : MonoBehaviour {
         // Color the powerup so as it darkens, you know it soon goes away. In this case as a test we simply darken it down to 0,0,0,1
         float newColor = (float)counter / countDownTime;
 
+        updatedMeshColor = new Color(
+            powerupColor[powerupNumber].r * newColor,
+            powerupColor[powerupNumber].g * newColor,
+            powerupColor[powerupNumber].b * newColor,
+            powerupColor[powerupNumber].a * newColor
+            );
+
         if (rend)
         {
-            Color updatedMeshColor = new Color(
-                powerupColor[powerupNumber].r * newColor,
-                powerupColor[powerupNumber].g * newColor,
-                powerupColor[powerupNumber].b * newColor,
-                powerupColor[powerupNumber].a * newColor
-                );
             mpb.SetColor("_Color", updatedMeshColor); // As test, use Cyan. 0, 1, 1. Alpha stays 1.
             rend.SetPropertyBlock(mpb);
-
         }
+
+        /* Actually, I don't want to darken the color of the gauge. Just scale it
+        if (timerGaugeRend)
+        {
+            gaugeMpb.SetColor("_Color", updatedMeshColor); // As test, use Cyan. 0, 1, 1. Alpha stays 1.
+            timerGaugeRend.SetPropertyBlock(gaugeMpb);
+        }
+        */
+
 
         for (int i = 0; i < spriteRend.Length; i++)
         {
@@ -147,7 +180,9 @@ public class Powerup_Manager : MonoBehaviour {
         {
             DestroyPowerup(); // This will be called when the timer goes off, but also when it's hit, and does something.
         }
-        
+
+        Vector3 timerScale = new Vector3(timerGaugeRend.transform.localScale.x, (float)counter / (float)countDownTime, timerGaugeRend.transform.localScale.x);
+        timerGaugeRend.transform.localScale = timerScale;
 		
 	}
 

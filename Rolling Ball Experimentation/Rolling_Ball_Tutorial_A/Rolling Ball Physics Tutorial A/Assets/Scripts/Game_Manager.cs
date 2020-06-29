@@ -304,7 +304,7 @@ public class Game_Manager : MonoBehaviour {
     private int numDebugPads = 2;
     [Tooltip("Do Upgrades Cost Sheklys?")]
     [SerializeField]
-    public bool upgradesCostShekyls = false;
+    public bool upgradesDoNotCostShekyls = false;
 
     // Game stats
     [Tooltip("What shift are we on?")]

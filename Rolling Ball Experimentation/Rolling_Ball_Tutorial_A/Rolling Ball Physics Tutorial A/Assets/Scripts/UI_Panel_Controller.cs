@@ -416,7 +416,7 @@ public class UI_Panel_Controller : MonoBehaviour {
         }
 
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
-        if (!gm.upgradesCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
+        if (gm.upgradesDoNotCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
         {
             // Here, you have failed, as the item you try to buy is not affordable.
@@ -515,7 +515,7 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // Deduct cost
         Debug.Log("CASH BEFORE UPGRADE - " + gm.cash);
-        if (gm.upgradesCostShekyls) // Only spend the cash if NOT in debug mode
+        if (!gm.upgradesDoNotCostShekyls) // Only spend the cash if NOT in debug mode
         {
             gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
             
