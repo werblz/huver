@@ -510,7 +510,7 @@ public class Game_Manager : MonoBehaviour {
 
     private void PopulatePowerups( int numBuildings )
     {
-        Debug.LogWarning("<color=cyan>$$$$$$$$$$$$$$$$$$$$$$$$</color><color=yellow>NUMBER OF POWERUPS = " + numBuildings + "</color>)");
+        //Debug.LogWarning("<color=cyan>$$$$$$$$$$$$$$$$$$$$$$$$</color><color=yellow>NUMBER OF POWERUPS = " + numBuildings + "</color>)");
 
         GameObject myPowerup = null;
         Vector3 powerupLoc = new Vector3(0.0f, 0.0f, 0.0f);
@@ -522,7 +522,7 @@ public class Game_Manager : MonoBehaviour {
             return; // IF a powerup builidng number already has a powerup, return. Nothing to do here.
         }
 
-        Debug.LogWarning("<color=cyan>************************</color><color=blue> Building With Powerup is # " + rndBldg + "</color>)");
+        //Debug.LogWarning("<color=cyan>************************</color><color=blue> Building With Powerup is # " + rndBldg + "</color>)");
 
         powerupLoc = new Vector3(buildings[rndBldg].transform.position.x,
             buildings[rndBldg].transform.localScale.y + 100.0f,
@@ -1000,6 +1000,33 @@ public class Game_Manager : MonoBehaviour {
     }
 
 
+    /* THIS IS NOT WORKING!!!!
+    This stupidly assumed the buildings were still in a grid, but culled by a circle, so the surrounding buildings fit the standard array pattern
+    of 
+    x-grid-1 | x-grid | x+grid+1
+      x-1    |   x    |   X+1
+    x+grid-1 | x+grid | x+grid+1
+
+        But it does not. Because I'm not culling a square array, I'm creating buildings inside a circle, though still on a grid within that circle.
+        Which means the pattern is never certain. Depending on which building you choose within that circular "array" the offset for the ones left
+        and right are correct, but you can never know the offsets of the ones above and below in the grid rows. Because the rows are not even
+
+        So to fix this, I now have to:
+
+        - Find the 8 closest buildnigs by location distance
+          - Nested loop
+            - For each pad
+              - For each building in the whole city
+                - Find all distances
+                  - Sort the distances
+                    - Choose the top 9
+                      - One of those will be YOU, the others will be the 8 surrounding
+        - Get their index in the array in the sorted distance array
+        - Scale those instead.
+         
+         */ 
+
+
     // This should rescale the buildings around the building specified when this method is called.
     // It should be called after populating Pads, Stations and Home Base.
     // The populate method should put the whole building array in here, and tell it by index which building it is.
@@ -1136,7 +1163,7 @@ public class Game_Manager : MonoBehaviour {
         }
 
         // Start lane at the tallest buliding plus one airship height
-        float laneY = shortestBuilding + airShipObject.airshipHeight;
+        //float laneY = shortestBuilding + airShipObject.airshipHeight;
 
         // Get the width between ships
         float myXDistance = maxPadDistance / numShips;
@@ -1146,7 +1173,7 @@ public class Game_Manager : MonoBehaviour {
         float myX = (maxPadDistance / -2.0f) + (myXDistance / 2.0f);
 
         // Rotation is 0. If the ship is odd, it is 90 (down below)
-        float myYRotation = 0.0f;
+        //float myYRotation = 0.0f;
 
 
 
@@ -1385,7 +1412,7 @@ public class Game_Manager : MonoBehaviour {
 
     public void PullUiDown()
     {
-        Debug.Log("<color=yellow>***********</color> <color=black> UI DOWN!</color>");
+        //Debug.Log("<color=yellow>***********</color> <color=black> UI DOWN!</color>");
         taxi.hasControl = true;
         taxi.isCrashing = false;
         uiIsUp = false;

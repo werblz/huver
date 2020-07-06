@@ -212,10 +212,11 @@ public class Powerup_Manager : MonoBehaviour {
                 }
 
                 gm.cash += powerupCash[powerupStrength];
-                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                /*Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
                     + "; CASH: " + powerupCash[powerupStrength]
                     + "; SPEED: " + anim.speed
                     );
+                    */
 
                 break;
             case 1:
@@ -230,10 +231,11 @@ public class Powerup_Manager : MonoBehaviour {
                 {
                     taxi.gas = taxi.maxGas;
                 }
-                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                /*Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
                     + "; GAS: " + powerupCash[powerupStrength]
                     + "; SPEED: " + anim.speed
                     );
+                    */
 
                 break;
             case 2:
@@ -249,10 +251,11 @@ public class Powerup_Manager : MonoBehaviour {
                     taxi.damage = 0.0f;
                 }
                 taxi.ForceDamageGaugeUpdate();
-                Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
+                /*Debug.LogError("<color=purple>#######################</color> STRENGTH: " + powerupStrength
                     + "; REPAIR: " + powerupCash[powerupStrength]
                     + "; SPEED: " + anim.speed
                     );
+                    */
 
                 break;
         }

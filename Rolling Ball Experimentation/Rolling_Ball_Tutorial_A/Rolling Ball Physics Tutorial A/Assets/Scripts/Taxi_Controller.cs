@@ -447,7 +447,7 @@ public class Taxi_Controller : MonoBehaviour
                 SoundNextShift();
             }
 
-            Debug.Log("<color=green>****</color> Pulling UI down with B button.");
+            //Debug.Log("<color=green>****</color> Pulling UI down with B button.");
             gm.PullUiDown();
 
         }
@@ -1056,10 +1056,10 @@ public class Taxi_Controller : MonoBehaviour
         // How much collision?
         float collisionEffect = other.relativeVelocity.magnitude;
         //Debug.Log("<color=white>COLLISION! " + collisionEffect + "</color>");
-        Debug.LogWarning("<color=red> *********************** COLLISION EFFECT " + collisionEffect + "</color>");
+        //Debug.LogWarning("<color=red> *********************** COLLISION EFFECT " + collisionEffect + "</color>");
 
         int collisionArrayIndex = (int)Mathf.Clamp((collisionEffect * .2f), 0.0f, 9.0f);
-        Debug.LogWarning("<color=red> *********************** COLLISION INDEX " + collisionArrayIndex + "</color>");
+        //Debug.LogWarning("<color=red> *********************** COLLISION INDEX " + collisionArrayIndex + "</color>");
 
         float collisionVolume = collisionEffect * 0.03f;
         if (collisionVolume < 0.3f)

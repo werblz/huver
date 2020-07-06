@@ -14,9 +14,9 @@ public class Landing_Pad_Sound_Pitch : MonoBehaviour {
 	void Start () {
 
         pm = GetComponentInParent<Pad_Manager>();
-        Debug.LogWarning("<color=white>************************************** PAD NUMBER IS " + pm.padNumber + "</color>");
+        //Debug.LogWarning("<color=white>************************************** PAD NUMBER IS " + pm.padNumber + "</color>");
         padAudio = GetComponent<AudioSource>();
-        Debug.LogWarning("<color=white>************************************** AUDIO SOURCE " + padAudio.name + "</color>");
+        //Debug.LogWarning("<color=white>************************************** AUDIO SOURCE " + padAudio.name + "</color>");
 
         padAudio.pitch = 1.0f + (pm.padNumber * .05f);
     }

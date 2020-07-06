@@ -102,9 +102,9 @@ public class Pad_Manager : MonoBehaviour {
             {
                 isTouching = false; 
                 isTouched = true;
-                Debug.LogWarning(" **** TOUCHED PAD " + padNumber);
+                //Debug.LogWarning(" **** TOUCHED PAD " + padNumber);
                 gm.Advance();
-                Debug.LogWarning(" **** MOVING ON to pad " + gm.nextPad);
+                //Debug.LogWarning(" **** MOVING ON to pad " + gm.nextPad);
                 
             }
         }

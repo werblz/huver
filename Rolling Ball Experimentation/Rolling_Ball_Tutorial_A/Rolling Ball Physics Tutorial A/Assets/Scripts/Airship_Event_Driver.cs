@@ -20,8 +20,8 @@ public class Airship_Event_Driver : MonoBehaviour {
     [SerializeField]
     private Airship_Mover mover = null;
 
-    [SerializeField]
-    private GameObject running_lights = null;
+    //[SerializeField]
+    //private GameObject running_lights = null;
 
     private Animator anim = null;
 

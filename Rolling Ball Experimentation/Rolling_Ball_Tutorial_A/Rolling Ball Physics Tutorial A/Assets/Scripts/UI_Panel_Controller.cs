@@ -193,21 +193,22 @@ public class UI_Panel_Controller : MonoBehaviour {
         {
             // So this worked. It created a clone. Now can I move it, etc?
             myDialog = Instantiate(gm.shiftDialogs[dialogNum]);
-            Debug.LogWarning("<color=blue>*** myDialog = " + myDialog.name + "</color>");
+            //Debug.LogWarning("<color=blue>*** myDialog = " + myDialog.name + "</color>");
 
         }
 
 
         // Yup. It movedd.
         myDialog.transform.SetParent(shiftDialogParent.transform, false);
-        Debug.LogWarning("<color=blue>*** Setting Parent of " +
+        /*Debug.LogWarning("<color=blue>*** Setting Parent of " +
             myDialog.name + " to " +
             shiftDialogParent.name +
             "</color>");
+            */
 
         // Can I parent it?
         myDialog.transform.localPosition = Vector3.zero;
-        Debug.LogWarning("<color=blue>*** Setting localPos to 0,0,0 </color>");
+        //Debug.LogWarning("<color=blue>*** Setting localPos to 0,0,0 </color>");
 
         myDialog.transform.rotation = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
         myDialog.SetActive(true);
@@ -311,19 +312,19 @@ public class UI_Panel_Controller : MonoBehaviour {
             // This stops code if slot gets to numchoices-1 (so slot 2). We should never get to 3
             if (slot < numChoices)
             {
-                Debug.Log("<color=blue>**** Looking at upgrade = " + i + "</color>");
-                Debug.Log("****** Currently trying to fit Slot = " + slot);
+                //Debug.Log("<color=blue>**** Looking at upgrade = " + i + "</color>");
+                //Debug.Log("****** Currently trying to fit Slot = " + slot);
                 if (!upgradeDataItems[i].isPurchased)
                 {
-                    Debug.Log("<color=blue>******** upgrade " + i + " is NOT already purchased</color>");
+                    //Debug.Log("<color=blue>******** upgrade " + i + " is NOT already purchased</color>");
                     // Pick i
-                    Debug.Log("********* ADDING UPGRADE " + i + " TO SLOT " + slot);
+                    //Debug.Log("********* ADDING UPGRADE " + i + " TO SLOT " + slot);
                     chosenUpgrades[slot] = i;
                     slot++;
-                    Debug.Log("\n\n\n**********************************");
+                    //Debug.Log("\n\n\n**********************************");
                     for (int j = 0; j < numChoices; j++)
                     {
-                        Debug.Log("**** Upgrade " + i + " is " + i + " which is " + upgradeDataItems[i].name);
+                        //Debug.Log("**** Upgrade " + i + " is " + i + " which is " + upgradeDataItems[i].name);
                     }
                 }
             }
@@ -521,7 +522,7 @@ public class UI_Panel_Controller : MonoBehaviour {
             
         }
         
-        Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
+        //Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
         upgradeDataItems[picks[choice]].isNew = false;
         // Don't forget to turn off the upgrade prefab or it will remain visible next time
         // While I'm at it, unparent it and set it to origin, so the holding location doesn't
