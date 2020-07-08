@@ -773,8 +773,8 @@ public class Taxi_Controller : MonoBehaviour
 
         if (hasControl)
         {
-            verticalAudio.pitch = 2.0f * Mathf.Abs(upwardThrust) + 1.5f;
-            verticalAudio.volume = Mathf.Abs(upwardThrust) * .2f + .2f;
+            verticalAudio.pitch = 1.0f * Mathf.Abs(upwardThrust) + 1.5f;
+            verticalAudio.volume = Mathf.Abs(upwardThrust) * .05f + .025f;
         }
 
 
@@ -1340,7 +1340,7 @@ public class Taxi_Controller : MonoBehaviour
 
         verticalAudio.volume = 0.0f;
 
-        taxiAudio.PlayOneShot(clipLoseControl, .5f);
+        taxiAudio.PlayOneShot(clipLoseControl, .15f);
 
 
 
