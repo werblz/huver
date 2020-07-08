@@ -244,6 +244,16 @@ public class Taxi_Controller : MonoBehaviour
 
     [Header("Audio")]
 
+    [SerializeField]
+    private AudioSource verticalAudio = null;
+    [SerializeField]
+    private AudioSource forwardAudio = null;
+    [SerializeField]
+    private AudioSource turnAudio = null;
+    [SerializeField]
+    private AudioSource strafeAudio = null;
+
+
 
     [SerializeField]
     private AudioClip clipBump = null;
@@ -270,9 +280,12 @@ public class Taxi_Controller : MonoBehaviour
     private AudioClip clipFuelFull = null;
 
     [SerializeField]
-    private AudioClip[] clipCollision = null;
+    private AudioClip clipLoseControl = null;
 
-    //private int soundPingTimer = 0; // Countdown to Ping, once triggerd, so it doesn't spam
+
+    [SerializeField]
+    private AudioClip[] clipCollision = null;
+//private int soundPingTimer = 0; // Countdown to Ping, once triggerd, so it doesn't spam
 
     [SerializeField]
     private AudioClip clipPowerup = null;
@@ -290,6 +303,8 @@ public class Taxi_Controller : MonoBehaviour
         taxiAudio = GetComponent<AudioSource>();
 
         taxiMovedToInitialLocation = false;
+
+        verticalAudio.volume = 0.01f;
 
         gas = maxGas;
         rb = GetComponent<Rigidbody>();
@@ -376,6 +391,8 @@ public class Taxi_Controller : MonoBehaviour
         rb.Sleep();
         //Debug.Log("<color=red>*****************</color> I HAVE MOVED THE TAXI TO " + taxiStartPos.ToString());
 
+        verticalAudio.volume = 0.01f;
+
         taxiMovedToInitialLocation = true;
 
 
@@ -405,6 +422,8 @@ public class Taxi_Controller : MonoBehaviour
 
         */
 
+
+         
 
 
         // I guess first, I should check to see if I've crashed, and am dead on the ground somewhere
@@ -731,6 +750,7 @@ public class Taxi_Controller : MonoBehaviour
                 ThrustUp(Math.Abs(upwardThrust));
                 FireEngines(enginesUp, Math.Abs(upwardThrust) * upJetScale);
             }
+            
         }
 
 
@@ -747,6 +767,14 @@ public class Taxi_Controller : MonoBehaviour
                 ThrustDown(Math.Abs(upwardThrust));
                 FireEngines(enginesDown, Math.Abs(upwardThrust) * downJetScale);
             }
+
+
+        }
+
+        if (hasControl)
+        {
+            verticalAudio.pitch = 2.0f * Mathf.Abs(upwardThrust) + 1.5f;
+            verticalAudio.volume = Mathf.Abs(upwardThrust) * .2f + .2f;
         }
 
 
@@ -1309,6 +1337,10 @@ public class Taxi_Controller : MonoBehaviour
 
         gm.tip = 0.0f;
         gm.fare = 0.0f;
+
+        verticalAudio.volume = 0.0f;
+
+        taxiAudio.PlayOneShot(clipLoseControl, .5f);
 
 
 
