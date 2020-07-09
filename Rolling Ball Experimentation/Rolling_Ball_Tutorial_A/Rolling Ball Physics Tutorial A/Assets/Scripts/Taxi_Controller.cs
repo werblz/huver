@@ -255,6 +255,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
+
     [SerializeField]
     private AudioClip clipBump = null;
 
@@ -773,8 +774,29 @@ public class Taxi_Controller : MonoBehaviour
 
         if (hasControl)
         {
+            // Vertical pitch and volume
             verticalAudio.pitch = 1.0f * Mathf.Abs(upwardThrust) + 1.5f;
-            verticalAudio.volume = Mathf.Abs(upwardThrust) * .05f + .025f;
+            verticalAudio.volume = Mathf.Abs(upwardThrust) * .05f + .03f;
+
+            // Forward/Backward pitch and volume
+            forwardAudio.pitch = 0.3f * Mathf.Abs(moveForward) + 1.0f;
+            forwardAudio.volume = Mathf.Abs(moveForward) * .1f + .03f;
+
+            // Turn pitch and volume
+            turnAudio.pitch = 1.5f * Mathf.Abs(turn) + 0.4f;
+            turnAudio.volume = Mathf.Abs(turn) * .1f + .03f;
+
+            // Strafe pitch and volume
+            strafeAudio.pitch = 1.5f * Mathf.Abs(moveSideways) + 0.25f;
+            strafeAudio.volume = Mathf.Abs(moveSideways) * .1f + .035f;
+
+            if (hasTurbo)
+            {
+                forwardAudio.pitch += forwardAudio.pitch * turboTrigger;
+                forwardAudio.volume += forwardAudio.volume * turboTrigger;
+            }
+            
+
         }
 
 
@@ -1339,6 +1361,9 @@ public class Taxi_Controller : MonoBehaviour
         gm.fare = 0.0f;
 
         verticalAudio.volume = 0.0f;
+        forwardAudio.volume = 0.0f;
+        turnAudio.volume = 0.0f;
+        strafeAudio.volume = 0.0f;
 
         taxiAudio.PlayOneShot(clipLoseControl, .15f);
 
