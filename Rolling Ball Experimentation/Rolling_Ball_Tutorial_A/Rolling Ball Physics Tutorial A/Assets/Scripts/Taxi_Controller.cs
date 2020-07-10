@@ -8,6 +8,8 @@ using System;
 public class Taxi_Controller : MonoBehaviour
 {
 
+
+
     // Character controller
     CharacterController controller;
 
@@ -296,6 +298,52 @@ public class Taxi_Controller : MonoBehaviour
 
     private bool soundGasOkToPing = true;
 
+
+    [Header("Engine Audio Adjustments")]
+    
+    [SerializeField]
+    private float verticalPitchMinimum = 0.0f;
+    [SerializeField]
+    private float verticalPitchMultiplier = 1.0f;
+    [SerializeField]
+    private float verticalVolumeMinimum = 0.0f;
+    [SerializeField]
+    private float verticalVolumeMultiplier = 1.0f;
+
+    [SerializeField]
+    private float forwardPitchMinimum = 0.0f;
+    [SerializeField]
+    private float forwardPitchMultiplier = 1.0f;
+    [SerializeField]
+    private float forwardVolumeMinimum = 0.0f;
+    [SerializeField]
+    private float forwardVolumeMultiplier = 1.0f;
+
+    [SerializeField]
+    private float turnPitchMinimum = 0.0f;
+    [SerializeField]
+    private float turnPitchMultiplier = 1.0f;
+    [SerializeField]
+    private float turnVolumeMinimum = 0.0f;
+    [SerializeField]
+    private float turnVolumeMultiplier = 1.0f;
+
+    [SerializeField]
+    private float strafePitchMinimum = 0.0f;
+    [SerializeField]
+    private float strafePitchMultiplier = 1.0f;
+    [SerializeField]
+    private float strafeVolumeMinimum = 0.0f;
+    [SerializeField]
+    private float strafeVolumeMultiplier = 1.0f;
+
+    [SerializeField]
+    private float turboPitchMultiplier = 1.0f;
+    [SerializeField]
+    private float turboVolumeMultiplier = 1.0f;
+
+
+
     //Don't need this.
     //private Vector3[] originalScale = null;
 
@@ -410,34 +458,8 @@ public class Taxi_Controller : MonoBehaviour
         // UprightTaxi();
         // UpdateUI();
 
-        /*
-        // THIS WHOLE SECTION GOES!
-        // This is temporary, using the left trigger to end UI panel. Eventually I will move that to one of the four lettered buttons, on buttontrigger or something
-        turboTrigger = Input.GetAxis(turboButton);
-        // For now, to test, take UI down when you hit the left trigger. This goes away soon.
-        if (turboTrigger > 0.01f)
-        {
-            Debug.Log("<color=green>****</color> Pulling UI down with Turbo Trigger.");
-            gm.UiDown();
-        }
-
-        */
-
-
-         
-
-
-        // I guess first, I should check to see if I've crashed, and am dead on the ground somewhere
-
-        // First, have I gone through the ground? This is the extreme case where you fall through or hit the ground. Dead.
-        /*
-        if (transform.position.y < 0.0f)
-        {
-            Debug.Log("<color=red> YOU HAVE BUST THROUGH THE GROUND!</color>");
-            gm.RestartShift();
-        }
-        */
-
+        // NOTE: There area a lot of sections that use the same if: if (hasControl). Yes, it should all be nested under one, but this way
+        // I can think about it more clearly.
 
         // Have I crashed and stopped somewhere above ground?
         // IS THIS MY PROBLEM? That I'm doing this for normal crashing, that is, crashing and stopping above-ground
@@ -449,17 +471,15 @@ public class Taxi_Controller : MonoBehaviour
             gm.RestartShift();
         }
 
+        // Have I crashed out of the city? ie: gotten so low that the car can be considered abandoned? Which happens also if you crash.
         if (transform.position.y < 10.0f)
         {
             gm.cash += gm.crashDeductible / 2.0f;
             gm.RestartShift();
         }
 
-
-
         // This is the B button that begins the next shift when you're at the pad at the start of a new shift.
         // The code checks to see if the UI is up in order to allow the SoundNextShift sound to fire. Otherwise it will not
-
         if (Input.GetAxis("Fire2") >= 0.1f)
         {
             if (gm.uiIsUp)
@@ -471,13 +491,8 @@ public class Taxi_Controller : MonoBehaviour
             gm.PullUiDown();
 
         }
-
-
-
-
-
-
-
+        
+        // If UI is up, then we're clearly not crashing, so make it so.
         if (gm.uiIsUp)
         {
             isCrashing = false;
@@ -486,7 +501,7 @@ public class Taxi_Controller : MonoBehaviour
             return;
         }
 
-        else
+        else // Everything else is IF UI is NOT UP! This seems quite backwards, but hey, it works. Clean up later.
         {
 
 
@@ -525,9 +540,7 @@ public class Taxi_Controller : MonoBehaviour
                 {
                     moveForward = 0.0f;
                 }
-
-
-
+                
                 movement = Quaternion.AngleAxis(angle + 90.0f,
                     Vector3.up * moveForward * moveForward * thrustMultiplier * forwardThrustMult * turboAmount)
                     * Vector3.right * moveForward * thrustMultiplier * turboAmount;
@@ -565,29 +578,22 @@ public class Taxi_Controller : MonoBehaviour
                     StopEngines(enginesTurboFront);
                     StopEngines(enginesTurboRear);
                 }
-
             }
-
-
-
+            
             if (hasControl)
             {
-
                 turboTrigger = Input.GetAxis(turboButton);
 
                 if (turboTrigger > 0.01f && hasTurbo)
                 {
                     turboAmount = turboMultiplier;
-
                 }
                 else
                 {
                     turboAmount = 1.0f;
                 }
             }
-
-
-
+            
             if (hasControl)
             {
                 // Now get rotation
@@ -615,15 +621,8 @@ public class Taxi_Controller : MonoBehaviour
                     StopEngines(enginesRight);
                     StopEngines(enginesLeft);
                 }
-
             }
-
-
-
-
-
-
-
+            
             if (hasControl && hasStrafe)
             {
                 moveSideways = Input.GetAxis(sideJoy);
@@ -651,86 +650,15 @@ public class Taxi_Controller : MonoBehaviour
                     StopEngines(enginesSideLeft);
                     StopEngines(enginesSideRight);
                 }
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
-
 
         //angleText.text = displayAngle.ToString("0.00");
         gasText.text = gas.ToString("0.00");
-        // velocityText.text = rb.velocity.y.ToString("0.00"); // FOR NOW DON'T DO THIS, as I am using this text field to test collisionEffect
-
-        /*
-        // Invert Control toggle
-        if (Input.GetAxis("Fire1") >= 0.1f)
-        {
-            invertControl = false;
-            invertControlString = "Flight Control";
-        }
-
-
-        // Invert Control toggle
-        if (Input.GetAxis("Jump") >= 0.1f)
-        {
-            invertControl = true;
-            invertControlString = "Inverted Control";
-        }
-        */
-
-
-
-        /*
-        // Switch which joystick side motion turns and which strafes
-        if (Input.GetAxis("Fire2") >= 0.1f)
-        {
-
-            turnJoy = "Horizontal";  // Default "Horizontal"
-            sideJoy = "Mouse Y";     // Default "Mouse Y"
-            Debug.Log("<color=blue>Fire2 - Strafe on Joy1. Turn on Joy2.</color>");
-
-
-        }
-
-        // Switch which joystick side motion turns and which strafes
-        if (Input.GetAxis("Fire3") >= 0.1f)
-        {
-
-            turnJoy = "Mouse Y";  // Default "Horizontal"
-            sideJoy = "Horizontal";     // Default "Mouse Y"
-            Debug.Log("<color=green>Fire3 - Turn on Joy1. Strafe on Joy2.</color>");
-
-
-        }
-
-        */
-
-
-
+        
         //Oh, and for now, I'm leaving in the A/Y buttons for up/down, but also adding this:
         invertControlText.text = invertControlString;
-
-
-
-        // !!!!!!!!!!!!!!!!! NEXT
-        //    GET THE JETS WORKING AS INTENDED! INVERSION FAILS THEM
-        // 
-        // CLUE: Right now, the stick itself determines which engines fire, not the actual thrust direction as determined by "invertedControl".
-        // RIGHT NOW, after putting in some debug text, it seems DOWN in Flight control think
-        // 
-
+        
         upwardThrust = Input.GetAxis(verticalJoy);
 
         if (upwardThrust > joyToleranceMin && upwardThrust < joyToleranceMax)
@@ -751,9 +679,7 @@ public class Taxi_Controller : MonoBehaviour
                 ThrustUp(Math.Abs(upwardThrust));
                 FireEngines(enginesUp, Math.Abs(upwardThrust) * upJetScale);
             }
-            
         }
-
 
         // Thrust Downward. Unless Inverted Control. Then Thrust Upward
         if (upwardThrust <= joyToleranceMin && hasControl)
@@ -768,41 +694,33 @@ public class Taxi_Controller : MonoBehaviour
                 ThrustDown(Math.Abs(upwardThrust));
                 FireEngines(enginesDown, Math.Abs(upwardThrust) * downJetScale);
             }
-
-
         }
 
         if (hasControl)
         {
             // Vertical pitch and volume
-            verticalAudio.pitch = 1.0f * Mathf.Abs(upwardThrust) + 1.5f;
-            verticalAudio.volume = Mathf.Abs(upwardThrust) * .05f + .03f;
+            verticalAudio.pitch =  Mathf.Abs(upwardThrust) * verticalPitchMultiplier + verticalPitchMinimum;
+            verticalAudio.volume = Mathf.Abs(upwardThrust) * verticalVolumeMultiplier + verticalVolumeMinimum;
 
             // Forward/Backward pitch and volume
-            forwardAudio.pitch = 0.3f * Mathf.Abs(moveForward) + 1.0f;
-            forwardAudio.volume = Mathf.Abs(moveForward) * .1f + .03f;
+            forwardAudio.pitch = Mathf.Abs(moveForward) * forwardPitchMultiplier + forwardPitchMinimum;
+            forwardAudio.volume = Mathf.Abs(moveForward) * forwardVolumeMultiplier + forwardVolumeMinimum;
 
             // Turn pitch and volume
-            turnAudio.pitch = 1.5f * Mathf.Abs(turn) + 0.4f;
-            turnAudio.volume = Mathf.Abs(turn) * .1f + .03f;
+            turnAudio.pitch = Mathf.Abs(turn) * turnPitchMultiplier + turnPitchMinimum;
+            turnAudio.volume = Mathf.Abs(turn) * turnVolumeMultiplier + turnVolumeMinimum;
 
             // Strafe pitch and volume
-            strafeAudio.pitch = 1.5f * Mathf.Abs(moveSideways) + 0.25f;
-            strafeAudio.volume = Mathf.Abs(moveSideways) * .1f + .035f;
+            strafeAudio.pitch = Mathf.Abs(moveSideways) * strafePitchMultiplier + strafePitchMinimum;
+            strafeAudio.volume = Mathf.Abs(moveSideways) * strafeVolumeMultiplier + strafeVolumeMinimum;
 
             if (hasTurbo)
             {
-                forwardAudio.pitch += forwardAudio.pitch * turboTrigger;
-                forwardAudio.volume += forwardAudio.volume * turboTrigger;
+                forwardAudio.pitch += turboTrigger * turboPitchMultiplier;
+                forwardAudio.volume += turboTrigger * turboVolumeMultiplier;
             }
-            
-
         }
-
-
-
-
-
+        
         // NO JOY. STOP ALL ENGINES
         if (upwardThrust <= joyToleranceMax && upwardThrust > joyToleranceMin)
         {
@@ -815,14 +733,9 @@ public class Taxi_Controller : MonoBehaviour
 
         // Display damage
         collisionText.text = damage.ToString();
-
-
-
-
-
+        
         gm.hasControl = hasControl;
-
-
+        
         if (!hasControl)
         {
             StopEngines(enginesForward);
@@ -836,16 +749,9 @@ public class Taxi_Controller : MonoBehaviour
             StopEngines(enginesTurboFront);
             StopEngines(enginesTurboRear);
         }
-
     }
 
 
-
-
-
-
-
-    // !!!!!!!!!!!!!!!!!!!!!! It's just not appearing to fire the thrusters when inverted. I mean only one side fires for each type of control, not both.
 
 
     void ThrustUp(float thrustAmount)

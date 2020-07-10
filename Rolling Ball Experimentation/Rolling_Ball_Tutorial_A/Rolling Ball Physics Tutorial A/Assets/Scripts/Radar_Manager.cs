@@ -384,7 +384,7 @@ public class Radar_Manager : MonoBehaviour {
         }
         else
         {
-            alphaColor -= 0.05f;
+            alphaColor -= 0.03f;
         }
 
         gasGaugeImage.color = new Color(1.0f, 1.0f, 1.0f, alphaColor);
