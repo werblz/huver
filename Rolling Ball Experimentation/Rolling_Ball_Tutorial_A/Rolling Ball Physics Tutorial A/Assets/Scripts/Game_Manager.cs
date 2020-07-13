@@ -33,6 +33,10 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     private Airship_Mover airShipObject = null;
 
+    [Tooltip("Audio Hailer")]
+    [SerializeField]
+    private Hail_Audio hail = null;
+
     private Airship_Mover[] airShip = null;
 
     [Header("City Setup")]
@@ -584,6 +588,14 @@ public class Game_Manager : MonoBehaviour {
         // But also pass the pad num, so I can put the right texture on
         
         pm.LightBeam(flag, padNum);
+
+        // Play sound. First var is which sound, and second which person. And since this is an array manually arranged to hold the people in order
+        // the second variable will always point to a particular person
+        if (flag)
+        {
+            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * 4.0f));
+        }
+
         
 
     }

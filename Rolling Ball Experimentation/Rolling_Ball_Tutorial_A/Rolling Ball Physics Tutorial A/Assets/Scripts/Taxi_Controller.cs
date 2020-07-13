@@ -712,7 +712,7 @@ public class Taxi_Controller : MonoBehaviour
 
             // Strafe pitch and volume
             strafeAudio.pitch = Mathf.Abs(moveSideways) * strafePitchMultiplier + strafePitchMinimum;
-            strafeAudio.volume = Mathf.Abs(moveSideways) * strafeVolumeMultiplier + strafeVolumeMinimum;
+            strafeAudio.volume = Mathf.Abs(moveSideways) * strafeVolumeMultiplier + strafeVolumeMinimum;    
 
             if (hasTurbo)
             {
