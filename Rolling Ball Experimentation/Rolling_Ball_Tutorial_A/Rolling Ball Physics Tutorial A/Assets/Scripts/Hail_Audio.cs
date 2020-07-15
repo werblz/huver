@@ -54,52 +54,106 @@ public class Hail_Audio : MonoBehaviour {
         taxiAudio = taxi.GetComponent<AudioSource>();
         Debug.Log("<color=white>$%%$%$%$%$%$%$ </color> Audio Source = " + taxiAudio.name);
     }
+    
 
     // Update is called once per frame
-    public void TriggerAudio (int whichSound, int whichPerson ) {
+    public void TriggerAudio (int whichSound, int whichPerson, float volume, float delay ) {
 
         // This case statement should be replaced. Instead of a case and a bunch of arrays, make single ScriptableObjects for each person, and then use the
         // array of pad numbers. But for now, for testing, this is fine.
 
+        StartCoroutine(ExecuteAfterTime(whichSound, whichPerson, volume, delay));
 
+        /*
+
+                switch (whichSound)
+                {
+                    case 0:
+                        PlaySound(HeyTaxi[whichPerson], volume);
+                        //taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f);
+                        break;
+                    case 1:
+                        PlaySound(Pad1[whichPerson], volume);
+                        break;
+                    case 2:
+                        PlaySound(Pad2[whichPerson], volume);
+                        break;
+                    case 3:
+                        PlaySound(Pad3[whichPerson], volume);
+                        break;
+                    case 4:
+                        PlaySound(Pad4[whichPerson], volume);
+                        break;
+                    case 5:
+                        PlaySound(Pad5[whichPerson], volume);
+                        break;
+                    case 6:
+                        PlaySound(Pad6[whichPerson], volume);
+                        break;
+                    case 7:
+                        PlaySound(Pad7[whichPerson], volume);
+                        break;
+                    case 8:
+                        PlaySound(Pad8[whichPerson], volume);
+                        break;
+                    case 9:
+                        PlaySound(Pad9[whichPerson], volume);
+                        break;
+                    default:
+                        break;
+                }
+                */
+
+        // taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f); // TEST. Later, the HeyTaxi will be in a case statement, 
+        // and the array number will be the person
+    }
+
+    void PlaySound(AudioClip sound, float volume)
+    {
+        taxiAudio.PlayOneShot(sound, volume);
+    }
+
+    IEnumerator ExecuteAfterTime(int whichSound, int whichPerson, float volume, float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        // Code to execute after the delay
         switch (whichSound)
         {
             case 0:
-                taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f);
+                PlaySound(HeyTaxi[whichPerson], volume);
+                //taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f);
                 break;
             case 1:
-                taxiAudio.PlayOneShot(Pad1[whichPerson], .5f);
+                PlaySound(Pad1[whichPerson], volume);
                 break;
             case 2:
-                taxiAudio.PlayOneShot(Pad2[whichPerson], .5f);
+                PlaySound(Pad2[whichPerson], volume);
                 break;
             case 3:
-                taxiAudio.PlayOneShot(Pad3[whichPerson], .5f);
+                PlaySound(Pad3[whichPerson], volume);
                 break;
             case 4:
-                taxiAudio.PlayOneShot(Pad4[whichPerson], .5f);
+                PlaySound(Pad4[whichPerson], volume);
                 break;
             case 5:
-                taxiAudio.PlayOneShot(Pad5[whichPerson], .5f);
+                PlaySound(Pad5[whichPerson], volume);
                 break;
             case 6:
-                taxiAudio.PlayOneShot(Pad6[whichPerson], .5f);
+                PlaySound(Pad6[whichPerson], volume);
                 break;
             case 7:
-                taxiAudio.PlayOneShot(Pad7[whichPerson], .5f);
+                PlaySound(Pad7[whichPerson], volume);
                 break;
             case 8:
-                taxiAudio.PlayOneShot(Pad8[whichPerson], .5f);
+                PlaySound(Pad8[whichPerson], volume);
                 break;
             case 9:
-                taxiAudio.PlayOneShot(Pad9[whichPerson], .5f);
+                PlaySound(Pad9[whichPerson], volume);
                 break;
             default:
                 break;
         }
+    }
 
-
-                //taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f); // TEST. Later, the HeyTaxi will be in a case statement, and the array number will be the person
-
-	}
 }

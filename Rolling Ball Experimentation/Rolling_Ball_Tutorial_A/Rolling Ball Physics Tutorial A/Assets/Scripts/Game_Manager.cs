@@ -593,7 +593,7 @@ public class Game_Manager : MonoBehaviour {
         // the second variable will always point to a particular person
         if (flag)
         {
-            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * 4.0f));
+            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * 4.0f), 0.5f, 1.0f); // Which pad, what person, volume
         }
 
         
