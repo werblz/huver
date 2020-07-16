@@ -58,7 +58,7 @@ public class Hail_Audio : MonoBehaviour {
     
 
     // Update is called once per frame
-    public void TriggerAudio (int whichSound, int whichPerson, float volume, float delay ) {
+    public void TriggerAudio (int whichSound, int whichPerson, float volume, float pitch, float delay ) {
 
         // If Game Manager passes a number outisde the array, just return. This assumes I keep all arrays the same size. I should
         // Also put checks below when I try to actually play it.
@@ -70,7 +70,7 @@ public class Hail_Audio : MonoBehaviour {
         // This case statement should be replaced. Instead of a case and a bunch of arrays, make single ScriptableObjects for each person, and then use the
         // array of pad numbers. But for now, for testing, this is fine.
 
-        StartCoroutine(ExecuteAfterTime(whichSound, whichPerson, volume, delay));
+        StartCoroutine(ExecuteAfterTime(whichSound, whichPerson, volume, pitch, delay));
 
         
     }
@@ -80,7 +80,7 @@ public class Hail_Audio : MonoBehaviour {
         taxiAudio.PlayOneShot(sound, volume);
     }
 
-    IEnumerator ExecuteAfterTime(int whichSound, int whichPerson, float volume, float time)
+    IEnumerator ExecuteAfterTime(int whichSound, int whichPerson, float volume, float voicePitch, float time)
     {
         
 
@@ -88,7 +88,7 @@ public class Hail_Audio : MonoBehaviour {
 
         // Code to execute after the delay
 
-        float voicePitch = (Random.value * .6f) + .7f;
+        //float voicePitch = (Random.value * .6f) + .7f;
 
         taxiAudio.pitch = voicePitch;
 

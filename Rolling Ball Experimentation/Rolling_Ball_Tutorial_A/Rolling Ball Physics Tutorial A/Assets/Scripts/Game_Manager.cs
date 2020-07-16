@@ -315,6 +315,18 @@ public class Game_Manager : MonoBehaviour {
     [HideInInspector]
     public int shift = 1;
 
+    // Person speaking
+    private int person = 0;
+
+    private float voicePitch = 1.0f;
+    private float voiceVolume = 0.5f;
+    private float voiceDelay = 0.5f;
+    private bool remindedTaxi = false;
+
+
+    // 
+    float fareAtStart = 1.0f;
+
     // Use this for initialization
     void Start()
     {
@@ -378,6 +390,17 @@ public class Game_Manager : MonoBehaviour {
             if (fare < 0.0f)
             {
                 fare = 0.0f;
+            }
+            // IF the fare drops to half of the starting fare, trigger a "Hey Taxi!" to move your butt!
+            if (fare < (fareAtStart / 2.0f))
+            {
+                if (!remindedTaxi)                
+                {
+                    // FIX ME! Put a bool toggle on this so it happens only once during a pad!
+                    hail.TriggerAudio(0, person, voiceVolume, voicePitch, voiceDelay);
+                    remindedTaxi = true;
+                }
+
             }
         }
 
@@ -589,12 +612,16 @@ public class Game_Manager : MonoBehaviour {
         
         pm.LightBeam(flag, padNum);
 
+        voiceVolume = 0.5f;
+        voiceDelay = 0.5f;
+
         // Play sound. First var is which sound, and second which person. And since this is an array manually arranged to hold the people in order
         // the second variable will always point to a particular person
         if (flag)
         {
             // REPLACE THAT RANDOM MULTIPLIER BY A NUMBER EQUAL TO THE LENGTH OF THE ARRAY! I may have to expose the array
-            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * hail.HeyTaxi.Length), 0.5f, 0.50f); // Which pad, what person, volume
+            hail.TriggerAudio(numPads - padNum, person, voiceVolume, voicePitch, voiceDelay); // Which pad, what person, volume, pitch, delay
+            remindedTaxi = false;
         }
 
         
@@ -605,6 +632,13 @@ public class Game_Manager : MonoBehaviour {
     // Advanc to the next pad. If last pad, GoToNextShift
     public void Advance()
     {
+        // I choose pitch HERE because I want it to remain constant during any given shift.
+        // The reason is that when someone yells Hey Taxi because you're being slow, I want it to be the same pitch as the pad number
+        voicePitch = (UnityEngine.Random.value * .6f) + .7f;
+
+        // And I want the person we're using to be teh same for each pad, so when you're slow, Hey Taxi sounds the same as the pad number hailed
+        person = (int)(UnityEngine.Random.value * hail.HeyTaxi.Length);
+
         AddFare(fare, tip);
 
         taxi.SoundPadSuccess();
@@ -1290,6 +1324,7 @@ public class Game_Manager : MonoBehaviour {
         }
 
         fare = newFare + fareDistance * fareDistanceMultiplier;
+        fareAtStart = fare;
         tip = standardTip;
         // Then multiply it by newFare, which is passed here
           
