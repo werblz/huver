@@ -17,41 +17,42 @@ public class Hail_Audio : MonoBehaviour {
     // Later replace this with Scriptable Objects?
 
     [SerializeField]
-    AudioClip[] HeyTaxi = null;
+    public AudioClip[] HeyTaxi = null;
 
     [SerializeField]
-    AudioClip[] Pad1 = null;
+    private AudioClip[] Pad1 = null;
 
     [SerializeField]
-    AudioClip[] Pad2 = null;
+    private AudioClip[] Pad2 = null;
 
     [SerializeField]
-    AudioClip[] Pad3 = null;
+    private AudioClip[] Pad3 = null;
 
     [SerializeField]
-    AudioClip[] Pad4 = null;
+    private AudioClip[] Pad4 = null;
 
     [SerializeField]
-    AudioClip[] Pad5 = null;
+    private AudioClip[] Pad5 = null;
 
     [SerializeField]
-    AudioClip[] Pad6 = null;
+    private AudioClip[] Pad6 = null;
 
     [SerializeField]
-    AudioClip[] Pad7 = null;
+    private AudioClip[] Pad7 = null;
 
     [SerializeField]
-    AudioClip[] Pad8 = null;
+    private AudioClip[] Pad8 = null;
 
     [SerializeField]
-    AudioClip[] Pad9 = null;
+    private AudioClip[] Pad9 = null;
 
     private AudioSource taxiAudio = null;
 
 
     private void Start()
     {
-        taxiAudio = taxi.GetComponent<AudioSource>();
+        //taxiAudio = taxi.GetComponent<AudioSource>();
+        taxiAudio = taxi.voiceAudio;
         Debug.Log("<color=white>$%%$%$%$%$%$%$ </color> Audio Source = " + taxiAudio.name);
     }
     
@@ -59,53 +60,19 @@ public class Hail_Audio : MonoBehaviour {
     // Update is called once per frame
     public void TriggerAudio (int whichSound, int whichPerson, float volume, float delay ) {
 
+        // If Game Manager passes a number outisde the array, just return. This assumes I keep all arrays the same size. I should
+        // Also put checks below when I try to actually play it.
+        if (whichPerson > HeyTaxi.Length)
+        {
+            return;
+        }
+
         // This case statement should be replaced. Instead of a case and a bunch of arrays, make single ScriptableObjects for each person, and then use the
         // array of pad numbers. But for now, for testing, this is fine.
 
         StartCoroutine(ExecuteAfterTime(whichSound, whichPerson, volume, delay));
 
-        /*
-
-                switch (whichSound)
-                {
-                    case 0:
-                        PlaySound(HeyTaxi[whichPerson], volume);
-                        //taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f);
-                        break;
-                    case 1:
-                        PlaySound(Pad1[whichPerson], volume);
-                        break;
-                    case 2:
-                        PlaySound(Pad2[whichPerson], volume);
-                        break;
-                    case 3:
-                        PlaySound(Pad3[whichPerson], volume);
-                        break;
-                    case 4:
-                        PlaySound(Pad4[whichPerson], volume);
-                        break;
-                    case 5:
-                        PlaySound(Pad5[whichPerson], volume);
-                        break;
-                    case 6:
-                        PlaySound(Pad6[whichPerson], volume);
-                        break;
-                    case 7:
-                        PlaySound(Pad7[whichPerson], volume);
-                        break;
-                    case 8:
-                        PlaySound(Pad8[whichPerson], volume);
-                        break;
-                    case 9:
-                        PlaySound(Pad9[whichPerson], volume);
-                        break;
-                    default:
-                        break;
-                }
-                */
-
-        // taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f); // TEST. Later, the HeyTaxi will be in a case statement, 
-        // and the array number will be the person
+        
     }
 
     void PlaySound(AudioClip sound, float volume)
@@ -115,14 +82,22 @@ public class Hail_Audio : MonoBehaviour {
 
     IEnumerator ExecuteAfterTime(int whichSound, int whichPerson, float volume, float time)
     {
+        
+
         yield return new WaitForSeconds(time);
 
         // Code to execute after the delay
+
+        float voicePitch = (Random.value * .6f) + .7f;
+
+        taxiAudio.pitch = voicePitch;
+
+        Debug.Log("<color=orange>*******</color><color=cyan>******</color> Pitch = " + voicePitch);
+
         switch (whichSound)
         {
             case 0:
                 PlaySound(HeyTaxi[whichPerson], volume);
-                //taxiAudio.PlayOneShot(HeyTaxi[whichPerson], .5f);
                 break;
             case 1:
                 PlaySound(Pad1[whichPerson], volume);
@@ -152,8 +127,10 @@ public class Hail_Audio : MonoBehaviour {
                 PlaySound(Pad9[whichPerson], volume);
                 break;
             default:
+                PlaySound(HeyTaxi[whichPerson], volume);
                 break;
         }
+
     }
 
 }

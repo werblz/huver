@@ -594,7 +594,7 @@ public class Game_Manager : MonoBehaviour {
         if (flag)
         {
             // REPLACE THAT RANDOM MULTIPLIER BY A NUMBER EQUAL TO THE LENGTH OF THE ARRAY! I may have to expose the array
-            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * 6.0f), 0.5f, 1.0f); // Which pad, what person, volume
+            hail.TriggerAudio(numPads - padNum, (int)(UnityEngine.Random.value * hail.HeyTaxi.Length), 0.5f, 0.50f); // Which pad, what person, volume
         }
 
         

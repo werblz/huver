@@ -254,6 +254,8 @@ public class Taxi_Controller : MonoBehaviour
     private AudioSource turnAudio = null;
     [SerializeField]
     private AudioSource strafeAudio = null;
+    [SerializeField]
+    public AudioSource voiceAudio = null;
 
 
 
