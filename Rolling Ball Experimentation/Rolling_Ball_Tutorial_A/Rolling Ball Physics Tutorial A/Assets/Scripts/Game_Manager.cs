@@ -397,7 +397,7 @@ public class Game_Manager : MonoBehaviour {
                 if (!remindedTaxi)                
                 {
                     // FIX ME! Put a bool toggle on this so it happens only once during a pad!
-                    hail.TriggerAudio(0, person, voiceVolume, voicePitch, voiceDelay);
+                    hail.TriggerAudio(0, person, voiceVolume * 1.5f, voicePitch, voiceDelay);
                     remindedTaxi = true;
                 }
 
@@ -634,7 +634,7 @@ public class Game_Manager : MonoBehaviour {
     {
         // I choose pitch HERE because I want it to remain constant during any given shift.
         // The reason is that when someone yells Hey Taxi because you're being slow, I want it to be the same pitch as the pad number
-        voicePitch = (UnityEngine.Random.value * .6f) + .7f;
+        voicePitch = (UnityEngine.Random.value * .3f) + .85f;
 
         // And I want the person we're using to be teh same for each pad, so when you're slow, Hey Taxi sounds the same as the pad number hailed
         person = (int)(UnityEngine.Random.value * hail.HeyTaxi.Length);
