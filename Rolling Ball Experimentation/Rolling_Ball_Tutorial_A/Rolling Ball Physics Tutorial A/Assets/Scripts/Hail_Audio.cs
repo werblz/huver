@@ -88,8 +88,6 @@ public class Hail_Audio : MonoBehaviour {
 
         // Code to execute after the delay
 
-        //float voicePitch = (Random.value * .6f) + .7f;
-
         taxiAudio.pitch = voicePitch;
 
         Debug.Log("<color=orange>*******</color><color=cyan>******</color> Pitch = " + voicePitch);

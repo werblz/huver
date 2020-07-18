@@ -215,6 +215,8 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     private GameObject explodeObject = null;
 
+    [SerializeField]
+    private float collisionVolumeMult = 0.02f;
 
     [HideInInspector]
     public float damage = 0.0f; // SAVE
@@ -1019,10 +1021,10 @@ public class Taxi_Controller : MonoBehaviour
         int collisionArrayIndex = (int)Mathf.Clamp((collisionEffect * .2f), 0.0f, 9.0f);
         //Debug.LogWarning("<color=red> *********************** COLLISION INDEX " + collisionArrayIndex + "</color>");
 
-        float collisionVolume = collisionEffect * 0.03f;
-        if (collisionVolume < 0.3f)
+        float collisionVolume = collisionEffect * collisionVolumeMult;
+        if (collisionVolume < collisionVolumeMult)
         {
-            collisionVolume = 0.3f;
+            collisionVolume = collisionVolumeMult;
         }
 
         // Here, we want to play the sound regardless of collision threshold.

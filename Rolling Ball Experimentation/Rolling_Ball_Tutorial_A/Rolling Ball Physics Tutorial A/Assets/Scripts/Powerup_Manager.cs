@@ -33,6 +33,9 @@ public class Powerup_Manager : MonoBehaviour {
 
     private MaterialPropertyBlock[] spriteBlock = null;
 
+    [SerializeField]
+    private GameObject collectVFX = null;
+
     // An array of sprites to represent the various powerups, from 0 to max, and we must be consistent with ordering, because 
     // a later case statement will not only populate the visuals, but perform the powerup
     [SerializeField]
@@ -188,6 +191,11 @@ public class Powerup_Manager : MonoBehaviour {
 
     private void DestroyPowerup()
     {
+        // Play a VFX here, which outlives this object, about to be destroyed
+        // Instantiate the object, which should be a GameObject with a ParticleSystem child. The parent should have Vfx_Destroy on it.
+        GameObject myCollect = Instantiate(collectVFX);
+        myCollect.transform.position = transform.position;
+
         Destroy(gameObject);
         gm.buildingHasPowerup[buildingOwner] = false; // Tell the Game Manager that the building no longer has a powerup
     }
