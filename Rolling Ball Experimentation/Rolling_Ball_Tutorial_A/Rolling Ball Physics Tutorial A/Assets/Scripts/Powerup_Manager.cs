@@ -63,7 +63,8 @@ public class Powerup_Manager : MonoBehaviour {
     [SerializeField]
     private float[] powerupAnimSpeed = null;
 
-    private int powerupNumber = 0;
+    [HideInInspector]
+    public int powerupNumber = 0;
 
     private SpriteRenderer[] spriteRend = null;
 
@@ -73,7 +74,9 @@ public class Powerup_Manager : MonoBehaviour {
     private float[] powerupGas = null;
     [SerializeField]
     private float[] powerupRepair = null;
-    private int powerupStrength = 0; // Index for the array of powerup strentghs
+
+    [HideInInspector]
+    public int powerupStrength = 0; // Index for the array of powerup strentghs
 
     private Animator anim = null;
 
@@ -285,8 +288,10 @@ public class Powerup_Manager : MonoBehaviour {
         }
         triggered = true;
 
+
         switch (powerupNumber)
         {
+            
             case 0:
                 // If I didn't fill out the array with exactly 4 strengths, always be weakest
                 if ( powerupCash.Length != 4 )
@@ -300,7 +305,6 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-                taxi.whichPowerUp = 0;
                 break;
             case 1:
                 // If I didn't fill out the array with exactly 4 strengths, always be weakest
@@ -319,7 +323,6 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-                taxi.whichPowerUp = 1;
                 break;
             case 2:
                 // If I didn't fill out the array with exactly 4 strengths, always be weakest
@@ -339,7 +342,6 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-                taxi.whichPowerUp = 2;
                 break;
         }
 

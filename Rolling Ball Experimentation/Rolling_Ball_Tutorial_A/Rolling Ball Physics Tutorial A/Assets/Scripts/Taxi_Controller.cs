@@ -297,9 +297,7 @@ public class Taxi_Controller : MonoBehaviour
     [SerializeField]
     private AudioClip[] clipPowerup = null;
 
-    // Another stupid. I have to put a public variable on the taxi so the Powerup Manager can push a value to it based on which kind of powerup. Duh.
-    [HideInInspector]
-    public int whichPowerUp = 0;
+    private int whichPowerUp = 0;
 
 
     private AudioSource taxiAudio = null;
@@ -992,10 +990,13 @@ public class Taxi_Controller : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if ( other.gameObject.tag == "Powerup")
+        if (other.gameObject.tag == "Powerup")
         {
-            taxiAudio.PlayOneShot(clipPowerup[whichPowerUp], 0.5f);
-            Powerup_Manager pm = other.GetComponent<Powerup_Manager>();
+            // Convoluted way of getting the Powerup_Manager I just collided with.
+            Powerup_Manager pm = other.gameObject.GetComponent<Powerup_Manager>();
+
+            whichPowerUp = pm.powerupNumber;
+            taxiAudio.PlayOneShot(clipPowerup[whichPowerUp], 0.5f + (pm.powerupStrength * 0.1f));
             pm.DoPowerup();
             
         }
