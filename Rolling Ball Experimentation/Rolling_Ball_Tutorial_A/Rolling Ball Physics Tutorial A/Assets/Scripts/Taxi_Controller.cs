@@ -295,7 +295,11 @@ public class Taxi_Controller : MonoBehaviour
 //private int soundPingTimer = 0; // Countdown to Ping, once triggerd, so it doesn't spam
 
     [SerializeField]
-    private AudioClip clipPowerup = null;
+    private AudioClip[] clipPowerup = null;
+
+    // Another stupid. I have to put a public variable on the taxi so the Powerup Manager can push a value to it based on which kind of powerup. Duh.
+    [HideInInspector]
+    public int whichPowerUp = 0;
 
 
     private AudioSource taxiAudio = null;
@@ -955,7 +959,7 @@ public class Taxi_Controller : MonoBehaviour
 
     public void PowerupSound()
     {
-        taxiAudio.PlayOneShot(clipPowerup, 0.5f);
+        taxiAudio.PlayOneShot(clipPowerup[whichPowerUp], 0.5f);
     }
 
 
@@ -990,7 +994,7 @@ public class Taxi_Controller : MonoBehaviour
     {
         if ( other.gameObject.tag == "Powerup")
         {
-            taxiAudio.PlayOneShot(clipPowerup, 0.5f);
+            taxiAudio.PlayOneShot(clipPowerup[whichPowerUp], 0.5f);
             Powerup_Manager pm = other.GetComponent<Powerup_Manager>();
             pm.DoPowerup();
             

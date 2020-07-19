@@ -39,6 +39,19 @@ public class Powerup_Manager : MonoBehaviour {
     [SerializeField]
     private GameObject destroyVFX = null;
 
+    [SerializeField]
+    private AudioSource myAudio = null;
+
+    // This object controls itself, so it can control the appear/disappear sound
+    [SerializeField]
+    private AudioClip clipAppear = null;
+    [SerializeField]
+    private AudioClip clipDestroy = null;
+    
+    // Smarter for now to keep the Powerup Collect on the taxi, since IT controls the collisions with this object. 
+    //[SerializeField]
+    //private AudioClip clipCollect = null;
+
     // An array of sprites to represent the various powerups, from 0 to max, and we must be consistent with ordering, because 
     // a later case statement will not only populate the visuals, but perform the powerup
     [SerializeField]
@@ -164,6 +177,8 @@ public class Powerup_Manager : MonoBehaviour {
         }
 
         counter = countDownTime;
+        myAudio.pitch = 0.8f + (powerupNumber * .2f); // Pitch based on type of powerup
+        myAudio.PlayOneShot(clipAppear, 1.0f);
 	}
 
     // Update is called once per frame
@@ -235,6 +250,7 @@ public class Powerup_Manager : MonoBehaviour {
 
             myCollect.transform.position = transform.position;
             myCollect.transform.localScale = transform.localScale;
+            
         }
         else
         {
@@ -247,6 +263,10 @@ public class Powerup_Manager : MonoBehaviour {
 
             myDestroy.transform.position = transform.position;
             myDestroy.transform.localScale = transform.localScale;
+
+            myAudio.PlayOneShot(clipDestroy, .5f);
+            Debug.LogWarning("<color=cyan>|||||||||||||||||||||||||||||||||||||||</color> AUDIOSOURCE " + myAudio.name);
+            Debug.LogWarning("<color=yellow>|||||||||||||||||||||||||||||||||||||||</color> TRYING TO PLAY " + clipDestroy.name);
 
         }
 
@@ -280,7 +300,7 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-
+                taxi.whichPowerUp = 0;
                 break;
             case 1:
                 // If I didn't fill out the array with exactly 4 strengths, always be weakest
@@ -299,7 +319,7 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-
+                taxi.whichPowerUp = 1;
                 break;
             case 2:
                 // If I didn't fill out the array with exactly 4 strengths, always be weakest
@@ -319,7 +339,7 @@ public class Powerup_Manager : MonoBehaviour {
                     + "; SPEED: " + anim.speed
                     );
                     */
-
+                taxi.whichPowerUp = 2;
                 break;
         }
 
