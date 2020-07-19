@@ -36,6 +36,9 @@ public class Powerup_Manager : MonoBehaviour {
     [SerializeField]
     private GameObject collectVFX = null;
 
+    [SerializeField]
+    private GameObject destroyVFX = null;
+
     // An array of sprites to represent the various powerups, from 0 to max, and we must be consistent with ordering, because 
     // a later case statement will not only populate the visuals, but perform the powerup
     [SerializeField]
@@ -69,6 +72,8 @@ public class Powerup_Manager : MonoBehaviour {
     // Make room for the particle systems used here.
     private ParticleSystem[] ps = null;
 
+    private Gradient grad = null;
+
     // Use this for initialization
     private void Start () {
 
@@ -79,7 +84,7 @@ public class Powerup_Manager : MonoBehaviour {
         rend = GetComponentInChildren<Renderer>();
         anim = GetComponentInChildren<Animator>();
         ps = GetComponentsInChildren<ParticleSystem>(); // Get the array of particlesystems. We want to color them the same.
-        Debug.Log("<color=orange>***********************<color><color=blue>**************</color> PARTICLES0" + ps[0].name);
+        Debug.Log("<color=orange>***********************</color><color=blue>**************</color> PARTICLES0" + ps[0].name);
         
         if (rend)
         {
@@ -107,31 +112,26 @@ public class Powerup_Manager : MonoBehaviour {
             timerGaugeRend.SetPropertyBlock(gaugeMpb);
         }
 
+
+        // Set the gradient keys for everything
+        grad = new Gradient(); // Make a new gradient
+        grad.SetKeys(new GradientColorKey[] {
+                new GradientColorKey(gaugeMeshColor, 0.0f),
+                new GradientColorKey(gaugeMeshColor, 1.0f) },
+            new GradientAlphaKey[]
+            {
+                    new GradientAlphaKey(1.0f, 0.0f),
+                new GradientAlphaKey(0.0f, 1.0f) }
+        );
+
+        // Apply the gradient to my array of particlesystems
         for (int i = 0; i < ps.Length; i++ )
         {
             var col = ps[i].colorOverLifetime;
             col.enabled = true;
-
-            Gradient grad = new Gradient(); // Make a new gradient
-            grad.SetKeys(new GradientColorKey[] {
-                new GradientColorKey(gaugeMeshColor, 0.0f),
-                new GradientColorKey(gaugeMeshColor, 1.0f) },
-                new GradientAlphaKey[]
-                {
-                    new GradientAlphaKey(1.0f, 0.0f),
-                new GradientAlphaKey(0.0f, 1.0f) }
-            );
             col.color = grad;
-
         }
-        /* DOCUMENT EXAMPLE TO GUIDE ME
-        grad.SetKeys(new GradientColorKey[] {
-            new GradientColorKey(Color.blue, 0.0f),
-            new GradientColorKey(Color.red, 1.0f) },
-            new GradientAlphaKey[] {
-                new GradientAlphaKey(1.0f, 0.0f),
-                new GradientAlphaKey(0.0f, 1.0f) });
-                */
+
 
 
 
@@ -223,24 +223,33 @@ public class Powerup_Manager : MonoBehaviour {
     {
         // Play a VFX here, which outlives this object, about to be destroyed
         // Instantiate the object, which should be a GameObject with a ParticleSystem child. The parent should have Vfx_Destroy on it.
-        GameObject myCollect = Instantiate(collectVFX);
-        ParticleSystem destroyPs = myCollect.GetComponent<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
 
-        var destCol = destroyPs.colorOverLifetime;
-        destCol.enabled = true;
-        // Since this little bit of code does the same thing on a different PS, perhaps make this a method, and apply it to all PSs I need
-        Gradient grad = new Gradient(); // Make a new gradient
-        grad.SetKeys(new GradientColorKey[] {
-                new GradientColorKey(gaugeMeshColor, 0.0f),
-                new GradientColorKey(gaugeMeshColor, 1.0f) },
-            new GradientAlphaKey[]
-            {
-                    new GradientAlphaKey(1.0f, 0.0f),
-                new GradientAlphaKey(0.0f, 1.0f) }
-        );
-        destCol.color = grad;
+        if (triggered)
+        {
+            GameObject myCollect = Instantiate(collectVFX);
+            ParticleSystem collectPs = myCollect.GetComponentInChildren<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
 
-        myCollect.transform.position = transform.position;
+            var collectCol = collectPs.colorOverLifetime;
+            collectCol.enabled = true;
+            collectCol.color = grad;
+
+            myCollect.transform.position = transform.position;
+            myCollect.transform.localScale = transform.localScale;
+        }
+        else
+        {
+            GameObject myDestroy = Instantiate(destroyVFX);
+            ParticleSystem destroyPs = myDestroy.GetComponentInChildren<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
+
+            var collectCol = destroyPs.colorOverLifetime;
+            collectCol.enabled = true;
+            collectCol.color = grad;
+
+            myDestroy.transform.position = transform.position;
+            myDestroy.transform.localScale = transform.localScale;
+
+        }
+
 
         Destroy(gameObject);
         gm.buildingHasPowerup[buildingOwner] = false; // Tell the Game Manager that the building no longer has a powerup
