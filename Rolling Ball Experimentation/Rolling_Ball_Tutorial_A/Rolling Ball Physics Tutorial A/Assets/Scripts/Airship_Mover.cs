@@ -104,7 +104,7 @@ public class Airship_Mover : MonoBehaviour {
         // This code turns on child ships that I may add to the airship to fake clusters of air cars
         for (int j = 0; j < OtherShip.Length; j++)
         {
-            OtherShip[j].SetActive(true);
+            //OtherShip[j].SetActive(true);
         }
     }
 

@@ -100,7 +100,6 @@ public class Powerup_Manager : MonoBehaviour {
         rend = GetComponentInChildren<Renderer>();
         anim = GetComponentInChildren<Animator>();
         ps = GetComponentsInChildren<ParticleSystem>(); // Get the array of particlesystems. We want to color them the same.
-        Debug.Log("<color=orange>***********************</color><color=blue>**************</color> PARTICLES0" + ps[0].name);
         
         if (rend)
         {
@@ -245,11 +244,16 @@ public class Powerup_Manager : MonoBehaviour {
         if (triggered)
         {
             GameObject myCollect = Instantiate(collectVFX);
-            ParticleSystem collectPs = myCollect.GetComponentInChildren<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
+            ParticleSystem[] collectPs = myCollect.GetComponentsInChildren<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
 
-            var collectCol = collectPs.colorOverLifetime;
-            collectCol.enabled = true;
-            collectCol.color = grad;
+            for (int i = 0; i < collectPs.Length; i++)
+            {
+                var collectCol = collectPs[i].colorOverLifetime;
+                collectCol.enabled = true;
+                collectCol.color = grad;
+
+            }
+
 
             myCollect.transform.position = transform.position;
             myCollect.transform.localScale = transform.localScale;
