@@ -674,11 +674,7 @@ public class Game_Manager : MonoBehaviour {
     {
         if (crashed)
         {
-            Debug.Log("\n\n");
-            Debug.Log("\n\n");
-            Debug.Log("\n\n");
-            Debug.Log("\n\n");
-            Debug.Log("                               CRASHED! BUT YOU ARE MOVING ON! BYGONES! ");
+            //Debug.Log("                               CRASHED! BUT YOU ARE MOVING ON! BYGONES! ");
             cash -= crashDeductible;
 
         }
@@ -775,16 +771,16 @@ public class Game_Manager : MonoBehaviour {
 
         // First, calculate fill-up at home pad
         cash -= gasCostHome;
-        Debug.Log("<color=purple>Max Gas = " + taxi.maxGas + "; Gas = " + taxi.gas + "</color>");
-        Debug.Log("<color=purple>Gas Filled: " + (taxi.maxGas - taxi.gas) + "; at a cost of " + homePadGasCost + " per; Total cost: " + (taxi.gas * homePadGasCost) + "</color>");
+        //Debug.Log("<color=purple>Max Gas = " + taxi.maxGas + "; Gas = " + taxi.gas + "</color>");
+        //Debug.Log("<color=purple>Gas Filled: " + (taxi.maxGas - taxi.gas) + "; at a cost of " + homePadGasCost + " per; Total cost: " + (taxi.gas * homePadGasCost) + "</color>");
         // Fill 'er up
         taxi.gas = taxi.maxGas;
 
 
         // First, calculate damage repair at home pad
         cash -= repairsCostHome;
-        Debug.Log("<color=purple>Max Damage = " + taxi.maxDamage + "; Damage = " + taxi.damage + "</color>");
-        Debug.Log("<color=purple>Damage repaired: " + taxi.damage + "; at a cost of " + homePadDamageRepairCost + " per; Total cost: " + (taxi.damage * homePadDamageRepairCost) + "</color>");
+        //Debug.Log("<color=purple>Max Damage = " + taxi.maxDamage + "; Damage = " + taxi.damage + "</color>");
+        //Debug.Log("<color=purple>Damage repaired: " + taxi.damage + "; at a cost of " + homePadDamageRepairCost + " per; Total cost: " + (taxi.damage * homePadDamageRepairCost) + "</color>");
         // Repari all damage
         taxi.damage = 0.0f;
         // Call on the taxi to call on the radar manager to update its crack damage
@@ -839,7 +835,7 @@ public class Game_Manager : MonoBehaviour {
             // Tom Thompson taught me a bitchin' way to never get the same random twice. Find it and put it here.
             while (randBuild == lastRand || buildingOccupied[randBuild] == true)
             {
-                Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
+                //Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
                 // There is a tiny chance this may be larger than the array, so:
                 if (randBuild > buildings.Length-1)
@@ -885,7 +881,7 @@ public class Game_Manager : MonoBehaviour {
             // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
             // to ensure we don't get those awkward occlusions of the landing pads
             // This is done for every building we try to put a pad on, IN the loop itself
-            Debug.Log("\n**************************** Rescaling a Pad at Building " + randBuild);
+            //Debug.Log("\n**************************** Rescaling a Pad at Building " + randBuild);
             RescaleBuilding(buildings, randBuild);
 
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
@@ -992,7 +988,7 @@ public class Game_Manager : MonoBehaviour {
             // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
             // to ensure we don't get those awkward occlusions of the landing pads
             // This is done for every building we try to put a pad on, IN the loop itself
-            Debug.Log("\n**************************** Rescaling a Station at Building " + randBuild);
+            //Debug.Log("\n**************************** Rescaling a Station at Building " + randBuild);
             RescaleBuilding(buildings, randBuild);
 
             lastRand = randBuild;
@@ -1039,7 +1035,7 @@ public class Game_Manager : MonoBehaviour {
         homeBldg.SetActive(true);
 
         // Now pass the home building to RescaleBuilding and have it rescale all surrounding buildings in the array
-        Debug.Log("\n**************************** Rescaling HOME at Building " + centerBuilding);
+        //Debug.Log("\n**************************** Rescaling HOME at Building " + centerBuilding);
         RescaleBuilding(buildings, centerBuilding);
 
         
@@ -1092,7 +1088,7 @@ public class Game_Manager : MonoBehaviour {
         // Get the next one on either side. This is the easy part
         // This first one doesn't 
         int tmpIndex = index;
-        Debug.Log("\n************************** BUILDING INDEX = " + tmpIndex);
+        //Debug.Log("\n************************** BUILDING INDEX = " + tmpIndex);
 
         float bldXZScale = gasPadScale * 2.0f;
 
@@ -1106,14 +1102,14 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
         
         tmpIndex = index + 1;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         // Now get the next one one up and down in the array. NOT so easy. Have to subtract by the size of one array's dimension.
         // So index - array-length. Then index - array-length - 1 and index - array-length +1
@@ -1131,21 +1127,21 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         tmpIndex = index - (int)gridSize - 1;
         if (tmpIndex > 0)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         tmpIndex = index - (int)gridSize + 1;
         if (tmpIndex > 0)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         // x x x 
         // . i .
@@ -1157,21 +1153,21 @@ public class Game_Manager : MonoBehaviour {
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         tmpIndex = index + (int)gridSize;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
         tmpIndex = index + (int)gridSize + 1;
         if (tmpIndex < numBuildingsInGrid)
         {
             building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
         }
-        Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
+        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
 
 
 
@@ -1442,7 +1438,7 @@ public class Game_Manager : MonoBehaviour {
         }
         else
         {
-            Debug.Log("PUT UP A SPECIAL CRASH DIALOG INSTEAD!");
+            //Debug.Log("PUT UP A SPECIAL CRASH DIALOG INSTEAD!");
             upgradesAvailable = false; // If you crashed, NO UP GRADE FOR YOU! TWO MONTHS! Well, one shift.
             // Turn off the shift summary text, as we have no summary yet. This is the start
             summaryTextParent.SetActive(false);
@@ -1451,7 +1447,7 @@ public class Game_Manager : MonoBehaviour {
             panelController.PutDialog(-1);
             // Remove deducitble
             // cash -= crashDeductible; // Don't do this here. It may cause the double-deductible bug
-            Debug.Log("<color=red> ********************** CRASH! Deductible Removed! **************************** </color>");
+            //Debug.Log("<color=red> ********************** CRASH! Deductible Removed! **************************** </color>");
         }
 
 
@@ -1476,7 +1472,7 @@ public class Game_Manager : MonoBehaviour {
         taxi.rb.drag = taxi.defaultDrag;
 
         
-        Debug.Log("<color=yellow> ********************* RESTART SHIFT ****************</color>");
+        //Debug.Log("<color=yellow> ********************* RESTART SHIFT ****************</color>");
         // GoToNextShift but pass crashed == true, so it can put up a special crash dialog and take deductible
         GoToNextShift(true); // I think this is the culprit in the too-low-double-deductible issue. Set it to false and see if that changes it
 

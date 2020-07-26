@@ -1070,7 +1070,7 @@ public class Taxi_Controller : MonoBehaviour
             // But let's play a sound whose volume is based on the speed of the hit
             
             taxiAudio.PlayOneShot(clipBumpAirship, collisionVolume);
-            Debug.LogWarning("<color=white> *********************** Volume = " + collisionVolume + "</color>");
+            //Debug.LogWarning("<color=white> *********************** Volume = " + collisionVolume + "</color>");
 
 
 

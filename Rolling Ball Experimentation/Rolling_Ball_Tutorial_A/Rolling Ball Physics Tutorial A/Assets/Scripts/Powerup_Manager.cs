@@ -272,8 +272,8 @@ public class Powerup_Manager : MonoBehaviour {
             myDestroy.transform.localScale = transform.localScale;
 
             myAudio.PlayOneShot(clipDestroy, .5f);
-            Debug.LogWarning("<color=cyan>|||||||||||||||||||||||||||||||||||||||</color> AUDIOSOURCE " + myAudio.name);
-            Debug.LogWarning("<color=yellow>|||||||||||||||||||||||||||||||||||||||</color> TRYING TO PLAY " + clipDestroy.name);
+            //Debug.LogWarning("<color=cyan>|||||||||||||||||||||||||||||||||||||||</color> AUDIOSOURCE " + myAudio.name);
+            //Debug.LogWarning("<color=yellow>|||||||||||||||||||||||||||||||||||||||</color> TRYING TO PLAY " + clipDestroy.name);
 
         }
 
