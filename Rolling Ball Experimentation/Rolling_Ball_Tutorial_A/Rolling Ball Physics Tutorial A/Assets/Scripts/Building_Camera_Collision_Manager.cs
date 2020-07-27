@@ -13,6 +13,9 @@ public class Building_Camera_Collision_Manager : MonoBehaviour {
     [SerializeField]
     private MeshRenderer transBuilding = null;
 
+    [SerializeField]
+    public int buildingNumber = 0;
+
     
     // When the buildings are first instantiated, set them to opaque.
     void Start ()

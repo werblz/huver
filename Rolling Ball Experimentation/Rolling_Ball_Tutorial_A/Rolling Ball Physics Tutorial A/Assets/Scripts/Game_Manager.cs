@@ -57,10 +57,14 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     private float minAllowableDistanceBetweenPads = 10.0f;
 
-    [Tooltip("Maximum Building Scale Around")]
+    // PERHAPS CONSIDER JUST MAKING THIS = gridCellSize minus a small amount, which is 12.4 given current values, and I set the value to 12.
+    [Tooltip("Maximum Building Scale XZ. This is the scale all buildings start at. (Scaled up from the default object size of 1)")]
     [SerializeField]
-    private float maxBuildingXZScale = 5.0f;
-    [Tooltip("Maximum Variation of Building Scale Around")]
+    private float maxBuildingXZScale = 12.0f;
+    [Tooltip("Minimum Building Scale XZ. This is how much we want to scale it DOWN from from the default set aove. (So this should be decimal from 0 to 1)")]
+    [SerializeField]
+    private float minBuildingXZScale = .5f;
+    [Tooltip("Maximum added to the resulting XZ scale, in order to establish a minimum size.")]
     [SerializeField]
     private float maxBuildingXZScaleOffset = 3.0f;
     [Tooltip("Maximum Builiding Height Scale")]
@@ -471,11 +475,16 @@ public class Game_Manager : MonoBehaviour {
                     int buildingChoice = (int)(UnityEngine.Random.value * 3.0f);
                     buildings[numBuildingsInGrid] = GameObject.Instantiate(buildingObject[buildingChoice]); // Instantiate building in array with index numBuildingsInGrid
 
+                    // THIS SECTION IS JUST TO PUT A NUMBER ON EACH OBJECT IN THE HIERARCHY VIEW SO I KNOW SOMETHING ABOUT THE BUILDINGS
+                    Building_Camera_Collision_Manager bldNum = buildings[numBuildingsInGrid].GetComponent<Building_Camera_Collision_Manager>();
+                    bldNum.buildingNumber = numBuildingsInGrid;
+
                     // Wiggle it a little, so they aren't so gridded
                     bLoc.x = bLoc.x + UnityEngine.Random.value * maxBuildingXZScaleOffset;
                     bLoc.z = bLoc.z + UnityEngine.Random.value * maxBuildingXZScaleOffset;
 
                     Vector4 wiggleValue = TextureWiggle(bLoc);
+                    Debug.Log("<color=red>@@@@@@ </color> - BUILDING NUMBER " + numBuildingsInGrid);
                     //Debug.Log("<color=white>********</color><color=blue>*******</color> Vector 4 here is " + wiggleValue.ToString());
 
                     // Separate out the values I need. 
@@ -594,12 +603,14 @@ public class Game_Manager : MonoBehaviour {
         float nudgeY = pixelValue.g;
         // Now get the BLUE channel va lue, and nudge the building in the Y direction (height)
         float nudgeZ = pixelValue.b;
-        // Now get the ALPHA channel value, and nudge the building in the Y direction (height)
+        // Now get the ALPHA channel value, and rotate the building in the Y direction
         float nudgeRotY = pixelValue.a;
 
-        //Debug.Log("<color=red>****</color><color=cyan>****</color> Returning " + nudgeX + ", " + nudgeY + ", " + nudgeZ + ", " + nudgeRotY);
+        Debug.Log("<color=red>****</color><color=cyan>****</color> Returning " + nudgeX + ", " + nudgeY + ", " + nudgeZ + ", Rot " + nudgeRotY);
         return new Vector4 (nudgeX, nudgeY, nudgeZ, nudgeRotY); // DUE to the weirdness of Vector4, w, x, y, z, w comes first, so that
         // will be the rotation. That way, x, y and z can correspond properly to a location
+
+        
     }
 
 
@@ -878,12 +889,6 @@ public class Game_Manager : MonoBehaviour {
             // Put the beam exactly where the pad is, but make it scale .98 xz and what it already is y.
             pads[i].SetActive(true);
 
-            // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
-            // to ensure we don't get those awkward occlusions of the landing pads
-            // This is done for every building we try to put a pad on, IN the loop itself
-            //Debug.Log("\n**************************** Rescaling a Pad at Building " + randBuild);
-            RescaleBuilding(buildings, randBuild);
-
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
             pm.padNumber = i;
             pm.lightNumber = i;
@@ -985,12 +990,6 @@ public class Game_Manager : MonoBehaviour {
             // Put the beam exactly where the pad is, but make it scale .98 xz and what it already is y.
             stations[i].SetActive(true);
 
-            // This sends the array of buildings to RescaleBuildings, with the index of this building, so it can fix the scaling of each building around it
-            // to ensure we don't get those awkward occlusions of the landing pads
-            // This is done for every building we try to put a pad on, IN the loop itself
-            //Debug.Log("\n**************************** Rescaling a Station at Building " + randBuild);
-            RescaleBuilding(buildings, randBuild);
-
             lastRand = randBuild;
         }
     }
@@ -999,11 +998,16 @@ public class Game_Manager : MonoBehaviour {
 
     private void PopulateHomeBase()
     {
+        
         // This code assumes, rightly, that the middle element in the buildings array is near the center
         // of the city. For reasons of texture tweaking it won't always be dead-center, but we don't care
         // about that. Close enough.
         // Get the index number half-way through the array
-        int centerBuilding = numBuildingsInGrid / 2;
+
+        // HOWEVER FOR SOME REASON, centerBuilding (numBuildingsInGrid/2) does NOT center the building. SO Adding 56 seems to fix it.
+        // That number must come from somewhere, but it's not gridSize which is 84. So what the hell?
+        int centerBuilding = (numBuildingsInGrid / 2) + 56;
+        Debug.LogError("NUMBUILDINGS = " + numBuildingsInGrid + ", so center is " + centerBuilding);
 
         // Instantiate a Home Base based on the one in the scene. Yes, this already exists, but instantiate it anyway
         // so it works just like pads and gas stations
@@ -1032,144 +1036,7 @@ public class Game_Manager : MonoBehaviour {
         // Mark it occupied
         buildingOccupied[centerBuilding] = true;
 
-        homeBldg.SetActive(true);
-
-        // Now pass the home building to RescaleBuilding and have it rescale all surrounding buildings in the array
-        //Debug.Log("\n**************************** Rescaling HOME at Building " + centerBuilding);
-        RescaleBuilding(buildings, centerBuilding);
-
-        
-
-    }
-
-
-    /* THIS IS NOT WORKING!!!!
-    This stupidly assumed the buildings were still in a grid, but culled by a circle, so the surrounding buildings fit the standard array pattern
-    of 
-    x-grid-1 | x-grid | x+grid+1
-      x-1    |   x    |   X+1
-    x+grid-1 | x+grid | x+grid+1
-
-        But it does not. Because I'm not culling a square array, I'm creating buildings inside a circle, though still on a grid within that circle.
-        Which means the pattern is never certain. Depending on which building you choose within that circular "array" the offset for the ones left
-        and right are correct, but you can never know the offsets of the ones above and below in the grid rows. Because the rows are not even
-
-        So to fix this, I now have to:
-
-        - Find the 8 closest buildnigs by location distance
-          - Nested loop
-            - For each pad
-              - For each building in the whole city
-                - Find all distances
-                  - Sort the distances
-                    - Choose the top 9
-                      - One of those will be YOU, the others will be the 8 surrounding
-        - Get their index in the array in the sorted distance array
-        - Scale those instead.
-         
-         */ 
-
-
-    // This should rescale the buildings around the building specified when this method is called.
-    // It should be called after populating Pads, Stations and Home Base.
-    // The populate method should put the whole building array in here, and tell it by index which building it is.
-    // This is done in a loop for pads and stations.
-    // Each building then will check the 8 around it, and scale each of those to 1, y, 1, so we don't get awkward building scale collisions
-    // on pads. I don't mind buildings colliding in the city, but they should not occlude any landing pad type
-    private void RescaleBuilding(GameObject[] building, int index)
-    {
-        // PUT IN ERROR CHECKINT FOR OUTSIDE BOUNDS OF ARRAY!!! NOT EVERY BUILDING EXISTS IN THE ARRAY!
-        // Every building in the city is in a linear array, BUT check to make sure the adding and subtracting does not go outside that linear bounds
-        // Just do an if inside. Return if outside. In rare cases where we choose a building near the bounds of the array, we don't need to do anything 
-        // outside those bounds
-
-        // index is the building passed in. We never use this except to move the index around to the others in the grid
-
-        // Get the next one on either side. This is the easy part
-        // This first one doesn't 
-        int tmpIndex = index;
-        //Debug.Log("\n************************** BUILDING INDEX = " + tmpIndex);
-
-        float bldXZScale = gasPadScale * 2.0f;
-
-        // . . .
-        // x i x
-        // . . . 
-
-        // No need to change building at Index at all. It's already scaled to fit the pad in its specific populate method. So move all around it
-        tmpIndex = index - 1;
-        if (tmpIndex > 0)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-        
-        tmpIndex = index + 1;
-        if (tmpIndex < numBuildingsInGrid)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        // Now get the next one one up and down in the array. NOT so easy. Have to subtract by the size of one array's dimension.
-        // So index - array-length. Then index - array-length - 1 and index - array-length +1
-        // Then + array_length. Same
-        // Then + array_length. Same
-
-
-        // . . .
-        // . i .
-        // x x x 
-
-        // Down to the next row
-        tmpIndex = index - (int)gridSize;
-        if (tmpIndex > 0)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        tmpIndex = index - (int)gridSize - 1;
-        if (tmpIndex > 0)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        tmpIndex = index - (int)gridSize + 1;
-        if (tmpIndex > 0)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        // x x x 
-        // . i .
-        // . . .
-
-        // Up to the next row
-        tmpIndex = index + (int)gridSize - 1;
-        if (tmpIndex < numBuildingsInGrid)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        tmpIndex = index + (int)gridSize;
-        if (tmpIndex < numBuildingsInGrid)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-        tmpIndex = index + (int)gridSize + 1;
-        if (tmpIndex < numBuildingsInGrid)
-        {
-            building[tmpIndex].transform.localScale = new Vector3(bldXZScale, building[tmpIndex].transform.localScale.y, bldXZScale);
-        }
-        //Debug.Log("************ RESCALING BUILDING " + tmpIndex + " to " + bldXZScale);
-
-
+        homeBldg.SetActive(true);  
 
     }
 
@@ -1184,10 +1051,38 @@ public class Game_Manager : MonoBehaviour {
 
     private Vector3 BuildingRandomScale()
     {
+        // Uncomment this next line if you want unscaled buildings for testing purposes.
+        //return new Vector3(1.0f, 1.0f, 1.0f);
+
+        // My original aim was to scale buildings UP from the natural scale. Howevewr, that is folly.
+        // The reason is that for pads not to have buildings jutting into them, I needed to scale the 8 buildings around down to ensure no
+        // mashing of buildings into pads. But the problem was the problem was too complicated because of the way I culled my circular array.
+        // The buildings immediately around the target in a square array were NOT the 8 buildings around in an array that was NOT square.
+        // So I had to write code to get the distance from the target to all buildings in city, put that into an array, sort it, and get the smallest 8
+        // distances, so I could scale THOSE buildings.
+        //
+        // BUT I had the brilliant idea instead, of having a MAX building size be default, and scale every building DOWN, not UP.
+        // This would simply require making all buildings scale to a uniform max, then scale DOWN. This would ensure no pad/building collisions.
+        // But it requres changint THIS scaling code to go DOWN instead of UP, starting with each building being set to a max
+
+        // Start each building out at the MaxBuildingXZScale (set in the Inspector)
+        float padScaleXZ = maxBuildingXZScale;
+
+        // Now scale them down randomly and reasonably.
+        // But don't scale them on a straight up basis based on the variable. 
+        // Above, I set them to the maxBuildingXZScale. Now multiple down by minBuildingXZScale, and add the offset. Should work better.
+        padScaleXZ *= (UnityEngine.Random.value * minBuildingXZScale) + maxBuildingXZScaleOffset;
+
+
+
+        /* THE OLD CODE, which scaled buildings UP.
         float padScaleXZ = (UnityEngine.Random.value * maxBuildingXZScale) + maxBuildingXZScaleOffset;
+        */
+
+        // Randomly scale Y. This is fine the old way.
         float padScaleY = (UnityEngine.Random.value * maxBuildingYScale) + maxBuildingYScaleOffset;
         Vector3 padScale = new Vector3(padScaleXZ, padScaleY, padScaleXZ);
-
+        
         return padScale;
     }
 
