@@ -34,7 +34,7 @@ public class Powerup_Manager : MonoBehaviour {
     private MaterialPropertyBlock[] spriteBlock = null;
 
     [SerializeField]
-    private GameObject collectVFX = null;
+    private GameObject[] collectVFX = null;
 
     [SerializeField]
     private GameObject destroyVFX = null;
@@ -267,16 +267,20 @@ public class Powerup_Manager : MonoBehaviour {
 
         if (triggered)
         {
-            GameObject myCollect = Instantiate(collectVFX);
+            GameObject myCollect = Instantiate(collectVFX[powerupNumber]);
             ParticleSystem[] collectPs = myCollect.GetComponentsInChildren<ParticleSystem>(); // Get particlesystem of the newly instantiated dstroy effect
+
+            // HERE: Find the image collectPs[] is using, and change it to the image of the kind of powerup is being collected.
+            // ie: powerupSprite[]
+
+
+
 
             for (int i = 0; i < collectPs.Length; i++)
             {
                 var collectCol = collectPs[i].colorOverLifetime;
                 collectCol.enabled = true;
                 collectCol.color = gradCollectVFX[powerupNumber];
-
-                
             }
 
 

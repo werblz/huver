@@ -232,8 +232,9 @@ public class Game_Manager : MonoBehaviour {
 
     private float gridCellSize = 0.0f; // Will be the size of each building cell
 
-    private float tallestBuilding = 0.0f;
-    private float shortestBuilding = 10000.0f;
+    private int tallestBuilding = 0;
+    private float tallestBuildingHeight = 0.0f;
+    private float shortestBuildingHeight = 10000.0f;
 
     [Header("Game Behavior")]
     [SerializeField]
@@ -519,13 +520,15 @@ public class Game_Manager : MonoBehaviour {
                     float heightCheck = buildings[numBuildingsInGrid].transform.localScale.y;
 
                     // If it is taller than any before, record that height
-                    if (heightCheck > tallestBuilding)
+                    if (heightCheck > tallestBuildingHeight)
                     {
-                        tallestBuilding = heightCheck;
+                        tallestBuildingHeight = heightCheck;
+                        // This determines WHICH building is tallest, so I can use that to place Home, and to NOT place other pads.
+                        tallestBuilding = numBuildingsInGrid;
                     }
-                    if (heightCheck < shortestBuilding)
+                    if (heightCheck < shortestBuildingHeight)
                     {
-                        shortestBuilding = heightCheck;
+                        shortestBuildingHeight = heightCheck;
                     }
                     numBuildingsInGrid++; // Increase array index
                 }
@@ -533,14 +536,11 @@ public class Game_Manager : MonoBehaviour {
         }
         if (debugOn)
         {
-            Debug.Log("<color=blue>*******************</color> Tallest Building is " + tallestBuilding);
-            Debug.Log("<color=blue>*******************</color> Shortest Building is " + shortestBuilding);
+            Debug.Log("<color=blue>*******************</color> Tallest Building is " + tallestBuildingHeight);
+            Debug.Log("<color=blue>*******************</color> Shortest Building is " + shortestBuildingHeight);
             Debug.Log("<color=yellow>********************</color>  NUMBER OF BUILDINGS MADE: " + numBuildingsInGrid);
             Debug.Log("<color=red>******************* Coordinates of the middle-most building:</color>" + buildings[(int)numBuildingsInGrid / 2].transform.position);
         }
-
-        //PopulatePowerups(numBuildingsInGrid);
-
     }
 
 
@@ -844,7 +844,11 @@ public class Game_Manager : MonoBehaviour {
             int randBuild = (int)(UnityEngine.Random.value * numBuildingsInGrid); // Grab a random building in the building array
 
             // Tom Thompson taught me a bitchin' way to never get the same random twice. Find it and put it here.
-            while (randBuild == lastRand || buildingOccupied[randBuild] == true)
+            // This checks to make sure:
+            // 1. This random number is not the same as the last one
+            // 2. The building is not already occupied
+            // 3. The building is not the tallest (reserved for Home Base)
+            while ( randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding )
             {
                 //Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
@@ -923,7 +927,11 @@ public class Game_Manager : MonoBehaviour {
             int randBuild = (int)(UnityEngine.Random.value * numBuildingsInGrid); // Grab a random building in the building array
 
             // Tom Thompson taught me a bitchin' way to never get the same random twice. Find it and put it here.
-            if (randBuild == lastRand || buildingOccupied[randBuild] == true)  // Checks to see if building is already occupied too.
+            // This checks to make sure:
+            // 1. This random number is not the same as the last one
+            // 2. The building is not already occupied
+            // 3. The building is not the tallest (reserved for Home Base)
+            if ( randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding )  // Checks to see if building is already occupied too.
             {
                 Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
@@ -998,7 +1006,7 @@ public class Game_Manager : MonoBehaviour {
 
     private void PopulateHomeBase()
     {
-        
+
         // This code assumes, rightly, that the middle element in the buildings array is near the center
         // of the city. For reasons of texture tweaking it won't always be dead-center, but we don't care
         // about that. Close enough.
@@ -1006,7 +1014,10 @@ public class Game_Manager : MonoBehaviour {
 
         // HOWEVER FOR SOME REASON, centerBuilding (numBuildingsInGrid/2) does NOT center the building. SO Adding 56 seems to fix it.
         // That number must come from somewhere, but it's not gridSize which is 84. So what the hell?
-        int centerBuilding = (numBuildingsInGrid / 2) + 56;
+        // NO LONGER USING A WAY TO FIND CENTER. USING TALLEST INSTEAD.
+        // int centerBuilding = (numBuildingsInGrid / 2) + 56;
+
+        
         //Debug.LogError("NUMBUILDINGS = " + numBuildingsInGrid + ", so center is " + centerBuilding);
 
         // Instantiate a Home Base based on the one in the scene. Yes, this already exists, but instantiate it anyway
@@ -1017,24 +1028,24 @@ public class Game_Manager : MonoBehaviour {
         homeBldg.transform.localScale = new Vector3(gasPadScale, gasPadScale, gasPadScale);
 
         // Put pad at loc of same array building -- Don't forget to add the y position now that the building is not only scaling but being NUDGED in the Y by texture displacement
-        Vector3 homeLoc = new Vector3(buildings[centerBuilding].transform.position.x,
-            buildings[centerBuilding].transform.localScale.y + 1.0f,
-            buildings[centerBuilding].transform.position.z);
+        Vector3 homeLoc = new Vector3(buildings[tallestBuilding].transform.position.x,
+            buildings[tallestBuilding].transform.localScale.y + 1.0f,
+            buildings[tallestBuilding].transform.position.z);
 
         // Place the Home Base object where the center-most building is.
         homeBldg.transform.position = homeLoc;
 
-        Vector3 homeScale = new Vector3(gasPadScale * 2.0f, buildings[centerBuilding].transform.localScale.y, gasPadScale * 2.0f);
+        Vector3 homeScale = new Vector3(gasPadScale * 2.0f, buildings[tallestBuilding].transform.localScale.y, gasPadScale * 2.0f);
 
         if (debugOn)
         {
             Debug.Log("<color=red> HOME PAD SCALE IS " + homeScale + "</color>");
         }
         // Now scale the building to fit the home pad, same as we do with the other pads
-        buildings[centerBuilding].transform.localScale = homeScale;
+        buildings[tallestBuilding].transform.localScale = homeScale;
 
         // Mark it occupied
-        buildingOccupied[centerBuilding] = true;
+        buildingOccupied[tallestBuilding] = true;
 
         homeBldg.SetActive(true);  
 
@@ -1101,7 +1112,7 @@ public class Game_Manager : MonoBehaviour {
         }
 
         // Start lane at the tallest buliding plus one airship height
-        //float laneY = shortestBuilding + airShipObject.airshipHeight;
+        //float laneY = shortestBuildingHeight + airShipObject.airshipHeight;
 
         // Get the width between ships
         float myXDistance = maxPadDistance / numShips;
@@ -1147,15 +1158,15 @@ public class Game_Manager : MonoBehaviour {
             // Instead we do it in the Mover by passing the rotation from here into there.
             // That way we can just do this once, not twice based on the odd/evenness
 
-            //laneY = shortestBuilding;
+            //laneY = shortestBuildingHeight;
 
             if ( i % 2 == 0 ) // Even. x and z are normal.
             {
-                tryPosition = new Vector3(myX, shortestBuilding, airShip[i].transform.position.z);
+                tryPosition = new Vector3(myX, shortestBuildingHeight, airShip[i].transform.position.z);
             }
             else // Odd. x and z are flipped
             {
-                tryPosition = new Vector3(airShip[i].transform.position.x, shortestBuilding, myX);
+                tryPosition = new Vector3(airShip[i].transform.position.x, shortestBuildingHeight, myX);
             }
             airShip[i].PlaceShip(tryPosition, i);
 

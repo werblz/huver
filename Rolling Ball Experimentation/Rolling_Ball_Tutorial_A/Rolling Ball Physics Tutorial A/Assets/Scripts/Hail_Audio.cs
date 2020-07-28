@@ -90,7 +90,7 @@ public class Hail_Audio : MonoBehaviour {
 
         taxiAudio.pitch = voicePitch;
 
-        Debug.Log("<color=orange>*******</color><color=cyan>******</color> Pitch = " + voicePitch);
+        //Debug.Log("<color=orange>*******</color><color=cyan>******</color> Pitch = " + voicePitch);
 
         switch (whichSound)
         {
