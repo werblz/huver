@@ -484,7 +484,7 @@ public class Game_Manager : MonoBehaviour {
                     bLoc.z = bLoc.z + UnityEngine.Random.value * maxBuildingXZScaleOffset;
 
                     Vector4 wiggleValue = TextureWiggle(bLoc);
-                    Debug.Log("<color=red>@@@@@@ </color> - BUILDING NUMBER " + numBuildingsInGrid);
+                    //Debug.Log("<color=red>@@@@@@ </color> - BUILDING NUMBER " + numBuildingsInGrid);
                     //Debug.Log("<color=white>********</color><color=blue>*******</color> Vector 4 here is " + wiggleValue.ToString());
 
                     // Separate out the values I need. 
@@ -606,7 +606,7 @@ public class Game_Manager : MonoBehaviour {
         // Now get the ALPHA channel value, and rotate the building in the Y direction
         float nudgeRotY = pixelValue.a;
 
-        Debug.Log("<color=red>****</color><color=cyan>****</color> Returning " + nudgeX + ", " + nudgeY + ", " + nudgeZ + ", Rot " + nudgeRotY);
+        //Debug.Log("<color=red>****</color><color=cyan>****</color> Returning " + nudgeX + ", " + nudgeY + ", " + nudgeZ + ", Rot " + nudgeRotY);
         return new Vector4 (nudgeX, nudgeY, nudgeZ, nudgeRotY); // DUE to the weirdness of Vector4, w, x, y, z, w comes first, so that
         // will be the rotation. That way, x, y and z can correspond properly to a location
 
@@ -1007,7 +1007,7 @@ public class Game_Manager : MonoBehaviour {
         // HOWEVER FOR SOME REASON, centerBuilding (numBuildingsInGrid/2) does NOT center the building. SO Adding 56 seems to fix it.
         // That number must come from somewhere, but it's not gridSize which is 84. So what the hell?
         int centerBuilding = (numBuildingsInGrid / 2) + 56;
-        Debug.LogError("NUMBUILDINGS = " + numBuildingsInGrid + ", so center is " + centerBuilding);
+        //Debug.LogError("NUMBUILDINGS = " + numBuildingsInGrid + ", so center is " + centerBuilding);
 
         // Instantiate a Home Base based on the one in the scene. Yes, this already exists, but instantiate it anyway
         // so it works just like pads and gas stations

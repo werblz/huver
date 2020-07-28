@@ -89,6 +89,14 @@ public class Powerup_Manager : MonoBehaviour {
     private ParticleSystem[] ps = null;
 
     private Gradient grad = null;
+    private Gradient gradCollect = null;
+
+    [SerializeField]
+    private Gradient[] gradVFX = null;
+    [SerializeField]
+    private Gradient[] gradCollectVFX = null;
+
+    private float VFXMultFactor = 1.0f;
 
     // Use this for initialization
     private void Start () {
@@ -128,7 +136,8 @@ public class Powerup_Manager : MonoBehaviour {
         }
 
 
-        // Set the gradient keys for everything
+        // Set the gradient keys for attached VFX
+        /*
         grad = new Gradient(); // Make a new gradient
         grad.SetKeys(new GradientColorKey[] {
                 new GradientColorKey(gaugeMeshColor, 0.0f),
@@ -138,13 +147,28 @@ public class Powerup_Manager : MonoBehaviour {
                     new GradientAlphaKey(1.0f, 0.0f),
                 new GradientAlphaKey(0.0f, 1.0f) }
         );
+        */
+
+        // Set the gradient keys for Collect VFX we instantiate on Collect
+        /*
+        gradCollect = new Gradient(); // Make a new gradient
+        gradCollect.SetKeys(new GradientColorKey[] {
+                new GradientColorKey(gaugeMeshColor, 0.0f),
+                new GradientColorKey(gaugeMeshColor, 1.0f) },
+            new GradientAlphaKey[]
+            {
+                    new GradientAlphaKey(0.5f, 0.0f),
+                new GradientAlphaKey(0.0f, 1.0f) }
+        );
+        */
+
 
         // Apply the gradient to my array of particlesystems
         for (int i = 0; i < ps.Length; i++ )
         {
             var col = ps[i].colorOverLifetime;
             col.enabled = true;
-            col.color = grad;
+            col.color = gradVFX[powerupNumber];
         }
 
 
@@ -250,14 +274,23 @@ public class Powerup_Manager : MonoBehaviour {
             {
                 var collectCol = collectPs[i].colorOverLifetime;
                 collectCol.enabled = true;
-                collectCol.color = grad;
+                collectCol.color = gradCollectVFX[powerupNumber];
 
+                
             }
 
 
             myCollect.transform.position = transform.position;
-            myCollect.transform.localScale = transform.localScale;
-            
+            // powerupStrength can be 0, so I need to add an offset. The multiplyer is there to regulate the size
+
+            // The calculation is from my experimentation finding that from .5 to 1.5 is good, and since values are 0-3, that is .5 + strength/3
+            VFXMultFactor = (powerupStrength / 3.0f) + .5f;
+
+            //myCollect.transform.localScale = transform.localScale * (powerupStrength * .5f + (powerupStrength * 2.0f)); // Try to scale the particle based on strength of powerup
+
+            // TEST WHOLE VALUES - Should go from .5 to 2.0 (or 1.5)
+            myCollect.transform.localScale = transform.localScale * VFXMultFactor;
+
         }
         else
         {
@@ -266,7 +299,7 @@ public class Powerup_Manager : MonoBehaviour {
 
             var collectCol = destroyPs.colorOverLifetime;
             collectCol.enabled = true;
-            collectCol.color = grad;
+            collectCol.color = gradVFX[powerupNumber];
 
             myDestroy.transform.position = transform.position;
             myDestroy.transform.localScale = transform.localScale;
