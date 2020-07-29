@@ -51,7 +51,7 @@ public class Game_Manager : MonoBehaviour {
 
     [Tooltip("Maximum Distance Per Pad. This is used to determine the diameter of the city!")]
     [SerializeField]
-    private float maxPadDistance = 500.0f;
+    public float maxPadDistance = 500.0f;
 
     [Tooltip("Minimum Distance Between Placing Pads. Not sure this code is working yet, but will.")]
     [SerializeField]

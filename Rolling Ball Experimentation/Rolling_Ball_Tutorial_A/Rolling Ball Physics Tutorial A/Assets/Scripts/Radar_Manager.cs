@@ -8,13 +8,26 @@ public class Radar_Manager : MonoBehaviour {
 
     [SerializeField]
     private GameObject nextIndicator = null;
+    [SerializeField]
+    private Color nextCurrentColor = Color.white;
+    [SerializeField]
+    private float nextIndicatorDefaultScale = 0.08f;
+    private MeshRenderer nextIndicatorMesh = null;
 
     [SerializeField]
     private GameObject gasIndicator = null;
+    [SerializeField]
+    private Color gasCurrentColor = Color.white;
+    [SerializeField]
+    private float gasIndicatorDefaultScale = 0.05f;
+    private MeshRenderer gasIndicatorMesh = null;
 
     [SerializeField]
     private GameObject homeIndicator = null;
-    
+    [SerializeField]
+    private float homeIndicatorDefaultScale = 0.01f;
+    private MeshRenderer homeIndicatorMesh = null;
+
     [SerializeField]
     private GameObject[] ledSegment = null;
 
@@ -144,6 +157,11 @@ public class Radar_Manager : MonoBehaviour {
     private bool soundPingedAlreadyOrange = false;
     private bool soundPingedAlreadyRed = false;
 
+    // Color the indicators
+    private Color nextColor = Color.white;
+    private MaterialPropertyBlock nextMpb = null;
+    private Color gasColor = Color.white;
+    private MaterialPropertyBlock gasMpb = null;
 
 
     // THE PLAN
@@ -157,6 +175,19 @@ public class Radar_Manager : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        // Now get the actual MeshRenderers for the compass indicators
+        nextIndicatorMesh = nextIndicator.GetComponentInChildren<MeshRenderer>();
+        gasIndicatorMesh = gasIndicator.GetComponentInChildren<MeshRenderer>();
+        homeIndicatorMesh = homeIndicator.GetComponentInChildren<MeshRenderer>();
+        Debug.Log("             NEXT MESH " + nextIndicatorMesh);
+        Debug.Log("             GAS MESH " + gasIndicatorMesh);
+        Debug.Log("             HOME MESH " + homeIndicatorMesh);
+
+        // Start their scales off as the accepted defaults
+        nextIndicatorMesh.transform.localScale = new Vector3(nextIndicatorDefaultScale, nextIndicatorDefaultScale, nextIndicatorDefaultScale);
+        gasIndicatorMesh.transform.localScale = new Vector3(gasIndicatorDefaultScale, gasIndicatorDefaultScale, gasIndicatorDefaultScale);
+        homeIndicatorMesh.transform.localScale = new Vector3(homeIndicatorDefaultScale, homeIndicatorDefaultScale, homeIndicatorDefaultScale);
+
         gaugeAudio = GetComponent<AudioSource>();
         //Debug.Log("<color=white>*************************** Array element 3, 6 = " + seg[3, 5].ToString());
 
@@ -176,7 +207,10 @@ public class Radar_Manager : MonoBehaviour {
 
         //mpb = new MaterialPropertyBlock();
         //crackedRadarSprite.GetPropertyBlock(mpb);
-        
+
+        // Set color of indicators.
+        // Next Indicator
+
     }
 
     // Update is called once per frame
@@ -216,6 +250,36 @@ public class Radar_Manager : MonoBehaviour {
             //!!!!!!!!!!!!!!!!!!!! - SO FAR THE INDICATOR DOES ROTATE, but not accurately. It's in the angle offset first And then has to add the taxi's rotation
             nextIndicator.transform.localRotation = Quaternion.Euler(indRotation);
 
+            // Get distance between taxi and this pad. Luckily I just got the locations of the two above here
+            // So it's a matter of math. With maxPadDistance being 1050, how do I get a value that means something useful between, say, 0 and 1?
+            float padDistance = Vector3.Distance(padLoc, taxiLoc);
+            // y=mx+B
+            // where Y is the result
+            // m is the slope
+            // m = y2-y2/x2-x1 => .5-1/1050-0 => -.5/1050
+            // B is 1, the y value at 0 on the graph
+            // x is distance to pad
+            // y = (-.5/1050) * distance + 1
+            float padDistanceNormalized = (-.5f / gm.maxPadDistance) * padDistance + 1.0f;
+            float padScaleMult = padDistanceNormalized * nextIndicatorDefaultScale;
+            // Limit the scale from getting too tiny to see
+            if (padScaleMult < nextIndicatorDefaultScale / 5.0f)
+            {
+                padScaleMult = nextIndicatorDefaultScale / 5.0f;
+            }
+            nextIndicatorMesh.transform.localScale = new Vector3(padScaleMult, padScaleMult, padScaleMult);
+
+            // Now darken the color over distance too.
+            if (nextIndicatorMesh)
+            {
+                nextMpb = new MaterialPropertyBlock();
+                // Stupidly, since we're counting UP pads, but counting DOWN numbers, I have
+                // to do a little math there to get the right index number
+                Color newNextColor = nextCurrentColor * padDistanceNormalized;
+                nextMpb.SetColor("_Color", newNextColor);
+                nextIndicatorMesh.SetPropertyBlock(nextMpb);
+            }
+
         }
 
         // Turn pad indicator on or off depending on if we have it
@@ -242,7 +306,38 @@ public class Radar_Manager : MonoBehaviour {
 
             //!!!!!!!!!!!!!!!!!!!! - SO FAR THE INDICATOR DOES ROTATE, but not accurately. It's in the angle offset first And then has to add the taxi's rotation
             gasIndicator.transform.localRotation = Quaternion.Euler(gasIndRotation);
-            
+
+            // Get distance between taxi and this gas pad. Luckily I just got the locations of the two above here
+            // So it's a matter of math. With maxPadDistance being 1050, how do I get a value that means something useful between, say, 0 and 1?
+            float gasDistance = Vector3.Distance(gasLoc, taxiLoc);
+            // y=mx+B
+            // where Y is the result
+            // m is the slope
+            // m = y2-y2/x2-x1 => .5-1/1050-0 => -.5/1050
+            // B is 1, the y value at 0 on the graph
+            // x is distance to pad
+            // y = (-.5/1050) * distance + 1
+            float gasDistanceNormalized = (-1.8f / gm.maxPadDistance) * gasDistance + 1.0f;
+            float gasScaleMult = gasDistanceNormalized * gasIndicatorDefaultScale;
+            if (gasScaleMult < gasIndicatorDefaultScale / 4.0f)
+            {
+                gasScaleMult = gasIndicatorDefaultScale / 4.0f;
+            }
+            gasIndicatorMesh.transform.localScale = new Vector3(gasScaleMult, gasScaleMult, gasScaleMult);
+            // Limit the scale from getting too tiny to see
+
+
+            // Now darken the color over distance too.
+            if (gasIndicatorMesh)
+            {
+                gasMpb = new MaterialPropertyBlock();
+                // Stupidly, since we're counting UP pads, but counting DOWN numbers, I have
+                // to do a little math there to get the right index number
+                Color newGasColor = gasCurrentColor * gasDistanceNormalized;
+                gasMpb.SetColor("_Color", newGasColor);
+                gasIndicatorMesh.SetPropertyBlock(gasMpb);
+            }
+
         }
 
         if (taxi.hasHomeIndicator)
@@ -257,7 +352,26 @@ public class Radar_Manager : MonoBehaviour {
             angle = Mathf.Atan2(homeLoc.x - taxiLoc.x, homeLoc.z - taxiLoc.z) * 180 / Mathf.PI;
             //taxiAngle = taxi.transform.localEulerAngles.y;
             homeIndRotation = new Vector3(0.0f, angle + 180.0f - taxiAngle, 0.0f); // This is in case angle needs an offset.] DOES THIS DO ANYTHING?
-            //gasIndicatorRot = new Vector3(0.0f, 0.0f, taxiAngle);
+                                                                                   //gasIndicatorRot = new Vector3(0.0f, 0.0f, taxiAngle);
+
+            // Get distance between taxi and this pad. Luckily I just got the locations of the two above here
+            // So it's a matter of math. With maxPadDistance being 1050, how do I get a value that means something useful between, say, 0 and 1?
+            float homeDistance = Vector3.Distance(homeLoc, taxiLoc);
+            // y=mx+B
+            // where Y is the result
+            // m is the slope
+            // m = y2-y2/x2-x1 => .5-1/1050-0 => -.5/1050
+            // B is 1, the y value at 0 on the graph
+            // x is distance to pad
+            // y = (-.5/1050) * distance + 1
+            float homeDistanceNormalized = (-.5f / gm.maxPadDistance) * homeDistance + 1.0f;
+            float homeScaleMult = homeDistanceNormalized * homeIndicatorDefaultScale;
+            // Limit the scale from getting too tiny to see
+            if (homeScaleMult < homeIndicatorDefaultScale / 5.0f)
+            {
+                homeScaleMult = homeIndicatorDefaultScale / 5.0f;
+            }
+            homeIndicatorMesh.transform.localScale = new Vector3(homeScaleMult, homeScaleMult, homeScaleMult);
 
             //!!!!!!!!!!!!!!!!!!!! - SO FAR THE INDICATOR DOES ROTATE, but not accurately. It's in the angle offset first And then has to add the taxi's rotation
             homeIndicator.transform.localRotation = Quaternion.Euler(homeIndRotation);

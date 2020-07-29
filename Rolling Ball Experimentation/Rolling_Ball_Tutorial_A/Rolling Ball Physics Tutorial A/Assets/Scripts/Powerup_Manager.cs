@@ -213,7 +213,13 @@ public class Powerup_Manager : MonoBehaviour {
         counter--;
 
         // Color the powerup so as it darkens, you know it soon goes away. In this case as a test we simply darken it down to 0,0,0,1
-        float newColor = (float)counter / countDownTime;
+        float newColor = (float)counter / countDownTime + .5f;
+
+        // Fade to not quite zero (see above) but also don't go over 1.1 in color otherwise it blows out
+        if (newColor > 1.1f)
+        {
+            newColor = 1.1f;
+        }
 
         updatedMeshColor = new Color(
             powerupColor[powerupNumber].r * newColor,
