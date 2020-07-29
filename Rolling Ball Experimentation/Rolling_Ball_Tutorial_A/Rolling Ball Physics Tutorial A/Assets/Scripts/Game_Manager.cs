@@ -399,7 +399,7 @@ public class Game_Manager : MonoBehaviour {
             // IF the fare drops to half of the starting fare, trigger a "Hey Taxi!" to move your butt!
             if (fare < (fareAtStart / 2.0f))
             {
-                if (!remindedTaxi)                
+                if (!remindedTaxi && !taxi.isCrashing)                
                 {
                     // FIX ME! Put a bool toggle on this so it happens only once during a pad!
                     hail.TriggerAudio(0, person, voiceVolume * 1.5f, voicePitch, voiceDelay);
@@ -812,7 +812,8 @@ public class Game_Manager : MonoBehaviour {
         NewFare(standardFare, 0); // If this is the start of a new shift, set to 0, so code knows to use the Gas Station as starting point, and not the next pad as 0
 
         // Now determine if there are available upgrades, and make them show up too.
-        // For now we just assume there are, and make the panel show up
+        // We now check to see if you can afford any of the upgrades. If you can afford NONE of the current picks, the panel doesn't bother to appear.
+        // If you can afford ANY of them, it will, but obviously will still RED X out unaffordable options
         upgradesAvailable = true; // LET's let the UP Panel decide, since it searches for upgrades
 
         PutUiUp(shift, crashed);

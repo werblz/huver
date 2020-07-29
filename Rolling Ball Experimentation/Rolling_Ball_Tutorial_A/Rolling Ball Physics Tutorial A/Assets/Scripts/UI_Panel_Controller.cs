@@ -39,6 +39,7 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     private int[] picks = null;
 
+    private bool canAfford = false;
 
     // THIS SCRIPT WAS NOT DOING ANYTHING!
     // The GameObject reference above was not even filled out
@@ -240,7 +241,15 @@ public class UI_Panel_Controller : MonoBehaviour {
         // any number of the prefabs I have created
         picks = FindUpgrades();
 
+        canAfford = false;
 
+        for (int i = 0; i < upgradeHoldingLocations.Length; i++)
+        {
+            if (upgradeDataItems[picks[i]].upgradeCost <= gm.cash)
+            {
+                canAfford = true;
+            }
+        }
 
         //Now populate the prefabs, for now just pop all 3.
         for (int i = 0; i < upgradeHoldingLocations.Length; i++)
@@ -394,7 +403,7 @@ public class UI_Panel_Controller : MonoBehaviour {
     private void ShowUpgrades(int numUpgrades)
     {
         // If upgradesAvailable, which means you crashed, you don't see the upgrade UI
-        if ( !gm.upgradesAvailable )
+        if ( !gm.upgradesAvailable || !canAfford )
         {
             return;
         }
