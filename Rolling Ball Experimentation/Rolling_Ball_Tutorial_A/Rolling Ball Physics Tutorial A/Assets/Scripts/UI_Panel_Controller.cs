@@ -121,7 +121,7 @@ public class UI_Panel_Controller : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!gm.upgradesAvailable)
+        if (!gm.upgradesAvailable || !canAfford)
         {
             return;
         }
