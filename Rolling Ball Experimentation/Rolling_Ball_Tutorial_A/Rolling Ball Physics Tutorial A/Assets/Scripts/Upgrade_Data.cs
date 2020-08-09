@@ -21,7 +21,7 @@ public class Upgrade_Data : MonoBehaviour {
     // LATER WHEN I GET THIS FIGURED OUT: public Upgrade_Base upgradeScript = null;
 
     [SerializeField]
-    private string friendlyDescription = null;
+    public string friendlyDescription = null;
 
     // Since cost will be reflected in the text, and can differ from the cost
     // in data, I will make the text read the data

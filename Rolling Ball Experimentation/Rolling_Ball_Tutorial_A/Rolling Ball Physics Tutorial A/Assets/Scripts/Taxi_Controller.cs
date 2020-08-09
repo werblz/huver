@@ -50,24 +50,24 @@ public class Taxi_Controller : MonoBehaviour
     private float upwardThrust = 0.0f; // SAVE
 
     [SerializeField]
-    private float upThrustMult = 2.0f; // SAVE
+    public float upThrustMult = 2.0f; // SAVE
 
     [SerializeField]
-    private float downThrustMult = 1.0f; // SAVE
+    public float downThrustMult = 1.0f; // SAVE
 
     [SerializeField]
-    private float forwardThrustMult = 1.0f; // SAVE
+    public float forwardThrustMult = 1.0f; // SAVE
 
     [SerializeField]
     public float sideThrustMult = 1.0f; // SAVE
 
     [SerializeField]
-    private float thrustMultiplier = 20.0f; // SAVE
+    public float thrustMultiplier = 20.0f; // SAVE
 
     [SerializeField]
     public float turboMultiplier = 1.0f; // SAVE
 
-    private float turboAmount = 1.0f; // SAVE
+    public float turboAmount = 1.0f; // SAVE
 
     [HideInInspector]
     public float turboTrigger = 0.0f;
@@ -134,24 +134,25 @@ public class Taxi_Controller : MonoBehaviour
 
     [SerializeField]
     public float maxGas = 50.0f; // SAVE
+    public float newGameMaxGas = 50.0f;
 
 
     public float gas = 0.0f; // SAVE
 
     [SerializeField]
-    private float gasUseRateUpThrust = 0.1f; // SAVE
+    public float gasUseRateUpThrust = 0.1f; // SAVE
 
     [SerializeField]
-    private float gasUseRateDownThrust = 0.05f; // SAVE
+    public float gasUseRateDownThrust = 0.05f; // SAVE
 
     [SerializeField]
-    private float gasUseRateForwardThrust = 0.1f; // SAVE
+    public float gasUseRateForwardThrust = 0.1f; // SAVE
 
     [SerializeField]
-    private float gasUseRateRotateThrust = 0.05f; // SAVE
+    public float gasUseRateRotateThrust = 0.05f; // SAVE
 
     [SerializeField]
-    private float gasUseRateSideThrust = 0.05f; // SAVE
+    public float gasUseRateSideThrust = 0.05f; // SAVE
 
 
 
@@ -241,10 +242,10 @@ public class Taxi_Controller : MonoBehaviour
     public bool hasStationIndicator = false;
 
     [SerializeField]
-    public bool hasStrafe = false;
+    public bool hasStrafeUpgrade = false;
 
     [SerializeField]
-    public bool hasTurbo = false;
+    public bool hasTurboUpgrade = false;
 
     [Header("Audio")]
 
@@ -355,6 +356,7 @@ public class Taxi_Controller : MonoBehaviour
 
     private void Start()
     {
+
         taxiAudio = GetComponent<AudioSource>();
 
         taxiMovedToInitialLocation = false;
@@ -556,7 +558,7 @@ public class Taxi_Controller : MonoBehaviour
                 if (moveForward >= joyToleranceMax)
                 {
                     FireEngines(enginesForward, Math.Abs(moveForward * forwardJetScale));
-                    if (turboTrigger > 0.01f && hasTurbo) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
+                    if (turboTrigger > 0.01f && hasTurboUpgrade) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
                     {
                         FireEngines(enginesTurboFront, 0.5f);
                     }
@@ -568,7 +570,7 @@ public class Taxi_Controller : MonoBehaviour
                 if (moveForward <= joyToleranceMin)
                 {
                     FireEngines(enginesBackward, Math.Abs(moveForward * backJetScale));
-                    if (turboTrigger > 0.01f && hasTurbo) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
+                    if (turboTrigger > 0.01f && hasTurboUpgrade) // IF it's being thrust forward AND Turbo is on, fire turbo visuals at scale 1.
                     {
                         FireEngines(enginesTurboRear, 0.5f);
                     }
@@ -590,7 +592,7 @@ public class Taxi_Controller : MonoBehaviour
             {
                 turboTrigger = Input.GetAxis(turboButton);
 
-                if (turboTrigger > 0.01f && hasTurbo)
+                if (turboTrigger > 0.01f && hasTurboUpgrade)
                 {
                     turboAmount = turboMultiplier;
                 }
@@ -629,7 +631,7 @@ public class Taxi_Controller : MonoBehaviour
                 }
             }
             
-            if (hasControl && hasStrafe)
+            if (hasControl && hasStrafeUpgrade)
             {
                 moveSideways = Input.GetAxis(sideJoy);
                 if (moveSideways > joyToleranceSideMin && moveSideways < joyToleranceSideMax)
@@ -720,7 +722,7 @@ public class Taxi_Controller : MonoBehaviour
             strafeAudio.pitch = Mathf.Abs(moveSideways) * strafePitchMultiplier + strafePitchMinimum;
             strafeAudio.volume = Mathf.Abs(moveSideways) * strafeVolumeMultiplier + strafeVolumeMinimum;    
 
-            if (hasTurbo)
+            if (hasTurboUpgrade)
             {
                 forwardAudio.pitch += turboTrigger * turboPitchMultiplier;
                 forwardAudio.volume += turboTrigger * turboVolumeMultiplier;
@@ -1168,38 +1170,7 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-        //////////////////!!!!!!!!!!!!! THIS SECTION was for the old pad system where the cab itself was handling pad landing collision
-        ///// Now, however, the pad handles it. Remove this once it's all working
-
-        /*
-        if (other.gameObject.tag == "Pad")
-        {
-            Debug.LogWarning("<color=black> ### You hit a pad!</color>");
-            if (gm.numPadsLandedOn > -1)  /////////////////////!!!!!!!!!!!!!!! THIS IS A FAKE CONDITION!
-                // Soon, replace this with code to find out if 
-            {
-                Debug.Log("<color=black> YOU HAVE ALREADY LANDED ON THIS BUILDING!</color>");
-                return;
-            }
-           
-
-            if ( other.gameObject != gm.pads[gm.nextPad] )
-            {
-                Debug.Log("<color=black> THIS IS NOT THE TARGET BUILDING! You want # " + gm.nextPad + "</color>");
-
-                return;
-            }
-                
-
-            gm.numPadsLandedOn++;
-            gm.nextPad++;
-            Debug.Log("<color=black>   LANDED ON PAD " + gm.nextPad + "</color>");
-            if ( gm.numPadsLandedOn >= gm.numPads )
-            {
-                Debug.Log("<color=red>   LEVEL OVER!!!!!!!!!!!!!!!!! </color>");
-            }
-        }
-        */
+        
         
 
 

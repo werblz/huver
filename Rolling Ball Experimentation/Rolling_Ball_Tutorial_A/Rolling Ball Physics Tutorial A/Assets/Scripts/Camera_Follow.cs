@@ -112,7 +112,7 @@ public class Camera_Follow : MonoBehaviour {
         if (taxi.cameraFollow == true )
         {
             // If Turbo is on, make the camera lerp much faster, otherwise we lose sight of the car as that speed increases.
-            if (taxi.turboTrigger > 0.01 && taxi.hasTurbo)
+            if (taxi.turboTrigger > 0.01 && taxi.hasTurboUpgrade)
             {
                 RotationSmoothSpeed = rotSmoothSpeed * 1.5f; // taxi.turboMultiplier;
                 MoveSmoothSpeed = moveSmoothSpeed * 1.05f; // taxi.turboMultiplier;

@@ -20,7 +20,7 @@ public class UI_Panel_Controller : MonoBehaviour {
     [SerializeField]
     private GameObject[] upgradeHoldingLocations;
 
-    private Upgrade_Data[] upgradeDataItems = null;
+    public Upgrade_Data[] upgradeDataItems = null;
 
     [SerializeField]
     public GameObject shiftDialogParent = null;
@@ -222,7 +222,7 @@ public class UI_Panel_Controller : MonoBehaviour {
     // The PutDialog passes a number in the array of dialogs
     public void RemoveDialog(GameObject myOldDialog)
     {
-        
+
 
         //Deparent it and put it at origin
         myOldDialog.transform.parent = null;
@@ -264,12 +264,31 @@ public class UI_Panel_Controller : MonoBehaviour {
             Debug.Log("<color=white>UPGRADE CHOSEN = " + upgradeDataItems[picks[i]].name + "</color>");
         }
 
-        
+
 
 
     }
 
-   
+
+    // This should go through the toggles and such of the GameManager to determine if any of the upgrades has already been purchased in previously saved games
+    private void ReconcilePurchases()
+    {
+        // If taxi's maxGas is the same as a new game's, the upgrade is not purchased. This is changed on purchase of the free gas upgrade, so
+        // Since each of these has an UpgradeNumber as part of the data, this isn't simple either. (What is?)
+        // I had initially set hasHomeIndicator up as number 99 so I could put many in between, but I don't think that's important now.
+        
+        // These indices actually have to be in the order they appear in the SerializeField in GameManager!
+        // This is complicated by the fact that the UpgradeNumber stored on each upgrade is NOT the same as the array number!
+        // And should not be confused as such
+        upgradeDataItems[5].isPurchased = taxi.hasNextIndicator;
+        upgradeDataItems[6].isPurchased = taxi.hasStationIndicator;
+        upgradeDataItems[7].isPurchased = taxi.hasStrafeUpgrade;
+        upgradeDataItems[8].isPurchased = taxi.hasTurboUpgrade;
+        upgradeDataItems[9].isPurchased = gm.hasTank;
+        upgradeDataItems[3].isPurchased = taxi.hasHomeIndicator; // This one is particularly weird because it is in the array as element 3
+        
+    }
+
 
     private int[] FindUpgrades()
     {
@@ -314,6 +333,8 @@ public class UI_Panel_Controller : MonoBehaviour {
         // Start with slot 0
         int slot = 0;
 
+        // If we saved data, we want to find out which upgrades have been purchased. This checks those that are checkable:
+        ReconcilePurchases();
 
         // Loop through all of the NON-DEFAULT upgradeDataItems, 3 through last
         for (int i = 3; i < upgradeDataItems.Length - 1; i++)
@@ -489,12 +510,12 @@ public class UI_Panel_Controller : MonoBehaviour {
                 Debug.Log("<color=blue>STATION RADAR UPGRADE!</color>");
                 break;
             case 5:
-                taxi.hasStrafe = true;
+                taxi.hasStrafeUpgrade = true;
                 gm.hasStrafe = true;
                 Debug.Log("<color=blue>STRAFE CONTROL UPGRADE!</color>");
                 break;
             case 6:
-                taxi.hasTurbo = true;
+                taxi.hasTurboUpgrade = true;
                 gm.hasTurbo = true;
                 Debug.Log("<color=blue>TURBO UPGRADE!</color>");
                 break;
@@ -512,7 +533,7 @@ public class UI_Panel_Controller : MonoBehaviour {
                 taxi.sideThrustMult *= 2f; // Upgrade the minCollisionThreshold to new value
                 Debug.Log("<color=blue>STRAFE UPGRADE *2!</color>");
                 break;
-            case 99:
+            case 10:
                 taxi.hasHomeIndicator = true;
                 gm.hasHomePad = true;
                 break;

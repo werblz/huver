@@ -37,6 +37,14 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     private Hail_Audio hail = null;
 
+    [Tooltip("Save Game Data object")]
+    [SerializeField]
+    private SaveGameData sgd = null;
+
+    //private string savegamedata = null;
+    private string appPath = string.Empty;
+    private string saveFileName = "Huver_SaveGame.json";
+
     private Airship_Mover[] airShip = null;
 
     [Header("City Setup")]
@@ -108,7 +116,7 @@ public class Game_Manager : MonoBehaviour {
 
     [Tooltip("Your starting cash.")]
     [SerializeField]
-    public float startingCash = 100.0f; // SAVE
+    public float startingCash = 100.0f;
 
     [Tooltip("Current fare.")]
     [SerializeField]
@@ -169,7 +177,7 @@ public class Game_Manager : MonoBehaviour {
     public float homePadDamageRepairRate = 0.2f; // SAVE
 
     [Tooltip("How much money to deduct on a crash.")]
-    [SerializeField] 
+    [SerializeField]
     public float crashDeductible = 500.0f; // SAVE
 
     [HideInInspector]
@@ -314,9 +322,11 @@ public class Game_Manager : MonoBehaviour {
     [Tooltip("Do Upgrades Cost Sheklys?")]
     [SerializeField]
     public bool upgradesDoNotCostShekyls = false;
+    [Tooltip("Turn this on to initialize a brand new Save file, so Load can work! Turn it off thereafter")]
+    [SerializeField]
+    private bool writeNewSaveFile = false;
 
     // Game stats
-    [Tooltip("What shift are we on?")]
     [HideInInspector]
     public int shift = 1;
 
@@ -335,12 +345,14 @@ public class Game_Manager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        appPath = Application.persistentDataPath;
+
         radarPanel.SetActive(false);
 
         Screen.SetResolution(1200, 800, false);
-                
+
         upgradesAvailable = false;
-                       
+
         // TEST ONLY - FOR QUICK LEVELING! A debug only feature
         if (debugOn)
         {
@@ -364,7 +376,7 @@ public class Game_Manager : MonoBehaviour {
         PopulatePads(numPads); // Next, populate pickup pads
         PopulateGasStations(numStations); // Then populate service stations
         PopulateAirships(numAirships); // Airships
-        
+
         RefreshScore();
 
         ///////////////////////////////////////////// HERE put code like this: pads[nextPad].Pad_Manager.isLit = true;
@@ -373,10 +385,35 @@ public class Game_Manager : MonoBehaviour {
 
         NewFare(standardFare, 0); // Set first fare of the shift based on the distance between car and pad 0
 
+
+
+        float leftTriggerForNewGame = Input.GetAxis("Left Trigger");
+        float aButtonForNewGame = Input.GetAxis("Fire1");
+
+        if ( leftTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f )
+        {
+            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + leftTriggerForNewGame );
+            SaveGame();
+        }
+        
+
+        // TEST IF THIS SAVES THE JSON
+        // UNCOMMENT THIS NEXT LINE OUT IF YOU WANT TO TEST BY SAVING A NEW JSON FILE AT START! Otherwise we save at each new shift
+        if (writeNewSaveFile)
+        {
+            SaveGame();
+        }
+        LoadGame(); // I think this is too late, because if Pad = 2, I hear Pad 3 please, and see the 3 number in the beam, yet when I hit 3, it goes to 1.
+                    // Perhaps the date for the pad numbers needs to come in before now?
+                    // Perhaps make LoadGame JUST laod the JSON. Do it at the top of STart. But pull out the level stuff early in its own method
+                    // Then here, pull out the rest of the variables, NOT related to level
+
         titleScreen.SetActive(false);
         radarPanel.SetActive(true);
 
         PutUiUp(shift, false);
+
+        shift = sgd.shift;
 
     }
 
@@ -399,7 +436,7 @@ public class Game_Manager : MonoBehaviour {
             // IF the fare drops to half of the starting fare, trigger a "Hey Taxi!" to move your butt!
             if (fare < (fareAtStart / 2.0f))
             {
-                if (!remindedTaxi && !taxi.isCrashing)                
+                if (!remindedTaxi && !taxi.isCrashing)
                 {
                     // FIX ME! Put a bool toggle on this so it happens only once during a pad!
                     hail.TriggerAudio(0, person, voiceVolume * 1.5f, voicePitch, voiceDelay);
@@ -416,13 +453,13 @@ public class Game_Manager : MonoBehaviour {
         // This is a test to see if powerups will work as intended, as in they will not occupy the same building already occupied by one
         // and will go away on schedule.
 
-        int chanceOfPowerup = (int)(UnityEngine.Random.value * randomChanceOfPowerup );
+        int chanceOfPowerup = (int)(UnityEngine.Random.value * randomChanceOfPowerup);
         if (chanceOfPowerup == 1)
         {
             PopulatePowerups(numBuildingsInGrid);
         }
 
-        
+
 
     }
 
@@ -440,8 +477,8 @@ public class Game_Manager : MonoBehaviour {
 
         Vector3 bLoc = new Vector3(0.0f, 0.0f, 0.0f);
 
-        Array.Resize(ref buildings, (int)((gridSize+1) * (gridSize+1))); // Resize Array to be grid x grid, which should be the max number of buildings BEFORE circle-culling
-        
+        Array.Resize(ref buildings, (int)((gridSize + 1) * (gridSize + 1))); // Resize Array to be grid x grid, which should be the max number of buildings BEFORE circle-culling
+
         Array.Resize(ref buildingOccupied, (int)((gridSize + 1) * (gridSize + 1)));
 
         Array.Resize(ref buildingHasPowerup, (int)((gridSize + 1) * (gridSize + 1)));
@@ -457,7 +494,7 @@ public class Game_Manager : MonoBehaviour {
             for (int z = 0; z < gridSize; z++)
             {
 
-                
+
                 // Get a random scale to use later after placement
                 Vector3 padScale = BuildingRandomScale();
 
@@ -493,12 +530,12 @@ public class Game_Manager : MonoBehaviour {
                     bLoc.y = 1.0f;// bLoc.y + (wiggleValue.y * layoutWiggleHeightMultiplier); // Height
                     bLoc.z = bLoc.z + ((wiggleValue.z - 0.5f) * layoutWiggleMultiplier); // Z
                     float rotY = wiggleValue.w; // .w is the first of a Vector4, so I will use that as rotation
-                       
+
 
                     // Apply location and scale
                     buildings[numBuildingsInGrid].transform.position = bLoc;
 
-                    padScale.y = padScale.y + ( (wiggleValue.y * layoutWiggleHeightMultiplier) + minBuildingHeight);
+                    padScale.y = padScale.y + ((wiggleValue.y * layoutWiggleHeightMultiplier) + minBuildingHeight);
                     buildings[numBuildingsInGrid].transform.localScale = padScale;
 
                     // Now get that rotation from the texture. First, store the roatation pieces
@@ -544,7 +581,7 @@ public class Game_Manager : MonoBehaviour {
     }
 
 
-    private void PopulatePowerups( int numBuildings )
+    private void PopulatePowerups(int numBuildings)
     {
         //Debug.LogWarning("<color=cyan>$$$$$$$$$$$$$$$$$$$$$$$$</color><color=yellow>NUMBER OF POWERUPS = " + numBuildings + "</color>)");
 
@@ -553,7 +590,7 @@ public class Game_Manager : MonoBehaviour {
 
         int rndBldg = (int)(UnityEngine.Random.value * numBuildings);
 
-        if ( buildingHasPowerup[rndBldg] )
+        if (buildingHasPowerup[rndBldg])
         {
             return; // IF a powerup builidng number already has a powerup, return. Nothing to do here.
         }
@@ -573,11 +610,11 @@ public class Game_Manager : MonoBehaviour {
         powerM.buildingOwner = rndBldg; // Tell the powerup which building owns it.
 
         buildingHasPowerup[rndBldg] = true;
-        
-        
 
 
-        
+
+
+
     }
 
 
@@ -607,20 +644,20 @@ public class Game_Manager : MonoBehaviour {
         float nudgeRotY = pixelValue.a;
 
         //Debug.Log("<color=red>****</color><color=cyan>****</color> Returning " + nudgeX + ", " + nudgeY + ", " + nudgeZ + ", Rot " + nudgeRotY);
-        return new Vector4 (nudgeX, nudgeY, nudgeZ, nudgeRotY); // DUE to the weirdness of Vector4, w, x, y, z, w comes first, so that
-        // will be the rotation. That way, x, y and z can correspond properly to a location
+        return new Vector4(nudgeX, nudgeY, nudgeZ, nudgeRotY); // DUE to the weirdness of Vector4, w, x, y, z, w comes first, so that
+                                                               // will be the rotation. That way, x, y and z can correspond properly to a location
 
-        
+
     }
 
 
     private void Beam(int padNum, bool flag)
     {
         Pad_Manager pm = (Pad_Manager)pads[padNum].GetComponent(typeof(Pad_Manager));
-        
+
         // Pass the bool for whether the beam is on or off to the pad manager
         // But also pass the pad num, so I can put the right texture on
-        
+
         pm.LightBeam(flag, padNum);
 
         voiceVolume = 0.5f;
@@ -635,7 +672,7 @@ public class Game_Manager : MonoBehaviour {
             remindedTaxi = false;
         }
 
-        
+
 
     }
 
@@ -643,6 +680,8 @@ public class Game_Manager : MonoBehaviour {
     // Advanc to the next pad. If last pad, GoToNextShift
     public void Advance()
     {
+
+
         // I choose pitch HERE because I want it to remain constant during any given shift.
         // The reason is that when someone yells Hey Taxi because you're being slow, I want it to be the same pitch as the pad number
         voicePitch = (UnityEngine.Random.value * .3f) + .85f;
@@ -670,19 +709,25 @@ public class Game_Manager : MonoBehaviour {
         {
             //Debug.LogWarning("<color=yellow>*************</color><color=red> MOVING ON TO PAD " + nextPad + "</color>");
 
-            
+
             Beam(nextPad, true);
         }
 
 
         NewFare(standardFare, nextPad);
         RefreshScore();
-        
+
+        // Save game at every pad now
+        //SaveGame();
+
     }
 
     // GoToNextShift now takes a bool whether you've crashed or not. That then gets passed to PutUiUp
     void GoToNextShift(bool crashed)
     {
+
+        
+
         if (crashed)
         {
             //Debug.Log("                               CRASHED! BUT YOU ARE MOVING ON! BYGONES! ");
@@ -692,7 +737,7 @@ public class Game_Manager : MonoBehaviour {
 
         //taxi.cameraFollow = false;
         shift++;
-        
+
         RefreshScore();
 
         /* Reset all variables required to start next shift
@@ -746,7 +791,7 @@ public class Game_Manager : MonoBehaviour {
             Debug.Log("<color=red>DEBUG IS ON! THERE ARE ONLY TWO PADS THIS SHIFT!!!</color>");
         }
 
-        
+
 
         // Decrease landing pad size per shift, to a minimum of 6.0
         landingPadScale = landingPadScale - .1f;
@@ -806,6 +851,8 @@ public class Game_Manager : MonoBehaviour {
 
         CalculateShiftCosts();
 
+        SaveGame(); // Save game after every shift is over
+
         // Set taxi up to move to initiallocation
         taxi.taxiMovedToInitialLocation = false;
         taxi.cameraFollow = true;
@@ -817,6 +864,7 @@ public class Game_Manager : MonoBehaviour {
         upgradesAvailable = true; // LET's let the UP Panel decide, since it searches for upgrades
 
         PutUiUp(shift, crashed);
+        
     }
 
 
@@ -849,12 +897,12 @@ public class Game_Manager : MonoBehaviour {
             // 1. This random number is not the same as the last one
             // 2. The building is not already occupied
             // 3. The building is not the tallest (reserved for Home Base)
-            while ( randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding )
+            while (randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding)
             {
                 //Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
                 // There is a tiny chance this may be larger than the array, so:
-                if (randBuild > buildings.Length-1)
+                if (randBuild > buildings.Length - 1)
                 {
                     randBuild = randBuild - 2; // So if randBuild is equal to the size of the buildings array minus one, you are at the final element. Go back TWO
                 }
@@ -881,7 +929,7 @@ public class Game_Manager : MonoBehaviour {
             // Set the padScale to landingPadScale for x and z, but the height of the building for y.
             padScale = new Vector3(landingPadScale, buildings[randBuild].transform.localScale.y, landingPadScale);
 
-            pads[i].transform.localScale = new Vector3 ( landingPadScale, 2.0f, landingPadScale);
+            pads[i].transform.localScale = new Vector3(landingPadScale, 2.0f, landingPadScale);
 
             // Then we scale the building to fit the pad, not vice versa like before.
             buildings[randBuild].transform.localScale = padScale; // THIS SETS THE BUILDING THE PAD IS ON TO THE SCALE THE PAD IS SET TO FOR THIS SHIFT
@@ -897,14 +945,14 @@ public class Game_Manager : MonoBehaviour {
             Pad_Manager pm = (Pad_Manager)pads[i].GetComponent(typeof(Pad_Manager));
             pm.padNumber = i;
             pm.lightNumber = i;
-           
+
             // Turn off the beam on this pad
             Beam(i, false); ;
 
 
         }
 
-        
+
 
     }
 
@@ -912,7 +960,7 @@ public class Game_Manager : MonoBehaviour {
     void PopulateGasStations(int maxStations)
     {
         Vector3 stationLoc = new Vector3(0.0f, 0.0f, 0.0f);
-        
+
         Array.Resize(ref stations, maxStations);
 
         for (int i = 0; i < maxStations; i++)
@@ -932,7 +980,7 @@ public class Game_Manager : MonoBehaviour {
             // 1. This random number is not the same as the last one
             // 2. The building is not already occupied
             // 3. The building is not the tallest (reserved for Home Base)
-            if ( randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding )  // Checks to see if building is already occupied too.
+            if (randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding)  // Checks to see if building is already occupied too.
             {
                 Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
@@ -973,7 +1021,7 @@ public class Game_Manager : MonoBehaviour {
             stationLoc = new Vector3(buildings[randBuild].transform.position.x,
                 buildings[randBuild].transform.localScale.y + 1.0f,
                 buildings[randBuild].transform.position.z);
-            
+
             //Debug.Log("<color=cyan>************************* </color> Gas Station " + i + " is on Building number " + randBuild);
 
             // Random Scale based on the building it is attached to.
@@ -991,8 +1039,8 @@ public class Game_Manager : MonoBehaviour {
             // Apply properties
             stations[i].transform.position = stationLoc;
             //stations[i].transform.localScale = stationScale; // We no longer want to set the station scale to building scale, but to a variable we set up for each shift
-            
-            
+
+
 
 
 
@@ -1018,12 +1066,12 @@ public class Game_Manager : MonoBehaviour {
         // NO LONGER USING A WAY TO FIND CENTER. USING TALLEST INSTEAD.
         // int centerBuilding = (numBuildingsInGrid / 2) + 56;
 
-        
+
         //Debug.LogError("NUMBUILDINGS = " + numBuildingsInGrid + ", so center is " + centerBuilding);
 
         // Instantiate a Home Base based on the one in the scene. Yes, this already exists, but instantiate it anyway
         // so it works just like pads and gas stations
-        homeBldg = GameObject.Instantiate( homeObject );
+        homeBldg = GameObject.Instantiate(homeObject);
 
         // For convenience, home base should scale same as gas stations
         homeBldg.transform.localScale = new Vector3(gasPadScale, gasPadScale, gasPadScale);
@@ -1048,7 +1096,7 @@ public class Game_Manager : MonoBehaviour {
         // Mark it occupied
         buildingOccupied[tallestBuilding] = true;
 
-        homeBldg.SetActive(true);  
+        homeBldg.SetActive(true);
 
     }
 
@@ -1094,7 +1142,7 @@ public class Game_Manager : MonoBehaviour {
         // Randomly scale Y. This is fine the old way.
         float padScaleY = (UnityEngine.Random.value * maxBuildingYScale) + maxBuildingYScaleOffset;
         Vector3 padScale = new Vector3(padScaleXZ, padScaleY, padScaleXZ);
-        
+
         return padScale;
     }
 
@@ -1161,7 +1209,7 @@ public class Game_Manager : MonoBehaviour {
 
             //laneY = shortestBuildingHeight;
 
-            if ( i % 2 == 0 ) // Even. x and z are normal.
+            if (i % 2 == 0) // Even. x and z are normal.
             {
                 tryPosition = new Vector3(myX, shortestBuildingHeight, airShip[i].transform.position.z);
             }
@@ -1182,15 +1230,15 @@ public class Game_Manager : MonoBehaviour {
 
             // Now increment myX the width of the city / numships for even grid distribution 
             myX += myXDistance;
-          
 
 
-             
+
+
         }
 
-        
 
-        
+
+
     }
 
 
@@ -1216,7 +1264,7 @@ public class Game_Manager : MonoBehaviour {
     {
         float fareDistance = 0.0f;
 
-        if ( nextPad == 0 )
+        if (nextPad == 0)
         {
             fareDistance = Vector3.Distance(pads[nextPad].transform.position, homeBldg.transform.position);
         }
@@ -1230,7 +1278,7 @@ public class Game_Manager : MonoBehaviour {
         fareAtStart = fare;
         tip = standardTip;
         // Then multiply it by newFare, which is passed here
-          
+
     }
 
     private void CalculateShiftCosts()
@@ -1267,19 +1315,16 @@ public class Game_Manager : MonoBehaviour {
         tipText.text = tmpTipText;
     }
 
-    
+
 
     public void PutUiUp(int shift, bool crashed)
     {
-        if (debugOn)
-        {
 
-        }
 
         // BUG - PLEASE FIX!
         // First remove any dialog already in the UI parent place. (If you fall off city two dialogs appear, probably because of this)
         //panelController.ClearDialogs();
-        
+
         taxi.hasControl = false;
         taxi.isCrashing = false;
         uiIsUp = true;
@@ -1378,15 +1423,223 @@ public class Game_Manager : MonoBehaviour {
         taxi.rb.angularDrag = taxi.defaultAngularDrag;
         taxi.rb.drag = taxi.defaultDrag;
 
-        
+
         //Debug.Log("<color=yellow> ********************* RESTART SHIFT ****************</color>");
         // GoToNextShift but pass crashed == true, so it can put up a special crash dialog and take deductible
         GoToNextShift(true); // I think this is the culprit in the too-low-double-deductible issue. Set it to false and see if that changes it
 
-        
+
         // To restart game instead, use this: (But don't)
         //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        
+
     }
+
+
+
+
+    // SAVE/LOAD GAME
+    //
+    // My first attempt had me create SaveGameData.cs, a holder for all savable game data. 
+    // My original scheme was to use the data directly on that object, rather than on the various objects in the game, like Taxi and Game Manager.
+    // But that proved hard, when loading it up without having a valid, full JSON would result in 0 results in some new variables, causing game
+    // to seriously break.
+    // I thought: "Why bother having methods to push the data from all over the place into one space to save and load it, when I could just use the
+    // data directly from there. But ... fuck that.
+    //
+    // NEW SCHEME
+    // On start of any session, I will Save Default File. This will take the game variables as initialized by the game on startup, and save them to a JSON file
+    // Every time you start the game, it does this. So that file WILL exist.
+    // After that, any time you restart a new game, blowing away your saved progress, it will copy that JSON file to the Save Game JSON file, restarting you
+    // from startup initialized variable state.
+    //
+    // Then, after every Level (or Pad? How often do I want to save game?), get all the data from the game into the one SaveGameData object, and save that
+    // to Save Game file.
+    //
+    // Any time you load the game from scratch, it checks to see if the Save Game File exists. If not, it copies the Default file over it. 
+    //
+    // Later, I will put in UI buttons that will blow away your saved game somehow. Probably on the opening screen with the XBOX Controller, show
+    // that pushing one of the buttons along with BOTH TRIGGERS on startup, will begin the game anew, blowing away any saved game data you have.
+    // (though I would save a backup file, date stamped, so you can always retrieve it.)
+    //
+    // So:
+    //
+    // 1. On game start, just before LoadGame(), copy variables at the current state to Defaults file. This should be the startup state for everything.
+    // 2. Then check to see if the ? button is pressed AND BOTH TRIGGERS.
+    //   2a. If so, copy Defaults file over Save Game JSOn file
+    // 3. Then load Save Game file, and populate all variables.
+    // 4. Change opening screen to explain how to blow away a game on restart.
+    // 5. On every level (or pad?) Save Game.
+    //
+    // That should do it
+
+
+    // Packs all savable data to a single Json object, then Saves the Save Game JSON file to file
+    private void SaveGame()
+    {
+        // Write the file, at the path, with the already-packed SaveGameData object
+        System.IO.File.WriteAllText(appPath + "/" + saveFileName, PackSaveGameDataToJson(sgd));
+    }
+
+    // Loads the Save Game JSON file, then unpacks it into game data on the various objects they belong.
+    private void LoadGame()
+    {
+        string loadJsonString = string.Empty; // Create an empty string to put the JSON into
+        SaveGameData lgd = new SaveGameData();
+
+        // READ the file first. Duh.
+        loadJsonString = System.IO.File.ReadAllText(appPath + "/" + saveFileName);
+        //Debug.LogWarning("<color=purple>*********************</color> WE HAS US A JSON STRING! " + loadJsonString);
+
+        JsonUtility.FromJsonOverwrite(loadJsonString, lgd); // This pushes the string as deserialized data into sgd directly
+        //lgd = JsonUtility.FromJson<SaveGameData>(loadJsonString);
+
+
+
+       
+        UnPackSaveGameDataFromJson(lgd); // Pass lgd just loaded, into Unpack, and allow that to push all the data values to real game data
+    }
+
+
+
+
+
+
+    private string PackSaveGameDataToJson(SaveGameData sgd)
+    {
+        //sgd.numPads = numPads;
+        sgd.cash = cash;
+        sgd.standardFare = standardFare;
+        sgd.fareDrain = fareDrain;
+        sgd.tipDrain = tipDrain;
+        sgd.gasCost = gasCost;
+        sgd.homePadGasCost = homePadGasCost;
+        sgd.gasFillRate = gasFillRate;
+        sgd.homePadGasFillRate = homePadGasFillRate;
+        sgd.damageRepairCost = damageRepairCost;
+        sgd.homePadDamageRepairCost = homePadDamageRepairCost;
+        sgd.DamageRepairRate = damageRepairRate;
+        sgd.homePadDamageRepairRate = homePadDamageRepairRate;
+        sgd.crashDeductible = crashDeductible;
+        sgd.hasHomePad = hasHomePad;
+        sgd.hasRadarPad = hasRadarPad;
+        sgd.hasRadarStation = hasRadarStation;
+        sgd.hasStrafe = hasStrafe;
+        sgd.hasTurbo = hasTurbo;
+        sgd.hasTank = hasTank;
+        sgd.hasControl = hasControl;
+        sgd.shift = shift;
+        sgd.faresThisShift = faresThisShift;
+        sgd.tipsThisShift = tipsThisShift;
+        sgd.gasCostThisShift = gasCostThisShift;
+        sgd.repairsCostThisShift = repairsCostThisShift;
+        sgd.gasCostHome = gasCostHome;
+        sgd.repairsCostHome = repairsCostHome;
+        //sgd.numPadsThisShift = numPadsThisShift;
+        //sgd.nextPad = nextPad; // This breaks it. Landing on Pad 3, say, gives the error Target is 1, but this is pad 0. So waht the hell?
+        // First, try my idea of loading the data first, early, but not populating it, then JUST populating the pad info for the level stuff.
+        // THEN load the rest at the end of Start?
+        // Worst case scenario: Only save at the end of a SHIFT. That may make things simpler.
+        // If so, warn player in an interstitial panel that they will lose their shift's progress if you quit during a shift. Punishment enough, eh, pilog # 673-3719
+
+    // These are on the Taxi object
+        sgd.upThrustMult = taxi.upThrustMult;
+        sgd.downThrustMult = taxi.downThrustMult;
+        sgd.forwardThrustMult = taxi.forwardThrustMult;
+        sgd.sideThrustMult = taxi.sideThrustMult;
+        sgd.thrustMultiplier = taxi.thrustMultiplier;
+        sgd.turboMultiplier = taxi.turboMultiplier;
+        sgd.turboAmount = taxi.turboAmount;
+        sgd.maxGas = taxi.maxGas;
+        sgd.gas = taxi.gas;
+        sgd.gasUseRateUpThrust = taxi.gasUseRateUpThrust;
+        sgd.gasUseRateDownThrust = taxi.gasUseRateDownThrust;
+        sgd.gasUseRateForwardThrust = taxi.gasUseRateForwardThrust;
+        sgd.gasUseRateRotateThrust = taxi.gasUseRateRotateThrust;
+        sgd.gasUseRateSideThrust = taxi.gasUseRateSideThrust;
+        sgd.defaultAngularDrag = taxi.defaultAngularDrag;
+        sgd.minCollisionThreshold = taxi.minCollisionThreshold;
+        sgd.maxDamage = taxi.maxDamage;
+        sgd.damage = taxi.damage;
+        sgd.hasHomeIndicator = taxi.hasHomeIndicator;
+        sgd.hasNextIndicator = taxi.hasNextIndicator;
+        sgd.hasStationIndicator = taxi.hasStationIndicator;
+        sgd.hasStrafeUpgrade = taxi.hasStrafeUpgrade;
+        sgd.hasTurboUpgrade = taxi.hasTurboUpgrade;
+        sgd.shieldPercent = taxi.shieldPercent;
+
+        // Now serialize it and save it
+
+        string savegamedata = JsonUtility.ToJson(sgd); // Serialize sgd into the string savegamedata
+
+        return savegamedata;
+
+    }
+
+
+    private void UnPackSaveGameDataFromJson(SaveGameData lgd)
+    {
+        // This will do the exact opposite of Pack. But will it return anything, or just push everything into sgd? Probably that
+        //numPads = lgd.numPads;
+        cash = lgd.cash;
+        standardFare = lgd.standardFare;
+        fareDrain = lgd.fareDrain;
+        tipDrain = lgd.tipDrain;
+        gasCost = lgd.gasCost;
+        homePadGasCost = lgd.homePadGasCost;
+        gasFillRate = lgd.gasFillRate;
+        homePadGasFillRate = lgd.homePadGasFillRate;
+        damageRepairCost = lgd.damageRepairCost;
+        homePadDamageRepairCost = lgd.homePadDamageRepairCost;
+        damageRepairRate = lgd.DamageRepairRate;
+        homePadDamageRepairRate = lgd.homePadDamageRepairRate;
+        crashDeductible = lgd.crashDeductible;
+        hasHomePad = lgd.hasHomePad;
+        hasRadarPad = lgd.hasRadarPad;
+        hasRadarStation = lgd.hasRadarStation;
+        hasStrafe = lgd.hasStrafe;
+        hasTurbo = lgd.hasTurbo;
+        hasTank = lgd.hasTank = hasTank;
+        //hasControl = lgd.hasControl;
+        //shift = lgd.shift;
+        //faresThisShift = lgd.faresThisShift;
+        //tipsThisShift = lgd.tipsThisShift;
+        //gasCostThisShift = lgd.gasCostThisShift;
+        //repairsCostThisShift = lgd.repairsCostThisShift;
+        gasCostHome = lgd.gasCostHome;
+        repairsCostHome = lgd.repairsCostHome;
+        //numPadsThisShift = lgd.numPadsThisShift;
+        //nextPad = lgd.nextPad;
+
+        // These are on the Taxi object
+        taxi.upThrustMult = lgd.upThrustMult;
+        taxi.downThrustMult = lgd.downThrustMult;
+        taxi.forwardThrustMult = lgd.forwardThrustMult;
+        taxi.sideThrustMult = lgd.sideThrustMult;
+        taxi.thrustMultiplier = lgd.thrustMultiplier;
+        taxi.turboMultiplier = lgd.turboMultiplier;
+        taxi.turboAmount = lgd.turboAmount;
+        taxi.maxGas = lgd.maxGas;
+        taxi.gas = lgd.gas;
+        taxi.gasUseRateUpThrust = lgd.gasUseRateUpThrust;
+        taxi.gasUseRateDownThrust = lgd.gasUseRateDownThrust;
+        taxi.gasUseRateForwardThrust = lgd.gasUseRateForwardThrust;
+        taxi.gasUseRateRotateThrust = lgd.gasUseRateRotateThrust;
+        taxi.gasUseRateSideThrust = lgd.gasUseRateSideThrust;
+        taxi.defaultAngularDrag = lgd.defaultAngularDrag;
+        taxi.minCollisionThreshold = lgd.minCollisionThreshold;
+        taxi.maxDamage = lgd.maxDamage;
+        taxi.damage = lgd.damage;
+        taxi.hasHomeIndicator = lgd.hasHomeIndicator;
+        taxi.hasNextIndicator = lgd.hasNextIndicator;
+        taxi.hasStationIndicator = lgd.hasStationIndicator;
+        taxi.hasStrafeUpgrade = lgd.hasStrafeUpgrade;
+        taxi.hasTurboUpgrade = lgd.hasTurboUpgrade;
+        taxi.shieldPercent = lgd.shieldPercent;
+
+
+        sgd = lgd; // Overwrite the object's values so I can see them in Inpsector. not essential, but to see the values change...
+    }
+
+
 
 }
