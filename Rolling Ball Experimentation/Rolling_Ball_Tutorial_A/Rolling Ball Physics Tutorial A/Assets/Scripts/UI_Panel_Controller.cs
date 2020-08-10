@@ -446,6 +446,8 @@ public class UI_Panel_Controller : MonoBehaviour {
             return;
         }
 
+        
+
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
         if (gm.upgradesDoNotCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
@@ -577,6 +579,8 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // Play UI Selection Success sound
         taxi.SoundUISelectionSuccess();
+
+        gm.SaveGame();
     }
 
     public void UIOff()

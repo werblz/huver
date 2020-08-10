@@ -1474,7 +1474,7 @@ public class Game_Manager : MonoBehaviour {
 
 
     // Packs all savable data to a single Json object, then Saves the Save Game JSON file to file
-    private void SaveGame()
+    public void SaveGame()
     {
         // Write the file, at the path, with the already-packed SaveGameData object
         System.IO.File.WriteAllText(appPath + "/" + saveFileName, PackSaveGameDataToJson(sgd));
