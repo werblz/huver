@@ -586,5 +586,6 @@ public class UI_Panel_Controller : MonoBehaviour {
     public void UIOff()
     {
         uiPanel.SetActive(false);
+        //gm.SaveGame();
     }
 }

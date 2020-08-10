@@ -1414,6 +1414,7 @@ public class Game_Manager : MonoBehaviour {
         uiIsUp = false;
         panel.SetActive(false);
         taxi.cameraFollow = true; // I hope this works. It should make the camera smooth-follow after UI comes down
+        SaveGame();
     }
 
 
