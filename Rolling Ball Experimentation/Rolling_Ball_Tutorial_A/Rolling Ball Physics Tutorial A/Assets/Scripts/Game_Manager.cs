@@ -1414,7 +1414,7 @@ public class Game_Manager : MonoBehaviour {
         uiIsUp = false;
         panel.SetActive(false);
         taxi.cameraFollow = true; // I hope this works. It should make the camera smooth-follow after UI comes down
-        SaveGame();
+
     }
 
 
@@ -1485,7 +1485,7 @@ public class Game_Manager : MonoBehaviour {
     private void LoadGame()
     {
         string loadJsonString = string.Empty; // Create an empty string to put the JSON into
-        SaveGameData lgd = new SaveGameData();
+        SaveGameData lgd = sgd;
 
         // READ the file first. Duh.
         loadJsonString = System.IO.File.ReadAllText(appPath + "/" + saveFileName);
