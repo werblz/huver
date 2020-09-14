@@ -390,19 +390,30 @@ public class Game_Manager : MonoBehaviour {
         float leftTriggerForNewGame = Input.GetAxis("Left Trigger");
         float aButtonForNewGame = Input.GetAxis("Fire1");
 
-        if ( leftTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f )
+        if (leftTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
         {
-            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + leftTriggerForNewGame );
+            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + leftTriggerForNewGame);
             SaveGame();
         }
-        
+
 
         // TEST IF THIS SAVES THE JSON
         // UNCOMMENT THIS NEXT LINE OUT IF YOU WANT TO TEST BY SAVING A NEW JSON FILE AT START! Otherwise we save at each new shift
+
+        string fileName = appPath + "/" + saveFileName;
+
+        if (!System.IO.File.Exists(fileName) || writeNewSaveFile)
+        {
+            SaveGame();
+        }
+
+        /*
         if (writeNewSaveFile)
         {
             SaveGame();
         }
+        */
+
         LoadGame(); // I think this is too late, because if Pad = 2, I hear Pad 3 please, and see the 3 number in the beam, yet when I hit 3, it goes to 1.
                     // Perhaps the date for the pad numbers needs to come in before now?
                     // Perhaps make LoadGame JUST laod the JSON. Do it at the top of STart. But pull out the level stuff early in its own method
@@ -510,7 +521,7 @@ public class Game_Manager : MonoBehaviour {
                 if (HypotenuseDistance(bLoc) < (maxPadDistance / 2.0f)) // uh... Is this not just Vector3.distance??? (I didn't learn that until later)
                 {
                     // Now that we have bLoc, place the building
-                    int buildingChoice = (int)(UnityEngine.Random.value * 3.0f);
+                    int buildingChoice = (int)(UnityEngine.Random.value * buildingObject.Length);
                     buildings[numBuildingsInGrid] = GameObject.Instantiate(buildingObject[buildingChoice]); // Instantiate building in array with index numBuildingsInGrid
 
                     // THIS SECTION IS JUST TO PUT A NUMBER ON EACH OBJECT IN THE HIERARCHY VIEW SO I KNOW SOMETHING ABOUT THE BUILDINGS
@@ -684,7 +695,7 @@ public class Game_Manager : MonoBehaviour {
 
         // I choose pitch HERE because I want it to remain constant during any given shift.
         // The reason is that when someone yells Hey Taxi because you're being slow, I want it to be the same pitch as the pad number
-        voicePitch = (UnityEngine.Random.value * .3f) + .85f;
+        voicePitch = (UnityEngine.Random.value * .2f) + .9f;
 
         // And I want the person we're using to be teh same for each pad, so when you're slow, Hey Taxi sounds the same as the pad number hailed
         person = (int)(UnityEngine.Random.value * hail.HeyTaxi.Length);
