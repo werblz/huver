@@ -387,8 +387,8 @@ public class Game_Manager : MonoBehaviour {
 
 
 
-        float leftTriggerForNewGame = Input.GetAxis("Left Trigger");
-        float aButtonForNewGame = Input.GetAxis("Fire1");
+        float leftTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger.
+        float aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
 
         if (leftTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
         {
@@ -993,7 +993,7 @@ public class Game_Manager : MonoBehaviour {
             // 3. The building is not the tallest (reserved for Home Base)
             if (randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding)  // Checks to see if building is already occupied too.
             {
-                Debug.Log("<color=red> ********************** THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
+                Debug.Log("<color=red> **********************</color> THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
                 randBuild++;
                 // There is a tiny chance this may be larger than the array, so:
                 if (randBuild > buildings.Length - 1)
