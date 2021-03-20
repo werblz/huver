@@ -5,6 +5,18 @@ using UnityEngine.SceneManagement;
 using System;
 
 
+
+// NOTE: THE TAXI WAS CREATED ON THE X, AND AS I STARTED PROGRAMMING, I FAILED TO REALIZE THIS!
+// THE UPSHOT IS THAT ALL TRIGONOMETRIC CALCULATIONS FOR THE TAXI ARE X-FORWARD, NOT Z-FORWARD!
+// Yes, this was incredibly stupid, but by the time I realized it, I had too much done and didn't
+// want to go back to fix it.
+// And it was weird because even as I was coding, I was wondering... why is this Cosine when it should be Sine?
+// Even after doing this several times, it only tweaked later that I had created everything X-Forward!!! ARGH!
+// Yes, I could go back and fix everything, but if I missed just one, everything would be hosed.
+//
+// Tech Debt, I believe the term is... sigh...
+
+
 public class Taxi_Controller : MonoBehaviour
 {
 

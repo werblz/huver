@@ -446,10 +446,14 @@ public class UI_Panel_Controller : MonoBehaviour {
             return;
         }
 
-        
-
+        Debug.Log("\n");
+        Debug.Log("<color=blue>YOUR SHEKYLS: " + gm.cash + "</color>");
+        Debug.Log("<color=blue> UPGRADES DO NOT COST SHEKYLS: " + gm.upgradesDoNotCostShekyls + "</color>");
+        Debug.Log("<color=blue>  UPGRADE COST: " + upgradeDataItems[picks[choice]].upgradeCost + "</color>");
+        Debug.Log("<color=blue>   UPGRADE COST > 0? " + (upgradeDataItems[picks[choice]].upgradeCost > 0.0f) + "</color>");
+             
         // Check to see if you have enough cash for the upgrade. OR if the upgrade is not free, return.
-        if (gm.upgradesDoNotCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
+        if (!gm.upgradesDoNotCostShekyls && gm.cash < upgradeDataItems[picks[choice]].upgradeCost
             && upgradeDataItems[picks[choice]].upgradeCost > 0.0f )
         {
             // Here, you have failed, as the item you try to buy is not affordable.
@@ -553,7 +557,7 @@ public class UI_Panel_Controller : MonoBehaviour {
             gm.cash -= upgradeDataItems[picks[choice]].upgradeCost;
             
         }
-        
+        Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
         //Debug.Log("CASH AFTER UPGRADE - " + gm.cash);
         upgradeDataItems[picks[choice]].isNew = false;
         // Don't forget to turn off the upgrade prefab or it will remain visible next time

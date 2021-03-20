@@ -5,6 +5,15 @@ using UnityEngine.SceneManagement;
 using System;
 using TMPro;
 
+
+// Of course this whole thing could have been done better
+// Right now Game_Manager takes on too heavy a load. 
+// Like creating the buildings, for example, could have been done in its own object and class, and simply activated by Game Manager, or even by itself, with the objects
+//   created referenced by Game Manager if needed.
+//
+
+
+
 public class Game_Manager : MonoBehaviour {
 
     [Header("Objects")]
@@ -345,6 +354,7 @@ public class Game_Manager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        // For Windows, Application.persistentDataPath is %userprofile%\AppData\Local\Packages\<productname>\LocalState
         appPath = Application.persistentDataPath;
 
         radarPanel.SetActive(false);
