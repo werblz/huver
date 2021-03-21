@@ -339,6 +339,11 @@ public class Game_Manager : MonoBehaviour {
     [HideInInspector]
     public int shift = 1;
 
+    [HideInInspector]
+    public bool hasResetGame = false; // This is set to false, because unless the player has held down the trigger and A, hasResetGame = false
+    [HideInInspector]
+    public bool hasNoSaveFile = false; // This assumes there IS a save file. The game only should set this to true if it finds no save file and creates a new one
+
     // Person speaking
     private int person = 0;
 
@@ -397,12 +402,16 @@ public class Game_Manager : MonoBehaviour {
 
 
 
-        float leftTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger.
+        float rightTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger, with a negative value.
+            // The triggers work from a -1 to 1 range, where 0 is no trigger, -1 is left, 1 is right. Weird, right?
         float aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
 
-        if (leftTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
+        // When game starts up, if you are holding down right trigger and A button, game will perform a save game over the game save file with default values,
+        // essentially resetting game progress - NEW GAME!
+        if (rightTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
         {
-            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + leftTriggerForNewGame);
+            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
+            hasResetGame = true;
             SaveGame();
         }
 
@@ -412,17 +421,25 @@ public class Game_Manager : MonoBehaviour {
 
         string fileName = appPath + "/" + saveFileName;
 
-        if (!System.IO.File.Exists(fileName) || writeNewSaveFile)
+        // This should test to see if the save file already exists, and if not, save the game (which would put the defaults over the values and save a default game, 
+        // essentially resetting the game
+        if ( !System.IO.File.Exists(fileName) )
+        {
+            hasNoSaveFile = true;
+            SaveGame();
+        }
+        else
+        {
+            hasNoSaveFile = false;
+        }
+        
+
+        // This tests a debug flag which I can set in Editor to force a new file to save. Otherwise this never happens.
+        if ( writeNewSaveFile )
         {
             SaveGame();
         }
 
-        /*
-        if (writeNewSaveFile)
-        {
-            SaveGame();
-        }
-        */
 
         LoadGame(); // I think this is too late, because if Pad = 2, I hear Pad 3 please, and see the 3 number in the beam, yet when I hit 3, it goes to 1.
                     // Perhaps the date for the pad numbers needs to come in before now?
