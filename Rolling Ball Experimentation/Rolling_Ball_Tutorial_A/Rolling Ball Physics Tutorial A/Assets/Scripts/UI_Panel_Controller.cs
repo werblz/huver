@@ -414,7 +414,7 @@ public class UI_Panel_Controller : MonoBehaviour {
             upgradeDataItems[picks[choice]].noPurchase.enabled = false;
         }
 
-        if ( choice != lastChoice && hasChosenOnce == false )
+        if ( choice != lastChoice && hasChosenOnce == false && upgradePanel.activeSelf )
         {
             taxi.SoundUISelectionChange();
         }
