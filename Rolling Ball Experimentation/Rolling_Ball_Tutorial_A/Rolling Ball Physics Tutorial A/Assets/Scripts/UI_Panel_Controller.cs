@@ -28,6 +28,10 @@ public class UI_Panel_Controller : MonoBehaviour {
     [HideInInspector]
     public GameObject myDialog; // This is specifically to hold the dialog instance so I can delete it later
 
+    // If Left Joystick is Left, this will be active. And only if active, X will delete save file
+    [SerializeField]
+    public GameObject resetDialogParent = null;
+
 
     // The default choice in the upgrade array
     private int currentChoice = 1;
@@ -99,12 +103,16 @@ public class UI_Panel_Controller : MonoBehaviour {
 
         // First, resize the array, because right now, it's only set to 3, I think.
         Array.Resize(ref upgradeDataItems, gm.upgrades.Length + 1);
-        Debug.LogWarning("<color=blue> Resizing upgradeDataItems to " + (gm.upgrades.Length + 1) + "</color>");
+        if (gm.debugOn)
+        {
+            Debug.LogWarning("<color=blue> Resizing upgradeDataItems to " + (gm.upgrades.Length + 1) + "</color>");
+        }
         for (int i = 0; i < gm.upgrades.Length; i++)
         {
             upgradeDataItems[i] = (Upgrade_Data)gm.upgrades[i].GetComponent(typeof(Upgrade_Data));
             Debug.LogWarning("<color=blue> UPGRADE " + i + " is " + upgradeDataItems[i].name + "</color>");
         }
+   
 
         // If upgrades are available, set them up
         PopulateUpgrades();

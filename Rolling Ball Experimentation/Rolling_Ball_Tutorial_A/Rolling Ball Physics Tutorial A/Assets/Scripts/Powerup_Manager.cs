@@ -23,7 +23,7 @@ public class Powerup_Manager : MonoBehaviour {
     [HideInInspector]
     public int buildingOwner = 0;
 
-    private AudioClip clipDestruct = null;
+    //private AudioClip clipDestruct = null;
 
     private Renderer rend = null;
 
@@ -31,7 +31,7 @@ public class Powerup_Manager : MonoBehaviour {
 
     private MaterialPropertyBlock gaugeMpb = null;
 
-    private MaterialPropertyBlock[] spriteBlock = null;
+    //private MaterialPropertyBlock[] spriteBlock = null;
 
     [SerializeField]
     private GameObject[] collectVFX = null;
@@ -88,8 +88,8 @@ public class Powerup_Manager : MonoBehaviour {
     // Make room for the particle systems used here.
     private ParticleSystem[] ps = null;
 
-    private Gradient grad = null;
-    private Gradient gradCollect = null;
+    //private Gradient grad = null;
+    //private Gradient gradCollect = null;
 
     [SerializeField]
     private Gradient[] gradVFX = null;

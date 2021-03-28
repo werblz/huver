@@ -30,7 +30,7 @@ public class Camera_Follow : MonoBehaviour {
   [SerializeField]
   private Vector3 offset = new Vector3( 0.0f, 0.0f, 0.0f );
 
-
+    //private float joy2Y = 0.0f;
 
     // Set up an offset for the camera follow that uses the righ-hand joystick
     /*
@@ -46,9 +46,9 @@ public class Camera_Follow : MonoBehaviour {
     private TextMesh buttonTest_Text = null;
     */
 
-    private float joy2X = 0.0f;
-    private float joy2Y = 0.0f;
-    private float joy2Button = 0.0f;
+    //private float joy2X = 0.0f;
+    //private float joy2Y = 0.0f;
+    //private float joy2Button = 0.0f;
 
     [Header("Control")]
 
@@ -89,10 +89,10 @@ public class Camera_Follow : MonoBehaviour {
 
         // First, get the camera angle offset from the right joystick
         // The joystick works fine. I CANNOT GET THE JOY PUSH TO WORK!
-        joy2X = Input.GetAxis("Mouse X");
-        joy2Y = Input.GetAxis("Mouse Y");
-        joy2Button = Input.GetAxis("Fire3"); // FIRE3 is X button
-
+        //joy2X = Input.GetAxis("Mouse X");
+        //joy2Y = Input.GetAxis("Mouse Y");
+        //joy2Button = Input.GetAxis("Fire3"); // FIRE3 is X button
+        
         /*
         joy2X_Text.text = joy2X.ToString("0.00");
         joy2Y_Text.text = joy2Y.ToString("0.00");

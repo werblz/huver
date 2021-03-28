@@ -44,7 +44,7 @@ public class Taxi_Controller : MonoBehaviour
     private bool invertFlightControl = false;
 
     // Is the taxi grounded?
-    private bool isGrounded = false;
+    public bool isGrounded = false;
 
     // Is the taxi on a pad?
     private bool isAtPad = false;
@@ -126,8 +126,8 @@ public class Taxi_Controller : MonoBehaviour
     public bool isDead = false;
 
 
-    [SerializeField]
-    private TextMesh velocityText = null;
+    //[SerializeField]
+    //private TextMesh velocityText = null;
 
     [SerializeField]
     private TextMesh collisionText = null;
@@ -275,8 +275,8 @@ public class Taxi_Controller : MonoBehaviour
 
 
 
-    [SerializeField]
-    private AudioClip clipBump = null;
+    //[SerializeField]
+    //private AudioClip clipBump = null;
 
     [SerializeField]
     private AudioClip clipBumpAirship = null;

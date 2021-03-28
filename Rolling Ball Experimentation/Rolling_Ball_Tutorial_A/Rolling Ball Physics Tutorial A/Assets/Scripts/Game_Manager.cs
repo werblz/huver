@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using TMPro;
+using System.IO;
 
 
 // Of course this whole thing could have been done better
@@ -111,9 +112,9 @@ public class Game_Manager : MonoBehaviour {
     [Tooltip("How many airships fly throug the city.")]
     [SerializeField]
     private int numAirships = 10;
-    [Tooltip("How wide to place airships. Should be half of city diameter.")]
-    [SerializeField]
-    private float airshipRadius = 250.0f;
+    //[Tooltip("How wide to place airships. Should be half of city diameter.")]
+    //[SerializeField]
+    //private float airshipRadius = 250.0f;
 
 
 
@@ -319,7 +320,7 @@ public class Game_Manager : MonoBehaviour {
     [SerializeField]
     public GameObject crashDialog = null;
 
-    private GameObject[] shiftDialogInstances = null;
+    //private GameObject[] shiftDialogInstances = null;
 
     [Header("Debug Stuff")]
     [Tooltip("Are we debugging?")]
@@ -334,6 +335,7 @@ public class Game_Manager : MonoBehaviour {
     [Tooltip("Turn this on to initialize a brand new Save file, so Load can work! Turn it off thereafter")]
     [SerializeField]
     private bool writeNewSaveFile = false;
+    private string fileName = null;
 
     // Game stats
     [HideInInspector]
@@ -352,7 +354,8 @@ public class Game_Manager : MonoBehaviour {
     private float voiceDelay = 0.5f;
     private bool remindedTaxi = false;
 
-
+    private float rightTriggerForNewGame = 0.0f;
+    private float aButtonForNewGame = 0.0f;
     // 
     float fareAtStart = 1.0f;
 
@@ -361,6 +364,7 @@ public class Game_Manager : MonoBehaviour {
     {
         // For Windows, Application.persistentDataPath is %userprofile%\AppData\Local\Packages\<productname>\LocalState
         appPath = Application.persistentDataPath;
+        fileName = appPath + "/" + saveFileName;
 
         radarPanel.SetActive(false);
 
@@ -402,28 +406,39 @@ public class Game_Manager : MonoBehaviour {
 
 
 
-        float rightTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger, with a negative value.
+        rightTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger, with a negative value.
             // The triggers work from a -1 to 1 range, where 0 is no trigger, -1 is left, 1 is right. Weird, right?
-        float aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
+        aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
 
         // When game starts up, if you are holding down right trigger and A button, game will perform a save game over the game save file with default values,
         // essentially resetting game progress - NEW GAME!
+
+        // THIS DID NOT WORK FOR A BUILT GAME RUNNING ALONE! For some reason. I can only think that when you first run the game, the controller is not yet recognized
+        // or something. Because while working perfectly in editor, holding down the A button and Right Trigger does NOT work in Built game, and I don't know why.
+        // So instead of doing it here in Start, I'm going to do it in the LateUpdate, and if the UI is UP, it then does a check.
+        
         if (rightTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
         {
-            Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
-            hasResetGame = true;
-            SaveGame();
-        }
+            if (debugOn)
+            {
+                Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
+            }
 
+            hasResetGame = true;
+            //SaveGame();
+            File.Delete(appPath + "/" + saveFileName);
+        }
+        
 
         // TEST IF THIS SAVES THE JSON
         // UNCOMMENT THIS NEXT LINE OUT IF YOU WANT TO TEST BY SAVING A NEW JSON FILE AT START! Otherwise we save at each new shift
 
-        string fileName = appPath + "/" + saveFileName;
+
 
         // This should test to see if the save file already exists, and if not, save the game (which would put the defaults over the values and save a default game, 
         // essentially resetting the game
-        if ( !System.IO.File.Exists(fileName) )
+         
+        if ( !File.Exists(fileName) )
         {
             hasNoSaveFile = true;
             SaveGame();
@@ -464,6 +479,7 @@ public class Game_Manager : MonoBehaviour {
 
     private void FixedUpdate()
     {
+
         if (!uiIsUp)
         {
             fare = fare - fareDrain;
@@ -483,6 +499,24 @@ public class Game_Manager : MonoBehaviour {
 
             }
         }
+        else // If UI IS UP, check again for the A and RIGHT TRIGGER to reset game. This should give the same result as the START version, but probably work?
+        {
+
+
+            /* This worked fine in Editor, but failed to work in EXE Windows build. No idea why. So I"m setting up a more interactive UI.
+            if (rightTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f && File.Exists(fileName) && !hasResetGame )
+            {
+                if (debugOn)
+                {
+                    Debug.LogWarning("<color=orange>#####</color> DELETING SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
+                }
+                File.Delete(appPath + "/" + saveFileName);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+            }
+            */
+        }
+
 
         RefreshScore();
 
@@ -1020,7 +1054,10 @@ public class Game_Manager : MonoBehaviour {
             // 3. The building is not the tallest (reserved for Home Base)
             if (randBuild == lastRand || buildingOccupied[randBuild] == true || randBuild == tallestBuilding)  // Checks to see if building is already occupied too.
             {
-                Debug.Log("<color=red> **********************</color> THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
+                if ( debugOn )
+                {
+                    Debug.Log("<color=red> **********************</color> THE NEXT TO IMPOSSIBLE HAS HAPPENED! You chose the same one twice!");
+                }
                 randBuild++;
                 // There is a tiny chance this may be larger than the array, so:
                 if (randBuild > buildings.Length - 1)
@@ -1538,6 +1575,14 @@ public class Game_Manager : MonoBehaviour {
         UnPackSaveGameDataFromJson(lgd); // Pass lgd just loaded, into Unpack, and allow that to push all the data values to real game data
     }
 
+    // This will delete the save file and restart the game. This cannot be undone.
+    public void ResetGame()
+    {
+        File.Delete(appPath + "/" + saveFileName);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+    }
+
 
 
 
@@ -1573,6 +1618,7 @@ public class Game_Manager : MonoBehaviour {
         sgd.repairsCostThisShift = repairsCostThisShift;
         sgd.gasCostHome = gasCostHome;
         sgd.repairsCostHome = repairsCostHome;
+        sgd.hasTank = hasTank;
         //sgd.numPadsThisShift = numPadsThisShift;
         //sgd.nextPad = nextPad; // This breaks it. Landing on Pad 3, say, gives the error Target is 1, but this is pad 0. So waht the hell?
         // First, try my idea of loading the data first, early, but not populating it, then JUST populating the pad info for the level stuff.
@@ -1580,7 +1626,7 @@ public class Game_Manager : MonoBehaviour {
         // Worst case scenario: Only save at the end of a SHIFT. That may make things simpler.
         // If so, warn player in an interstitial panel that they will lose their shift's progress if you quit during a shift. Punishment enough, eh, pilog # 673-3719
 
-    // These are on the Taxi object
+        // These are on the Taxi object
         sgd.upThrustMult = taxi.upThrustMult;
         sgd.downThrustMult = taxi.downThrustMult;
         sgd.forwardThrustMult = taxi.forwardThrustMult;
@@ -1605,6 +1651,7 @@ public class Game_Manager : MonoBehaviour {
         sgd.hasStrafeUpgrade = taxi.hasStrafeUpgrade;
         sgd.hasTurboUpgrade = taxi.hasTurboUpgrade;
         sgd.shieldPercent = taxi.shieldPercent;
+    
 
         // Now serialize it and save it
 
@@ -1637,7 +1684,7 @@ public class Game_Manager : MonoBehaviour {
         hasRadarStation = lgd.hasRadarStation;
         hasStrafe = lgd.hasStrafe;
         hasTurbo = lgd.hasTurbo;
-        hasTank = lgd.hasTank = hasTank;
+        hasTank = lgd.hasTank;
         //hasControl = lgd.hasControl;
         //shift = lgd.shift;
         //faresThisShift = lgd.faresThisShift;

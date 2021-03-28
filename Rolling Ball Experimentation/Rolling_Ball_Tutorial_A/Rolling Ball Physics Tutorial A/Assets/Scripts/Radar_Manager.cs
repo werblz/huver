@@ -50,8 +50,8 @@ public class Radar_Manager : MonoBehaviour {
     [SerializeField]
     private AudioClip clipFuelPing = null;
 
-    [SerializeField]
-    private AudioClip clipFuelPingCrossLine = null;
+    //[SerializeField]
+    //private AudioClip clipFuelPingCrossLine = null;
 
     [SerializeField]
     private AudioClip clipFuelYellow = null;
@@ -113,7 +113,7 @@ public class Radar_Manager : MonoBehaviour {
 
     
 
-    private Vector3 compassRotation = new Vector3(0.0f, 0.0f, 0.0f);
+    //private Vector3 compassRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
     private Vector3 gasIndRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -158,9 +158,9 @@ public class Radar_Manager : MonoBehaviour {
     private bool soundPingedAlreadyRed = false;
 
     // Color the indicators
-    private Color nextColor = Color.white;
+    //private Color nextColor = Color.white;
     private MaterialPropertyBlock nextMpb = null;
-    private Color gasColor = Color.white;
+    //private Color gasColor = Color.white;
     private MaterialPropertyBlock gasMpb = null;
 
 
@@ -245,8 +245,8 @@ public class Radar_Manager : MonoBehaviour {
             angle = Mathf.Atan2(padLoc.x - taxiLoc.x, padLoc.z - taxiLoc.z) * 180 / Mathf.PI;
             //taxiAngle = taxi.transform.localEulerAngles.y;
             indRotation = new Vector3(0.0f, angle + 180.0f - taxiAngle, 0.0f); // This is in case angle needs an offset.] DOES THIS DO ANYTHING?
-            compassRotation = new Vector3(0.0f, 0.0f, taxiAngle);
-
+            //compassRotation = new Vector3(0.0f, 0.0f, taxiAngle);
+            
             //!!!!!!!!!!!!!!!!!!!! - SO FAR THE INDICATOR DOES ROTATE, but not accurately. It's in the angle offset first And then has to add the taxi's rotation
             nextIndicator.transform.localRotation = Quaternion.Euler(indRotation);
 
@@ -281,7 +281,7 @@ public class Radar_Manager : MonoBehaviour {
             }
 
         }
-
+        
         // Turn pad indicator on or off depending on if we have it
         nextIndicator.SetActive(taxi.hasNextIndicator);
 

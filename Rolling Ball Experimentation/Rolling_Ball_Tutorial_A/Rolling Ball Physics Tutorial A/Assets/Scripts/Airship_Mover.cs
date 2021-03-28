@@ -21,7 +21,7 @@ public class Airship_Mover : MonoBehaviour {
     [SerializeField]
     private GameObject[] OtherShip = null;
 
-    private RaycastHit hit;
+    //private RaycastHit hit;
 
 
 
@@ -80,9 +80,11 @@ public class Airship_Mover : MonoBehaviour {
 
             // Set ship rotation to rot
             rotator.transform.eulerAngles = new Vector3(0.0f, rot, 0.0f);
-
+            RaycastHit hit;
             // SphereCast forward at pos, radius height, at the proper rotation. Give us hit back. Test for distanceToCast
-            if (Physics.SphereCast(pos, airshipHeight, castRotation, out hit, distanceToCast))
+            //if (Physics.SphereCast(pos, airshipHeight, castRotation, out hit, distanceToCast))
+            Physics.SphereCast(pos, airshipHeight, castRotation, out hit, distanceToCast);
+            if ( hit.collider != null )
             {
                 // If it hits something, rais the ship up and try again. Keep track of tries for our records.
                 pos = new Vector3(transform.position.x, transform.position.y + (airshipHeight * 2.0f), transform.position.z);

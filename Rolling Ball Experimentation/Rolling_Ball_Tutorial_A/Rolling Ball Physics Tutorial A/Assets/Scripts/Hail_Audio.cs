@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Hail_Audio : MonoBehaviour {
 
-    [SerializeField]
-    Game_Manager gm = null;
+    //[SerializeField]
+    //Game_Manager gm = null;
 
     [SerializeField]
     Taxi_Controller taxi = null;
@@ -53,7 +53,7 @@ public class Hail_Audio : MonoBehaviour {
     {
         //taxiAudio = taxi.GetComponent<AudioSource>();
         taxiAudio = taxi.voiceAudio;
-        Debug.Log("<color=white>$%%$%$%$%$%$%$ </color> Audio Source = " + taxiAudio.name);
+        //Debug.Log("<color=white>$%%$%$%$%$%$%$ </color> Audio Source = " + taxiAudio.name);
     }
     
 
