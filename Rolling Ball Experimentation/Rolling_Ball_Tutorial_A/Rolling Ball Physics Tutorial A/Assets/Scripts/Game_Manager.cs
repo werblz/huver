@@ -362,7 +362,7 @@ public class Game_Manager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        // For Windows, Application.persistentDataPath is %userprofile%\AppData\Local\Packages\<productname>\LocalState
+        // For Windows, Application.persistentDataPath is %userprofile%\AppData\LocalLow\Huver\Rolling Ball Physics Tutorial A
         appPath = Application.persistentDataPath;
         fileName = appPath + "/" + saveFileName;
 
