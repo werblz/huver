@@ -22,12 +22,6 @@ public class ResetPopup : MonoBehaviour {
         howToResetPopup.SetActive(true);
         hasResetPopup.SetActive(false);
 
-        // However, if there IS no save game file (fresh game) OR you have reset the game on startup, show the Welcome dialog
-        if ( gm.hasResetGame )
-        {
-            howToResetPopup.SetActive(false);
-            hasResetPopup.SetActive(true);
-        }
 
         if ( gm.hasNoSaveFile )
         {

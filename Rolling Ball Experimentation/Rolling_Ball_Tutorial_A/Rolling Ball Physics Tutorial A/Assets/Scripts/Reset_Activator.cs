@@ -11,6 +11,18 @@ public class Reset_Activator : MonoBehaviour {
     [SerializeField]
     private Game_Manager gm = null;
 
+    [Tooltip("The Panel that will pop up after you reset.")]
+    [SerializeField]
+    private GameObject confirmPanel = null;
+
+    [Tooltip("The Panel Parent so I can turn it off but not turn off this whole object, which needs to control reset")]
+    [SerializeField]
+    private GameObject activatorParent = null;
+
+    [Tooltip("Taxi, because I need it to play sounds on it.")]
+    [SerializeField]
+    private Taxi_Controller taxi = null;
+
     private float aButtonForNewGame = 0.0f;
 
 	// Use this for initialization
@@ -26,6 +38,9 @@ public class Reset_Activator : MonoBehaviour {
 
         if ( aButtonForNewGame > 0.10f)
         {
+            activatorParent.SetActive(false);
+            confirmPanel.SetActive(true);
+            taxi.SoundUISelectionSuccess();
             gm.ResetGame();
         }
 

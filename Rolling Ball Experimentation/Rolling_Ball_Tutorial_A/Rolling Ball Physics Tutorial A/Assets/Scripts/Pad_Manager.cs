@@ -21,21 +21,27 @@ public class Pad_Manager : MonoBehaviour {
     [HideInInspector]
     public bool isTouched = false;
 
+    [Tooltip("Need Game_Manager to use its variables, and call things on its script.")]
     [SerializeField]
     private Game_Manager gm = null;
 
+    [Tooltip("Need Taxi's Rigidbody for various reasons.")]
     [SerializeField]
     private Rigidbody taxiRb = null;
 
+    [Tooltip("Number of this pad's light")]
     [SerializeField]
     public int lightNumber = 9;
 
+    [Tooltip("This light's texture")]
     [SerializeField]
     private Texture2D[] lightNumTexture = null;
 
+    [Tooltip("The GameObject for the lightbeam so it can be turned on and off")]
     [SerializeField]
     private GameObject lightBeam = null;
 
+    [Tooltip("The meshRenderer for the circular gauge")]
     [SerializeField]
     private MeshRenderer gaugeMesh = null;
 

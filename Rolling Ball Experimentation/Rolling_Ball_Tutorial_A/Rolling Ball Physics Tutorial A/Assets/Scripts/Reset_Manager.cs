@@ -17,20 +17,15 @@ public class Reset_Manager : MonoBehaviour
     [SerializeField]
     private GameObject resetActivator = null;
 
+    [Tooltip("Need the Taxi as reference so I can call a sound method that exists in the Taxi_Controller")]
     [SerializeField]
     private Taxi_Controller taxi = null;
 
     // The string to control the Left Joystick Left/Right
     private string sideJoy = "Horizontal";
-
-    // Joystick tolerances, which should be tweakable?
-    [SerializeField]
     private float joyToleranceSideMax = 0.6f;
-    [SerializeField]
     private float joyToleranceSideMin = -0.6f;
-
     private bool pressedOnce = false;
-
 
     // Use this for initialization
     void Start () {

@@ -341,10 +341,10 @@ public class Game_Manager : MonoBehaviour {
     [HideInInspector]
     public int shift = 1;
 
+    //[HideInInspector]
+    //public bool hasResetGame = true; // This is set to false, because unless the player has held down the trigger and A, hasResetGame = false
     [HideInInspector]
-    public bool hasResetGame = false; // This is set to false, because unless the player has held down the trigger and A, hasResetGame = false
-    [HideInInspector]
-    public bool hasNoSaveFile = false; // This assumes there IS a save file. The game only should set this to true if it finds no save file and creates a new one
+    public bool hasNoSaveFile = true; // This assumes there IS a save file. The game only should set this to true if it finds no save file and creates a new one
 
     // Person speaking
     private int person = 0;
@@ -403,35 +403,6 @@ public class Game_Manager : MonoBehaviour {
         taxi.taxiMovedToInitialLocation = false;
 
         NewFare(standardFare, 0); // Set first fare of the shift based on the distance between car and pad 0
-
-
-
-        rightTriggerForNewGame = Input.GetAxis("Left Trigger"); // Confusing, but Left Trigger is actually triggered by the right trigger, with a negative value.
-            // The triggers work from a -1 to 1 range, where 0 is no trigger, -1 is left, 1 is right. Weird, right?
-        aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
-
-        // When game starts up, if you are holding down right trigger and A button, game will perform a save game over the game save file with default values,
-        // essentially resetting game progress - NEW GAME!
-
-        // THIS DID NOT WORK FOR A BUILT GAME RUNNING ALONE! For some reason. I can only think that when you first run the game, the controller is not yet recognized
-        // or something. Because while working perfectly in editor, holding down the A button and Right Trigger does NOT work in Built game, and I don't know why.
-        // So instead of doing it here in Start, I'm going to do it in the LateUpdate, and if the UI is UP, it then does a check.
-        
-        if (rightTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f)
-        {
-            if (debugOn)
-            {
-                Debug.LogWarning("<color=orange>#####</color> SAVE DEFAULT VALUES OVER SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
-            }
-
-            hasResetGame = true;
-            //SaveGame();
-            File.Delete(appPath + "/" + saveFileName);
-        }
-        
-
-        // TEST IF THIS SAVES THE JSON
-        // UNCOMMENT THIS NEXT LINE OUT IF YOU WANT TO TEST BY SAVING A NEW JSON FILE AT START! Otherwise we save at each new shift
 
 
 
@@ -499,23 +470,7 @@ public class Game_Manager : MonoBehaviour {
 
             }
         }
-        else // If UI IS UP, check again for the A and RIGHT TRIGGER to reset game. This should give the same result as the START version, but probably work?
-        {
 
-
-            /* This worked fine in Editor, but failed to work in EXE Windows build. No idea why. So I"m setting up a more interactive UI.
-            if (rightTriggerForNewGame < -0.10f && aButtonForNewGame > 0.10f && File.Exists(fileName) && !hasResetGame )
-            {
-                if (debugOn)
-                {
-                    Debug.LogWarning("<color=orange>#####</color> DELETING SAVE FILE, STARTING NEW GAME! " + rightTriggerForNewGame);
-                }
-                File.Delete(appPath + "/" + saveFileName);
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-            }
-            */
-        }
 
 
         RefreshScore();
@@ -1554,11 +1509,18 @@ public class Game_Manager : MonoBehaviour {
     {
         // Write the file, at the path, with the already-packed SaveGameData object
         System.IO.File.WriteAllText(appPath + "/" + saveFileName, PackSaveGameDataToJson(sgd));
+        hasNoSaveFile = false;
     }
 
     // Loads the Save Game JSON file, then unpacks it into game data on the various objects they belong.
     private void LoadGame()
     {
+        if (!File.Exists(fileName))
+        {
+            return;
+        }
+
+
         string loadJsonString = string.Empty; // Create an empty string to put the JSON into
         SaveGameData lgd = sgd;
 
