@@ -35,6 +35,7 @@ public class SaveGameData : MonoBehaviour {
     public float repairsCostThisShift;
     public float gasCostHome;
     public float repairsCostHome;
+    public bool isNewGame;
     //public int numPadsThisShift;
     //public int nextPad;
 

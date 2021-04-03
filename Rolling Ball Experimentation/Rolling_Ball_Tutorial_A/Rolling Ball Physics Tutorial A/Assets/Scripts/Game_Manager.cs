@@ -344,7 +344,8 @@ public class Game_Manager : MonoBehaviour {
     //[HideInInspector]
     //public bool hasResetGame = true; // This is set to false, because unless the player has held down the trigger and A, hasResetGame = false
     [HideInInspector]
-    public bool hasNoSaveFile = true; // This assumes there IS a save file. The game only should set this to true if it finds no save file and creates a new one
+    public bool isNewGame = true;
+    
 
     // Person speaking
     private int person = 0;
@@ -411,12 +412,7 @@ public class Game_Manager : MonoBehaviour {
          
         if ( !File.Exists(fileName) )
         {
-            hasNoSaveFile = true;
             SaveGame();
-        }
-        else
-        {
-            hasNoSaveFile = false;
         }
         
 
@@ -744,9 +740,6 @@ public class Game_Manager : MonoBehaviour {
         NewFare(standardFare, nextPad);
         RefreshScore();
 
-        // Save game at every pad now
-        //SaveGame();
-
     }
 
     // GoToNextShift now takes a bool whether you've crashed or not. That then gets passed to PutUiUp
@@ -877,7 +870,11 @@ public class Game_Manager : MonoBehaviour {
 
 
         CalculateShiftCosts();
-
+        
+        // When the game starts, it begins with isNewGame = true;
+        // And the game saves itself a new file then. But it's still a new game.
+        // However, when a shift ends it saves progress, so isNewGame is false.
+        isNewGame = false;
         SaveGame(); // Save game after every shift is over
 
         // Set taxi up to move to initiallocation
@@ -1509,7 +1506,6 @@ public class Game_Manager : MonoBehaviour {
     {
         // Write the file, at the path, with the already-packed SaveGameData object
         System.IO.File.WriteAllText(appPath + "/" + saveFileName, PackSaveGameDataToJson(sgd));
-        hasNoSaveFile = false;
     }
 
     // Loads the Save Game JSON file, then unpacks it into game data on the various objects they belong.
@@ -1581,6 +1577,7 @@ public class Game_Manager : MonoBehaviour {
         sgd.gasCostHome = gasCostHome;
         sgd.repairsCostHome = repairsCostHome;
         sgd.hasTank = hasTank;
+        sgd.isNewGame = isNewGame;
         //sgd.numPadsThisShift = numPadsThisShift;
         //sgd.nextPad = nextPad; // This breaks it. Landing on Pad 3, say, gives the error Target is 1, but this is pad 0. So waht the hell?
         // First, try my idea of loading the data first, early, but not populating it, then JUST populating the pad info for the level stuff.
@@ -1657,6 +1654,7 @@ public class Game_Manager : MonoBehaviour {
         repairsCostHome = lgd.repairsCostHome;
         //numPadsThisShift = lgd.numPadsThisShift;
         //nextPad = lgd.nextPad;
+        isNewGame = sgd.isNewGame;
 
         // These are on the Taxi object
         taxi.upThrustMult = lgd.upThrustMult;

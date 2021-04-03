@@ -23,8 +23,9 @@ public class ResetPopup : MonoBehaviour {
         hasResetPopup.SetActive(false);
 
 
-        if ( gm.hasNoSaveFile )
+        if ( gm.isNewGame )
         {
+            Debug.Log("<color=yellow>****************</color><color=blue>***************</color> SHIFT = " + gm.shift);
             howToResetPopup.SetActive(false);
             hasResetPopup.SetActive(true);
         }

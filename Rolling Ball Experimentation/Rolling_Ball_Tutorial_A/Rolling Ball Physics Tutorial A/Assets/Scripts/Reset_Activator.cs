@@ -23,6 +23,8 @@ public class Reset_Activator : MonoBehaviour {
     [SerializeField]
     private Taxi_Controller taxi = null;
 
+    private string xButton = "Fire1";
+
     private float aButtonForNewGame = 0.0f;
 
 	// Use this for initialization
@@ -34,9 +36,9 @@ public class Reset_Activator : MonoBehaviour {
 	void LateUpdate ()
     {
 
-        aButtonForNewGame = Input.GetAxis("Fire1"); // The "A" Button
+        aButtonForNewGame = Input.GetAxis(xButton); // The "A" Button is Fire1. Testing: Is Fire3 X?
 
-        if ( aButtonForNewGame > 0.10f)
+        if ( aButtonForNewGame > 0.10f )
         {
             activatorParent.SetActive(false);
             confirmPanel.SetActive(true);
