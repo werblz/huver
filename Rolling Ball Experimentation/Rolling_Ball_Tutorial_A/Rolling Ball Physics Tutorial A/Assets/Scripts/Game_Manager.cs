@@ -1311,14 +1311,15 @@ public class Game_Manager : MonoBehaviour {
     private void CalculateShiftCosts()
     {
         summaryText.text = "Shift Summary:\nFares:\nTips:\nGas Cost:\nRepairs Cost:\nHome Gas Cost:\nHome Repairs Cost:\n<color=purple>CASH:</color>";
-        summaryWinsNumbersText.text = (shift - 1).ToString() + "\n" +
+        summaryWinsNumbersText.text = "<color=yellow>" + (shift - 1).ToString() + "\n" +
             numPadsThisShift.ToString() + "\n" +
             "\u00A7 " + faresThisShift.ToString("F2") + "\n" +
-            "\u00A7 " + tipsThisShift.ToString("F2");
-        summaryLossesNumbersText.text = "<color=red>\u00A7 " + gasCostThisShift.ToString("F2") + "</color>\n" +
-            "<color=red>\u00A7 " + repairsCostThisShift.ToString("F2") + "</color>\n" +
-            "<color=red>\u00A7 " + gasCostHome.ToString("F2") + "</color>\n" +
-            "<color=red>\u00A7 " + repairsCostHome.ToString("F2") + "</color>\n";
+            "\u00A7 " + tipsThisShift.ToString("F2") + "</color>";
+        summaryLossesNumbersText.outlineColor = new Color(0.5f, 0.5f, 0.0f, 1.0f);
+        summaryLossesNumbersText.text = "<color=orange>\u00A7 " + gasCostThisShift.ToString("F2") + "\n" +
+            "\u00A7 " + repairsCostThisShift.ToString("F2") + "\n" +
+            "\u00A7 " + gasCostHome.ToString("F2") + "\n" +
+            "\u00A7 " + repairsCostHome.ToString("F2") + "</color>\n";
         summaryCashText.text = "\u00A7 " + cash.ToString("F2");
 
         // Now that we've set up the text, let's reset those shift values
