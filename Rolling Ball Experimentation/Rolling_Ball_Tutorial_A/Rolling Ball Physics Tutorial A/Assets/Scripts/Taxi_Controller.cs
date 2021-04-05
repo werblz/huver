@@ -49,6 +49,9 @@ public class Taxi_Controller : MonoBehaviour
     // Is the taxi on a pad?
     private bool isAtPad = false;
 
+    // Is the taxi on a building rooftop>
+    public bool isAtBuilding = false;
+
     // Is the taxi on Home pad?
     private bool isHome = false;
 
@@ -1023,8 +1026,11 @@ public class Taxi_Controller : MonoBehaviour
         {
             isGrounded = false;
         }
+        //isAtPad = false;
+        //isHome = false;
+        isAtBuilding = false;
 
-        
+
     }
 
 
@@ -1062,6 +1068,15 @@ public class Taxi_Controller : MonoBehaviour
          
          */
 
+
+        if ( other.gameObject.tag == "Building" )
+        {
+            isAtBuilding = true;
+        }
+        else
+        {
+            isAtBuilding = false;
+        }
 
 
         // For now, hitting the airships does no damage, but DOES affect tip
