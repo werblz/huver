@@ -1,0 +1,513 @@
+fileFormatVersion: 2
+guid: 2cfb4d177dd2b9e4aacd6fbd321fa8c2
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Body
+    100002: Cockpit
+    100004: Cockpit (1)
+    100006: Cockpit (2)
+    100008: Cockpit_Fin_A
+    100010: Cockpit_Fin_B
+    100012: Cockpit_Rear
+    100014: Cockpit_Rear (1)
+    100016: Cockpit_Rear (2)
+    100018: Fender_Front_Left
+    100020: Fender_Front_Right
+    100022: Fender_Rear_Left
+    100024: Fender_Rear_Right
+    100026: Fin_Rear_Left
+    100028: Fin_Rear_Right
+    100030: Fin_Top
+    100032: Front_Front_Thruster_Right
+    100034: Front_Front_Thruster_Right (1)
+    100036: Front_Front_Thruster_Right (2)
+    100038: Front_Front_Thruster_Right (3)
+    100040: Front_Front_Thruster_Right (4)
+    100042: Front_Front_Thruster_Right (5)
+    100044: Front_Rear_Thruster_Left
+    100046: Front_Rear_Thruster_Right
+    100048: Grill
+    100050: Grill 1
+    100052: Grill 2
+    100054: Grill 3
+    100056: Grill 4
+    100058: Grill 5
+    100060: Grill 6
+    100062: Grill 7
+    100064: Grill 8
+    100066: Headlight_Left
+    100068: Headlight_Left (1)
+    100070: Headlight_Left (2)
+    100072: Headlight_Right
+    100074: License_Plate
+    100076: Ship_Test_BR
+    100078: Tail_Light_Left
+    100080: Tail_Light_Right
+    100082: //RootNode
+    100084: Thrust_Back_FrontLeft
+    100086: Thrust_Back_FrontLeft_Turbo
+    100088: Thrust_Back_FrontRight
+    100090: Thrust_Back_FrontRight_Turbo
+    100092: Thrust_Down_FrontLeft
+    100094: Thrust_Down_FrontRight
+    100096: Thrust_Down_RearLeft
+    100098: Thrust_Down_RearRight
+    100100: Thrust_Forward_RearLeft
+    100102: Thrust_Forward_RearLeft (1)
+    100104: Thrust_Forward_RearLeft_Turbo
+    100106: Thrust_Forward_RearRight
+    100108: Thrust_Forward_RearRight (1)
+    100110: Thrust_Forward_RearRight_Turbo
+    100112: Thrust_Sideways-FrontRight
+    100114: Thrust_Sideways_FrontLeft
+    100116: Thrust_Sideways_RearLeft
+    100118: Thrust_Sideways_RearRight
+    100120: Thrust_Turn-FrontRight
+    100122: Thrust_Turn_FrontLeft
+    100124: Thrust_Turn_RearLeft
+    100126: Thrust_Turn_RearRight
+    100128: Thrust_Up_FrontLeft
+    100130: Thrust_Up_FrontLeft (1)
+    100132: Thrust_Up_FrontRight
+    100134: Thrust_Up_FrontRight (1)
+    100136: Thrust_Up_RearLeft
+    100138: Thrust_Up_RearLeft (1)
+    100140: Thrust_Up_RearRight
+    100142: Thrust_Up_RearRight (1)
+    100144: Thruster
+    100146: Thruster 1
+    100148: Thruster 10
+    100150: Thruster 11
+    100152: Thruster 12
+    100154: Thruster 13
+    100156: Thruster 14
+    100158: Thruster 15
+    100160: Thruster 16
+    100162: Thruster 17
+    100164: Thruster 18
+    100166: Thruster 19
+    100168: Thruster 2
+    100170: Thruster 20
+    100172: Thruster 21
+    100174: Thruster 22
+    100176: Thruster 23
+    100178: Thruster 24
+    100180: Thruster 25
+    100182: Thruster 26
+    100184: Thruster 27
+    100186: Thruster 28
+    100188: Thruster 29
+    100190: Thruster 3
+    100192: Thruster 4
+    100194: Thruster 5
+    100196: Thruster 6
+    100198: Thruster 7
+    100200: Thruster 8
+    100202: Thruster 9
+    100204: Thrusters
+    400000: Body
+    400002: Cockpit
+    400004: Cockpit (1)
+    400006: Cockpit (2)
+    400008: Cockpit_Fin_A
+    400010: Cockpit_Fin_B
+    400012: Cockpit_Rear
+    400014: Cockpit_Rear (1)
+    400016: Cockpit_Rear (2)
+    400018: Fender_Front_Left
+    400020: Fender_Front_Right
+    400022: Fender_Rear_Left
+    400024: Fender_Rear_Right
+    400026: Fin_Rear_Left
+    400028: Fin_Rear_Right
+    400030: Fin_Top
+    400032: Front_Front_Thruster_Right
+    400034: Front_Front_Thruster_Right (1)
+    400036: Front_Front_Thruster_Right (2)
+    400038: Front_Front_Thruster_Right (3)
+    400040: Front_Front_Thruster_Right (4)
+    400042: Front_Front_Thruster_Right (5)
+    400044: Front_Rear_Thruster_Left
+    400046: Front_Rear_Thruster_Right
+    400048: Grill
+    400050: Grill 1
+    400052: Grill 2
+    400054: Grill 3
+    400056: Grill 4
+    400058: Grill 5
+    400060: Grill 6
+    400062: Grill 7
+    400064: Grill 8
+    400066: Headlight_Left
+    400068: Headlight_Left (1)
+    400070: Headlight_Left (2)
+    400072: Headlight_Right
+    400074: License_Plate
+    400076: Ship_Test_BR
+    400078: Tail_Light_Left
+    400080: Tail_Light_Right
+    400082: //RootNode
+    400084: Thrust_Back_FrontLeft
+    400086: Thrust_Back_FrontLeft_Turbo
+    400088: Thrust_Back_FrontRight
+    400090: Thrust_Back_FrontRight_Turbo
+    400092: Thrust_Down_FrontLeft
+    400094: Thrust_Down_FrontRight
+    400096: Thrust_Down_RearLeft
+    400098: Thrust_Down_RearRight
+    400100: Thrust_Forward_RearLeft
+    400102: Thrust_Forward_RearLeft (1)
+    400104: Thrust_Forward_RearLeft_Turbo
+    400106: Thrust_Forward_RearRight
+    400108: Thrust_Forward_RearRight (1)
+    400110: Thrust_Forward_RearRight_Turbo
+    400112: Thrust_Sideways-FrontRight
+    400114: Thrust_Sideways_FrontLeft
+    400116: Thrust_Sideways_RearLeft
+    400118: Thrust_Sideways_RearRight
+    400120: Thrust_Turn-FrontRight
+    400122: Thrust_Turn_FrontLeft
+    400124: Thrust_Turn_RearLeft
+    400126: Thrust_Turn_RearRight
+    400128: Thrust_Up_FrontLeft
+    400130: Thrust_Up_FrontLeft (1)
+    400132: Thrust_Up_FrontRight
+    400134: Thrust_Up_FrontRight (1)
+    400136: Thrust_Up_RearLeft
+    400138: Thrust_Up_RearLeft (1)
+    400140: Thrust_Up_RearRight
+    400142: Thrust_Up_RearRight (1)
+    400144: Thruster
+    400146: Thruster 1
+    400148: Thruster 10
+    400150: Thruster 11
+    400152: Thruster 12
+    400154: Thruster 13
+    400156: Thruster 14
+    400158: Thruster 15
+    400160: Thruster 16
+    400162: Thruster 17
+    400164: Thruster 18
+    400166: Thruster 19
+    400168: Thruster 2
+    400170: Thruster 20
+    400172: Thruster 21
+    400174: Thruster 22
+    400176: Thruster 23
+    400178: Thruster 24
+    400180: Thruster 25
+    400182: Thruster 26
+    400184: Thruster 27
+    400186: Thruster 28
+    400188: Thruster 29
+    400190: Thruster 3
+    400192: Thruster 4
+    400194: Thruster 5
+    400196: Thruster 6
+    400198: Thruster 7
+    400200: Thruster 8
+    400202: Thruster 9
+    400204: Thrusters
+    2100000: Taxi_Body
+    2100002: Glasses
+    2100004: Default-Material
+    2100006: Taxi_Tail_Lights
+    2100008: Taxi_Chrome
+    2100010: Taxi_License_Plate
+    2100012: No Name
+    2300000: Body
+    2300002: Cockpit
+    2300004: Cockpit (1)
+    2300006: Cockpit (2)
+    2300008: Cockpit_Fin_A
+    2300010: Cockpit_Fin_B
+    2300012: Cockpit_Rear
+    2300014: Cockpit_Rear (1)
+    2300016: Cockpit_Rear (2)
+    2300018: Fender_Front_Left
+    2300020: Fender_Front_Right
+    2300022: Fender_Rear_Left
+    2300024: Fender_Rear_Right
+    2300026: Fin_Rear_Left
+    2300028: Fin_Rear_Right
+    2300030: Fin_Top
+    2300032: Front_Front_Thruster_Right
+    2300034: Front_Front_Thruster_Right (1)
+    2300036: Front_Front_Thruster_Right (2)
+    2300038: Front_Front_Thruster_Right (3)
+    2300040: Front_Front_Thruster_Right (4)
+    2300042: Front_Front_Thruster_Right (5)
+    2300044: Front_Rear_Thruster_Left
+    2300046: Front_Rear_Thruster_Right
+    2300048: Grill
+    2300050: Grill 1
+    2300052: Grill 2
+    2300054: Grill 3
+    2300056: Grill 4
+    2300058: Grill 5
+    2300060: Grill 6
+    2300062: Grill 7
+    2300064: Grill 8
+    2300066: Headlight_Left
+    2300068: Headlight_Left (1)
+    2300070: Headlight_Left (2)
+    2300072: Headlight_Right
+    2300074: License_Plate
+    2300076: Ship_Test_BR
+    2300078: Tail_Light_Left
+    2300080: Tail_Light_Right
+    2300082: Thruster
+    2300084: Thruster 1
+    2300086: Thruster 10
+    2300088: Thruster 11
+    2300090: Thruster 12
+    2300092: Thruster 13
+    2300094: Thruster 14
+    2300096: Thruster 15
+    2300098: Thruster 16
+    2300100: Thruster 17
+    2300102: Thruster 18
+    2300104: Thruster 19
+    2300106: Thruster 2
+    2300108: Thruster 20
+    2300110: Thruster 21
+    2300112: Thruster 22
+    2300114: Thruster 23
+    2300116: Thruster 24
+    2300118: Thruster 25
+    2300120: Thruster 26
+    2300122: Thruster 27
+    2300124: Thruster 28
+    2300126: Thruster 29
+    2300128: Thruster 3
+    2300130: Thruster 4
+    2300132: Thruster 5
+    2300134: Thruster 6
+    2300136: Thruster 7
+    2300138: Thruster 8
+    2300140: Thruster 9
+    3300000: Body
+    3300002: Cockpit
+    3300004: Cockpit (1)
+    3300006: Cockpit (2)
+    3300008: Cockpit_Fin_A
+    3300010: Cockpit_Fin_B
+    3300012: Cockpit_Rear
+    3300014: Cockpit_Rear (1)
+    3300016: Cockpit_Rear (2)
+    3300018: Fender_Front_Left
+    3300020: Fender_Front_Right
+    3300022: Fender_Rear_Left
+    3300024: Fender_Rear_Right
+    3300026: Fin_Rear_Left
+    3300028: Fin_Rear_Right
+    3300030: Fin_Top
+    3300032: Front_Front_Thruster_Right
+    3300034: Front_Front_Thruster_Right (1)
+    3300036: Front_Front_Thruster_Right (2)
+    3300038: Front_Front_Thruster_Right (3)
+    3300040: Front_Front_Thruster_Right (4)
+    3300042: Front_Front_Thruster_Right (5)
+    3300044: Front_Rear_Thruster_Left
+    3300046: Front_Rear_Thruster_Right
+    3300048: Grill
+    3300050: Grill 1
+    3300052: Grill 2
+    3300054: Grill 3
+    3300056: Grill 4
+    3300058: Grill 5
+    3300060: Grill 6
+    3300062: Grill 7
+    3300064: Grill 8
+    3300066: Headlight_Left
+    3300068: Headlight_Left (1)
+    3300070: Headlight_Left (2)
+    3300072: Headlight_Right
+    3300074: License_Plate
+    3300076: Ship_Test_BR
+    3300078: Tail_Light_Left
+    3300080: Tail_Light_Right
+    3300082: Thruster
+    3300084: Thruster 1
+    3300086: Thruster 10
+    3300088: Thruster 11
+    3300090: Thruster 12
+    3300092: Thruster 13
+    3300094: Thruster 14
+    3300096: Thruster 15
+    3300098: Thruster 16
+    3300100: Thruster 17
+    3300102: Thruster 18
+    3300104: Thruster 19
+    3300106: Thruster 2
+    3300108: Thruster 20
+    3300110: Thruster 21
+    3300112: Thruster 22
+    3300114: Thruster 23
+    3300116: Thruster 24
+    3300118: Thruster 25
+    3300120: Thruster 26
+    3300122: Thruster 27
+    3300124: Thruster 28
+    3300126: Thruster 29
+    3300128: Thruster 3
+    3300130: Thruster 4
+    3300132: Thruster 5
+    3300134: Thruster 6
+    3300136: Thruster 7
+    3300138: Thruster 8
+    3300140: Thruster 9
+    4300000: Fender_Front_Left
+    4300002: Fender_Rear_Left
+    4300004: Fin_Rear_Left
+    4300006: Cockpit
+    4300008: Fender_Front_Right
+    4300010: Fender_Rear_Right
+    4300012: Fin_Rear_Right
+    4300014: Headlight_Left
+    4300016: Headlight_Right
+    4300018: Tail_Light_Left
+    4300020: Tail_Light_Right
+    4300022: Cockpit_Rear
+    4300024: Fin_Top
+    4300026: Grill
+    4300028: Grill
+    4300030: Grill
+    4300032: Grill
+    4300034: Grill
+    4300036: Grill
+    4300038: Grill
+    4300040: Grill
+    4300042: Grill
+    4300044: Body
+    4300046: License_Plate
+    4300048: Ship_Test_BR
+    4300050: Cockpit_Rear (1)
+    4300052: Cockpit_Rear (2)
+    4300054: Cockpit_Fin_A
+    4300056: Cockpit_Fin_B
+    4300058: Front_Rear_Thruster_Left
+    4300060: Front_Rear_Thruster_Right
+    4300062: Front_Front_Thruster_Right
+    4300064: Cockpit (1)
+    4300066: Cockpit (2)
+    4300068: Front_Front_Thruster_Right (1)
+    4300070: Headlight_Left (1)
+    4300072: Headlight_Left (2)
+    4300074: Front_Front_Thruster_Right (2)
+    4300076: Front_Front_Thruster_Right (3)
+    4300078: Front_Front_Thruster_Right (4)
+    4300080: Front_Front_Thruster_Right (5)
+    4300082: Thruster
+    4300084: Thruster
+    4300086: Thruster
+    4300088: Thruster
+    4300090: Thruster
+    4300092: Thruster
+    4300094: Thruster
+    4300096: Thruster
+    4300098: Thruster
+    4300100: Thruster
+    4300102: Thruster
+    4300104: Thruster
+    4300106: Thruster
+    4300108: Thruster
+    4300110: Thruster
+    4300112: Thruster
+    4300114: Thruster
+    4300116: Thruster
+    4300118: Thruster
+    4300120: Thruster
+    4300122: Thruster
+    4300124: Thruster
+    4300126: Thruster
+    4300128: Thruster
+    4300130: Thruster
+    4300132: Thruster
+    4300134: Thruster
+    4300136: Thruster
+    4300138: Thruster
+    4300140: Thruster
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 2
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
