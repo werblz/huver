@@ -396,6 +396,7 @@ public class UI_Panel_Controller : MonoBehaviour {
             upgradeDataItems[picks[i]].glowSprite.enabled = false;
             upgradeDataItems[picks[i]].glowSpriteRed.enabled = false;
             upgradeDataItems[picks[i]].noPurchase.enabled = false;
+            upgradeDataItems[picks[i]].purchaseButtonObj.SetActive(false);
         }
 
 
@@ -414,12 +415,14 @@ public class UI_Panel_Controller : MonoBehaviour {
             upgradeDataItems[picks[choice]].glowSpriteRed.enabled = true;
             upgradeDataItems[picks[choice]].glowSprite.enabled = false;
             upgradeDataItems[picks[choice]].noPurchase.enabled = true;
+            upgradeDataItems[picks[choice]].purchaseButtonObj.SetActive(false);
         }
         else
         {
             upgradeDataItems[picks[choice]].glowSpriteRed.enabled = false;
             upgradeDataItems[picks[choice]].glowSprite.enabled = true;
             upgradeDataItems[picks[choice]].noPurchase.enabled = false;
+            upgradeDataItems[picks[choice]].purchaseButtonObj.SetActive(true);
         }
 
         if ( choice != lastChoice && hasChosenOnce == false && upgradePanel.activeSelf )

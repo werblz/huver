@@ -49,6 +49,9 @@ public class Upgrade_Data : MonoBehaviour {
     [SerializeField]
     public SpriteRenderer noPurchase = null;
 
+    [SerializeField]
+    public GameObject purchaseButtonObj = null;
+
     // LATER! public Upgrade_Base upPrefab = null;
 
     private void Start()
